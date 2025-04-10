@@ -1,0 +1,111 @@
+/* Overlay */
+.view-task-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal Box */
+.view-task-modal {
+  background-color: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease;
+  max-height: 80vh; /* Set a max height */
+  overflow-y: auto; /* Enable scrolling if content exceeds max-height */
+  position: relative; /* Needed for positioning the close button */
+}
+
+/* Header */
+.view-task-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-task-modal-header h2 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+}
+
+/* Content Styling */
+.view-task-modal-content {
+  margin-top: 1.5rem;
+}
+
+.view-task-modal-content p {
+  font-size: 1rem;
+  color: #34495e;
+  margin-bottom: 0.75rem;
+}
+
+.view-task-modal-content strong {
+  font-weight: 600;
+}
+
+/* Skills Required */
+.view-task-skills {
+  margin-top: 1.25rem;
+}
+
+.view-skill-badge {
+  background-color: #007bff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 16px;
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Media Queries for Smaller Screens */
+@media (max-width: 768px) {
+  .view-task-modal {
+    padding: 1rem;
+    max-width: 90%;
+  }
+
+  .view-task-modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .view-task-modal-content {
+    font-size: 0.95rem;
+  }
+}

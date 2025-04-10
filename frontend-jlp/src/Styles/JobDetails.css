@@ -1,0 +1,308 @@
+.job-details-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.job-content {
+    flex: 2;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.h_1 {
+    color: #333;
+    font-size: 26px;
+}
+
+.company-name {
+    color: #777;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.job-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.job-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #f1f1f1;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.job-location {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+h2 {
+    margin-top: 20px;
+    color: #333;
+}
+
+ul {
+    padding-left: 20px;
+}
+.job-description-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* Responsibilities & Required Skills - Distinct Styling */
+/* Responsibilities Section */
+.responsibilities-container {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-left: 5px solid #4CAF50;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.responsibilities-container h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 22px;
+    color: #333;
+}
+
+.responsibilities-container ul {
+    padding-left: 20px;
+}
+
+.responsibilities-container li {
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #444;
+}
+
+
+.skills-container {
+    background: #f9f9f9; /* Light gray to contrast with job description */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Adds separation from previous section */
+}
+
+.responsibilities-container h2,
+.job-description-container h2,
+.skills-container h2 {
+    font-size: 20px;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+/* Responsibilities List */
+.responsibilities-container ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.skills-container-jobDetails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: 18px;
+    margin-top: 10px;
+}
+
+.skill-badge {
+    background-color: #f0f0f0; /* Light gray background */
+    color: #333;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.skill-badge:hover {
+    transform: scale(1.1);
+    background-color: #e0e0e0;
+}
+
+/* Apply Now Box */
+.apply-box {
+    flex: 1;
+    position: sticky;
+    top: 20px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.apply-btn {
+    background: #28a745;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.apply-btn:hover {
+    background: #218838;
+}
+
+/* Application Form */
+.application-form input, .application-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.application-form button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.application-form button[type="submit"] {
+    background: #28a745;
+    color: white;
+}
+
+.application-form button[type="submit"]:hover {
+    background: #218838;
+}
+
+.cancel-btn {
+    background: #dc3545;
+    color: white;
+    margin-top: 10px;
+}
+
+.cancel-btn:hover {
+    background: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .job-details-container {
+        flex-direction: column;
+    }
+
+    .apply-box {
+        position: static;
+        margin-top: 20px;
+    }
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 80%;
+    max-width: 600px;
+    margin: 50px auto;
+    height: 300px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loading .skeleton {
+    height: 20px;
+    background: linear-gradient(90deg, #f0f0f0, #e0e0e0, #f0f0f0);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    border-radius: 4px;
+}
+
+.loading .skeleton.title {
+    height: 25px;
+    width: 60%;
+}
+
+.loading .skeleton.text {
+    height: 15px;
+    width: 100%;
+}
+
+.loading .skeleton.short {
+    width: 40%;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.job-hero {
+    background: linear-gradient(to right, #f4f7f9, #dfe9f3);
+    padding: 40px 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.job-content {
+    flex: 2;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.skills-container-jobDetails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.skill-chip {
+    background: #e6f4ea;
+    color: #2e7d32;
+    padding: 8px 12px;
+    border-radius: 25px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.applied-notice {
+    background: #e0ffe0;
+    color: #28a745;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+

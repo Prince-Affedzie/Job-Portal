@@ -1,0 +1,429 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* General Styles */
+.landing-container {
+  font-family: 'Poppins', sans-serif;
+  background: #f9fafb;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar */
+.landing-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 5%;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: bold;
+  color: #007bff;
+  transition: 0.3s ease-in-out;
+}
+
+.logo:hover {
+  transform: scale(1.1);
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: 0.3s ease-in-out;
+}
+
+.nav-links a:hover {
+  color: #007bff;
+}
+
+.auth-buttons .login-btn,
+.auth-buttons .signup-btn {
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.login-btn {
+  background: none;
+  color: #007bff;
+}
+
+.signup-btn {
+  background: #007bff;
+  color: white;
+  border-radius: 5px;
+  transition: 0.3s ease-in-out;
+}
+
+.signup-btn:hover {
+  background: #0056b3;
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+}
+
+/* Hero Section */
+.hero-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  text-align: center;
+  background: linear-gradient(135deg, #007bff, #00c6ff);
+  color: white;
+}
+
+.hero-content h1 {
+  font-size: 42px;
+  margin-bottom: 15px;
+  animation: fadeInUp 1s ease-in-out;
+}
+
+.hero-content p {
+  font-size: 18px;
+  animation: fadeInUp 1.2s ease-in-out;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 10px;
+  border-radius: 30px;
+  width: 60%;
+  margin-top: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  padding: 10px;
+  width: 85%;
+  font-size: 16px;
+}
+
+.search-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.search-btn:hover {
+  background: #0056b3;
+}
+
+/* Responsive Hero Section */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 28px;
+  }
+  .search-box {
+    width: 90%;
+  }
+}
+
+/* Sections */
+.popular-searches,
+.top-categories,
+.success-stories,
+.cta-section {
+  padding: 60px 5%;
+  text-align: center;
+}
+
+.search-tags {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.search-tag {
+  border: 1px solid #007bff;
+  background: white;
+  color: #007bff;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.search-tag:hover {
+  background: #007bff;
+  color: white;
+}
+
+.testimonials {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.testimonial {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 250px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Call to Action */
+.cta-section {
+  background: #007bff;
+  color: white;
+}
+
+.cta-btn {
+  background: white;
+  color: #007bff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.cta-btn:hover {
+  background: #f0f0f0;
+}
+/* Top Freelancers */
+.top-freelancers {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f9f9f9;
+}
+.freelancer-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+.freelancer-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 200px;
+}
+.freelancer-card h3 {
+    font-size: 18px;
+    color: #333;
+}
+.freelancer-card p {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Job Posting Statistics */
+.job-stats {
+    background: #0056b3;
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+}
+.stats-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.stat {
+    text-align: center;
+    width: 200px;
+}
+.stat-icon {
+    font-size: 40px;
+    color: white;
+    margin-bottom: 10px;
+}
+.stat h3 {
+    font-size: 24px;
+    margin: 5px 0;
+}
+.stat p {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* Community & Support */
+.community-support {
+    padding: 60px 20px;
+    background: #f0f8ff;
+    text-align: center;
+}
+.community-content {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.community-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 250px;
+}
+.community-icon {
+    font-size: 40px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+.community-box h3 {
+    font-size: 18px;
+    color: #333;
+}
+.community-box p {
+    font-size: 14px;
+    color: #777;
+}
+
+/* How It Works */
+.how-it-works {
+    padding: 60px 20px;
+    text-align: center;
+}
+.steps {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+.step {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    text-align: center;
+}
+.step-icon {
+    font-size: 40px;
+    color: #28a745;
+    margin-bottom: 10px;
+}
+.step h3 {
+    font-size: 18px;
+    color: #333;
+}
+.step p {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Why Choose Us */
+.why-choose-us {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f7f7f7;
+}
+.reasons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.reason {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    text-align: center;
+}
+.reason h3 {
+    font-size: 18px;
+    color: #333;
+}
+.reason p {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .freelancer-grid, .stats-grid, .community-content, .steps, .reasons {
+        flex-direction: column;
+        align-items: center;
+    }
+    .freelancer-card, .stat, .community-box, .step, .reason {
+        width: 90%;
+    }
+}
+/* Trusted By Companies */
+.trusted-by {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f4f4f4;
+}
+.trusted-by h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+.company-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.company-logos img {
+    max-width: 120px;
+    height: auto;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+.company-logos img:hover {
+    filter: grayscale(0%);
+    transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .company-logos {
+        gap: 15px;
+    }
+    .company-logos img {
+        max-width: 100px;
+    }
+}
+
+/* Footer */
+.landing-footer {
+  text-align: center;
+  padding: 20px;
+  background: #007bff;
+  color: white;
+  margin-top: 50px;
+}

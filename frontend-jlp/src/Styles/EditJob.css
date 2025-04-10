@@ -1,0 +1,180 @@
+.edit-job-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f6f8;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 30px;
+  }
+  
+  .edit-job-form-wrapper {
+    flex: 1;
+    padding: 2rem;
+    margin-left: 250px; /* adjust based on your Sidebar width */
+  }
+  
+  .edit-job-form-wrapper h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+  
+  .edit-job-form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-width: 800px;
+  }
+  
+  .edit-job-form input,
+  .edit-job-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.2s ease-in-out;
+  }
+  
+  .edit-job-form input:focus,
+  .edit-job-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .edit-job-form textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+  
+  .edit-job-form button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    width: 200px;
+    align-self: flex-start;
+  }
+  
+  .edit-job-form button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  @media (max-width: 768px) {
+    .edit-job-form-wrapper {
+      margin-left: 0;
+      padding: 1rem;
+    }
+  
+    .edit-job-form {
+      padding: 1.5rem;
+    }
+  }
+/* ...previous styles remain unchanged... */
+
+.edit-job-form .tag-input,
+.edit-job-form .dynamic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edit-job-form .tag-input label,
+.edit-job-form .dynamic-list label {
+  font-weight: 500;
+  color: #34495e;
+}
+
+.edit-job-form .tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-height: 50px;
+  background-color: #fdfdfd;
+}
+
+.edit-job-form .tag {
+  background-color: #007bff;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.edit-job-form .tag button {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+}
+
+.edit-job-form input.tag-input-field {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  min-width: 120px;
+  padding: 6px;
+}
+
+.edit-job-form .dynamic-list ul {
+  list-style: disc;
+  margin-left: 20px;
+}
+
+.edit-job-form .dynamic-list li {
+  font-size: 15px;
+  color: #2c3e50;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.edit-job-form .dynamic-list li button {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  color: crimson;
+  cursor: pointer;
+}
+
+.edit-job-form .dynamic-list .input-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 0.5rem;
+}
+
+.edit-job-form .dynamic-list input {
+  flex: 1;
+}
+
+.edit-job-form .add-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.edit-job-form .add-btn:hover {
+  background-color: #218838;
+}
+  
