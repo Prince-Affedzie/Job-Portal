@@ -4,10 +4,18 @@ const CookieParser = require("cookie-parser")
 const mongoose = require("mongoose")
 const cors = require('cors')
 require("dotenv").config()
+const {Server} = require('socket.io')
+const http = require('http')
+const {JobModel} = require('./Models/JobsModel')
 
 const {userRouter} = require("./Routes/UserRoutes")
 const {employerRoute} = require("./Routes/EmpoyerRoutes")
 const {seekRouter} = require("./Routes/JobSeekerRoutes")
+const {authenticateSocket} = require('./MiddleWare/VerifyToken')
+const jobController = require('./Controllers/JobsControllerJobseekers')
+const jobControllerEmp = require('./Controllers/JobsControllerEmployers')
+
+
 
 
 const app = express()
@@ -22,16 +30,42 @@ app.use(cors({
 
 }))
 
+const server = http.createServer(app)
+
 app.use("/api",userRouter)
 app.use("/api",employerRoute)
 app.use("/api",seekRouter)
 
 mongoose.connect(process.env.DB_URL)
        .then(()=>{
-        app.listen(process.env.PORT,()=>{
+         server.listen(process.env.PORT,()=>{
+           
             console.log("Listening on Port 5000")
         })
        })
        .catch((err)=>{
         console.log(err)
        })
+
+const io = new Server(server,{
+    cors:{
+        origin:"http://localhost:3000",
+        credentials:true
+    }
+})
+io.use(authenticateSocket)
+
+io.on('connection',(socket)=>{
+    const userId = socket.user.id
+    console.log('Someone joined the connection')
+    socket.join(userId)
+
+    socket.on('disconnect',()=>{
+        console.log("User Disconnected")
+    })
+
+})
+
+jobController.setSocketIO(io)
+jobControllerEmp.setSocketInstance(io)
+

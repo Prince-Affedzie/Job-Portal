@@ -2,7 +2,15 @@ const {JobModel} = require('../Models/JobsModel')
 const {ApplicationModel} = require("../Models/ApplicationModel")
 const {MiniTask} =require("../Models/MiniTaskModel")
 const { UserModel } = require('../Models/UserModel')
+const {NotificationModel} = require('../Models/NotificationModel')
+const io = require('../app')
 
+let socketIO = null;
+
+// This will be called by server.js to give us access to `io`
+function setSocketIO(ioInstance) {
+    socketIO = ioInstance;
+}
 
 const allJobs = async(req,res)=>{
     try{
@@ -35,10 +43,13 @@ const allJobs = async(req,res)=>{
 const viewJob = async(req,res)=>{
     try{
         const {Id} =req.params
+        console.log("I'm executing")
         const job = await JobModel.findById(Id)
         if(!job){
             return res.status(404).json({message:"Job not Found"})
         }
+        job.interactions = job.interactions + 1
+        await job.save()
         res.status(200).json(job)
 
 
@@ -147,7 +158,7 @@ const applyToJob = async(req,res)=>{
 const viewAllApplications = async(req,res)=>{
     try{
          const {id} = req.user
-         const jobsApplied = await ApplicationModel.find({user:id}).populate('job').sort({createdAt:-1})
+         const jobsApplied = await ApplicationModel.find({user:id}).populate('job').sort({createdAt:-1}).exec()
          res.status(200).json(jobsApplied)   
     }
     catch(err){
@@ -206,6 +217,7 @@ const postMiniTask = async(req,res)=>{
 const assignMiniTask =async(req,res)=>{
     try{
         const {taskId,applicantId} =req.params
+        console.log(req.params)
         console.log(taskId)
         console.log(applicantId)
         const miniTask = await MiniTask.findById(taskId)
@@ -213,6 +225,20 @@ const assignMiniTask =async(req,res)=>{
             return res.status(404).json({message:"Task not Found"})
         }
         miniTask.assignedTo = applicantId
+
+        const notification = new NotificationModel({
+            user:applicantId,
+            message:`Congratulations! You've been assigned to the mini task: "${miniTask.title}". Please contact employer for more details.`,
+            title:"Mini Task Assignment"
+
+        })
+        if (socketIO) {
+            socketIO.to(applicantId).emit('notification', notification);
+            console.log(`Notification sent to ${applicantId}`);
+        } else {
+            console.warn("SocketIO is not initialized!");
+        }
+        await notification.save()
         await miniTask.save()
         res.status(200).json({message:"Task Assigned Successfully"})
     }catch(err){
@@ -256,13 +282,31 @@ const applyToMiniTask = async(req,res)=>{
     try{
         const {id} =req.user
         const {Id} =req.params
-        const miniTask = await MiniTask.findById(Id)
+        const miniTask = await MiniTask.findById(Id).populate('employer _id')
         if(!miniTask){
             return res.status(404).json({message:"Job not Found"})
         }
         if(!miniTask.applicants.includes(id)){
             miniTask.applicants.push(id)
             await miniTask.save()
+
+         const notification  = new NotificationModel({
+         user: miniTask.employer._id,
+         title:"Mini Task Application",
+         message: `You've gotten a new Application for your MiniTask with the title: ${miniTask.title} `
+         })
+
+         await notification.save()
+
+         if(socketIO){
+                console.log(miniTask.employer._id)
+                socketIO.to(miniTask.employer._id).emit('notification',notification)
+                console.log(`Notification sent to ${miniTask.employer._id}`);
+                console.log(`Notification sent to ${notification}`);
+            }else {
+            console.warn("SocketIO is not initialized!");
+        }
+
             return res.status(200).json({message:"Application Successful"})
         }else{
             return res.status(400).json({message:"You've Already Applied to this Task"})
@@ -278,7 +322,9 @@ const applyToMiniTask = async(req,res)=>{
 const getRecentJobApplications  =async(req,res)=>{
     try{
         const {id} =req.user
-        const applications = await ApplicationModel.find({user:id}).populate('job','title company status description').sort({createdAt:-1})
+        const applications = await ApplicationModel.find({user:id}).populate('job','title company companyEmail status description')
+        .populate({ path:'reviewer' , select:'phone name email'})
+        .sort({createdAt:-1})
         return res.status(200).json(applications)
 
     }catch(err){
@@ -338,7 +384,19 @@ const deleteMiniTask = async(req,res)=>{
     }
 }
 
+const yourAppliedMiniTasks = async(req,res)=>{
+    try{
+        const {id} = req.user
+        const tasks = await MiniTask.find({applicants:{$in:[id]}}).populate("employer").sort({createdAt:-1})
+        res.status(200).json(tasks)
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
 
 module.exports = {viewJob,viewAllApplications,viewApplication,applyToJob,jobSearch,
     jobSearchFilter,allJobs,postMiniTask,assignMiniTask,getMiniTasks,applyToMiniTask,
-    getRecentJobApplications,getCreatedMiniTasks,editMiniTask,deleteMiniTask}
+    getRecentJobApplications,getCreatedMiniTasks,editMiniTask,deleteMiniTask,yourAppliedMiniTasks,setSocketIO}

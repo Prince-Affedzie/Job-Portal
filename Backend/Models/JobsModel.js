@@ -13,7 +13,11 @@ const jobSchema = new schema({
     category:{
         type :String,
        
-        enum: ["Administration",'Banking',,'Development','Marketing','Software Development','Administrative Assistance','Sales','Accounting','Information Technology','Health','Education','Design']
+        enum: ["Administration",'Banking',,'Development','Marketing','Software Development','Administrative Assistance','Sales',
+            'Accounting','Information Technology','Health','Education','Design','Engineering','Human Resources','Project Management','Customer Service',
+             'Agriculture','Tourism and Hospitality','Consulting','Finance','Non-profit and NGO','Legal','Manufacturing','Logistics and Supply Chain',
+             'others'
+        ]
     },
     jobType:{
         type:String,
@@ -26,6 +30,9 @@ const jobSchema = new schema({
     },
     company:{
           type:String
+    },
+    companyEmail:{
+        type: String
     },
     deliveryMode:{
         type:String,
@@ -81,6 +88,10 @@ const jobSchema = new schema({
         
        String
     ],
+    interactions:{
+      type : Number,
+      default: 0
+    },
     createdAt:{
         type:Date,
         default:Date.now()

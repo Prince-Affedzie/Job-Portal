@@ -21,6 +21,12 @@ const jobApplicationSchema = new schema({
         type:Boolean,
         default:false
     },
+    interview: {
+        scheduled: { type: Boolean, default: false },
+        date: Date,
+        message: String
+      },
+      
     reviewer:{
        type :mongoose.Schema.Types.ObjectId,
        ref:"User"
@@ -28,7 +34,7 @@ const jobApplicationSchema = new schema({
     },
     status:{
         type:String,
-        enum:["Pending","Accepted","Rejected","Completed"],
+        enum:["Pending","Accepted","Rejected","Completed","Reviewing","Shortlisted","Offered",'Interview'],
         default:"Pending"
     }
 },{timestamps:true})

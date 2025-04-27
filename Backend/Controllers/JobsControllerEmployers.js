@@ -1,11 +1,18 @@
 const { ApplicationModel } = require("../Models/ApplicationModel")
 const {JobModel} = require("../Models/JobsModel")
+const {NotificationModel} = require("../Models/NotificationModel")
+
+let socketIo =null
+
+function setSocketInstance(ioInstance){
+    socketIo = ioInstance
+}
 
 const addJob = async(req,res)=>{
 
     try{
         const {id} = req.user
-        const {title,description,category,jobType,industry,deliveryMode,company,
+        const {title,description,category,jobType,industry,deliveryMode,company, companyEmail,
             location,paymentStyle, salary,skillsRequired,experienceLevel,responsibilities, deadLine,tags} = req.body
             console.log(req.body)
         const job = new JobModel({
@@ -24,6 +31,7 @@ const addJob = async(req,res)=>{
             deadLine:deadLine,
             employerId:id,
             company:company,
+            companyEmail:companyEmail,
             jobTags:tags
         })
         await job.save()
@@ -178,7 +186,16 @@ const viewJobApplications = async(req,res)=>{
     try{
         const {Id} = req.params
 
-        const applications = await ApplicationModel.find({job:Id}).populate("user","name","email","skills","education")
+        const applications = await ApplicationModel.find({job:Id}).populate({
+           path: 'user',
+           select: 'name email phone education skills workExperience profileImage location ' 
+       })
+      .populate({
+        path :'job',
+        select:'title noOfApplicants status salary createdAt deliveryMode'
+        }).exec()
+
+       
         res.status(200).json(applications)
 
 
@@ -204,13 +221,56 @@ const viewSingleApplication = async(req,res)=>{
 }
 
 const modifyApplication =async(req,res)=>{
+
+ let notification = null 
+
     try{
         const {Id} = req.params
         const status = req.body
-        console.log(status)
-        const application = await ApplicationModel.findById(Id)
+       
+        const application = await ApplicationModel.findById(Id).populate({
+            path:"job",
+            select:'title'
+        })
+       
         if(!application){
             return res.status(404).json({message:"Application not Found"})
+        }
+
+       
+        if(req.body.status === "Shortlisted"){
+
+            notification = new NotificationModel({
+                user:application.user,
+                message:`Congratulations! You've been shortlisted For this Job: "${application.job.title}". Please contact the employer for more details.`,
+                title:"Application Short Listing"
+            })
+
+        }else if(req.body.status === "Rejected"){
+            notification = new NotificationModel({
+                user:application.user,
+                message:`Sorry! You're application For this Job Has Been Rejected: "${application.job.title}". `,
+                title:"Application REejection"
+            })
+        }else if(req.body.status === "Interview"){
+            notification = new NotificationModel({
+                user:application.user,
+                message:`Congratulations! You've been invited to an Interview For this Job: "${application.job.title}". Please contact the employer for more details.`,
+                title:"Invite For An Interview"
+            })
+        }
+        
+        if (notification){
+
+            await notification.save()
+            if(socketIo){
+                console.log("I'm alive")
+            
+                socketIo.to(application.user.toString()).emit('notification',notification)
+            }else {
+                console.warn("SocketIO is not initialized!");
+            }
+
         }
         Object.assign(application,status)
         await application.save()
@@ -222,6 +282,55 @@ const modifyApplication =async(req,res)=>{
     }
 }
 
+const interviewController = async(req,res)=>{
+    let notification
+    try{
+        const {Id} = req.params
+        const {interviewState} = req.body
+       
+        const application = await ApplicationModel.findById(Id).populate({
+            path:"job",
+            select:'title'
+        })
+       
+        if(!application){
+            return res.status(400).json({message:"Application not found"})
+        }
+        application.inviteForInterview = interviewState
+         if(interviewState === true){
+             notification = new NotificationModel({
+                user:application.user,
+                message:`Congratulations! You've been invited to an Interview For this Job: "${application.job.title}". Please contact the employer for more details.`,
+                title:"Invite For An Interview"
+            })
+         }else{
+             notification = new NotificationModel({
+                user:application.user,
+                message:`Sorry! Your Interview Invitation For this Job: "${application.job.title}" has been Canceled. Please contact the employer for more details.`,
+                title:"Interview Invitation Cancellation"
+            })
+         }
+        
+        
+        if(socketIo){
+            
+            socketIo.to(application.user.toString()).emit('notification',notification)
+        }else {
+            console.warn("SocketIO is not initialized!");
+        }
+
+        await application.save()
+        await notification.save()
+       
+        res.status(200).json({message:"Applicants Invited for Interview"})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+
+}
+
 
 
 
@@ -229,4 +338,4 @@ const modifyApplication =async(req,res)=>{
 
 
 module.exports = {addJob,editJob,deleteJob,modifyApplication,viewSingleApplication,viewJob,
-    getAllPostedJobs,viewJobApplications,jobSearch,jobSearchFilter,viewAllApplications,modifyJobStatus}
+    getAllPostedJobs,viewJobApplications,jobSearch,jobSearchFilter,viewAllApplications,modifyJobStatus,interviewController,setSocketInstance}
