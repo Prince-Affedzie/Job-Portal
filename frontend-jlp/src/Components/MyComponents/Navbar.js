@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes, FaUserCircle, FaBell } from "react-icons/fa";
 import "./Navbar.css";
+import { notificationContext } from '../../Context/NotificationContext';
+
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState([
-    "New job posted: React Developer",
-    "Interview request from Tech Innovations Inc.",
-    "Your application was viewed by a recruiter",
-  ]);
+  const {notifications,fetchNotifications} = useContext( notificationContext)
+  console.log(notifications)
+
   const [jobsDropdownOpen, setJobsDropdownOpen] = useState(false);
 
   return (
@@ -24,7 +24,7 @@ const Navbar = () => {
       <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
 
       <li>
-          <Link to="/mini_task/listings">Mini Tasks</Link>
+          <Link to="/mini_task/listings">Mini Jobs</Link>
           </li>
           <li>
           <Link to="/job/listings">Regular Jobs</Link>
@@ -51,13 +51,8 @@ const Navbar = () => {
           </ul>*/}
         </li>
         <li>
-          <Link to="/post/mini_task" onClick={() => setMenuOpen(false)}>
+          <Link  to="/post/mini_task" onClick={() => setMenuOpen(false)}>
             Post a Mini Task
-          </Link>
-        </li>
-        <li>
-          <Link to="/categories" onClick={() => setMenuOpen(false)}>
-            Categories
           </Link>
         </li>
       </ul>
@@ -65,19 +60,25 @@ const Navbar = () => {
       {/* Right: Notifications, Profile & Menu Toggle */}
       <div className="nav-icons">
         {/* Notification Bell */}
-        <div className="notification-container">
-          <FaBell className="notification-icon" onClick={() => setShowNotifications(!showNotifications)} />
-          {notifications.length > 0 && <span className="notification-badge">{notifications.length}</span>}
-          {showNotifications && (
-            <div className="notification-dropdown">
-              {notifications.length > 0 ? (
-                notifications.map((note, index) => <p key={index}>{note}</p>)
-              ) : (
-                <p>No new notifications</p>
-              )}
-            </div>
-          )}
-        </div>
+   <Link to="/view/all_notifications"  className="notification-container" onClick={() => setShowNotifications(!showNotifications)}>
+    <FaBell className="notification-icon" />
+    {notifications && notifications?.length > 0 && (
+      <span className="notification-badge">
+        {notifications.length}
+      </span>
+    )}
+   {/* {showNotifications && (
+      <div className="notification-dropdown">
+        {notifications && notifications.length > 0 ? 
+          notifications.slice(0,5).map((note) => (
+            <p key={note._id} className="notification-item">{note.message}</p>
+          )) 
+          : 
+          <p className="notification-item">No new notifications</p>
+        }
+      </div>
+    )} */}
+    </Link> 
 
         {/* User Profile */}
         <Link to={"/h1/dashboard"}>

@@ -4,8 +4,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../Styles/MiniTaskForm.css";
 import { postMiniTask } from "../APIS/API";
-import Navbar from "../Components/Navbar";
-import Footer from "../Components/Footer";
+import Navbar from "../Components/MyComponents/Navbar";
+import Footer from "../Components/MyComponents/Footer";
+import ProcessingOverlay from "../Components/MyComponents/ProcessingOverLay";
 
 const PostMiniTask = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const PostMiniTask = () => {
 
   const [skillInput, setSkillInput] = useState("");
   const [charCount, setCharCount] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const categories = {
     "Creative Tasks":["Graphic Design","Video Editing","Flyer Design","Poster Design","Logo Design","Voice Over"],
@@ -91,13 +93,14 @@ const PostMiniTask = () => {
     }
 
     try {
+       setIsProcessing(true)
       const response = await postMiniTask(formData);
 
       if (response.status === 200) {
         toast.success("Mini Task Posted Successfully");
         navigate("/job/listings");
       } else {
-        toast.error("Couldn't Post Mini Task");
+        toast.error(response.error || "Couldn't Post Mini Task");
       }
     } catch (error) {
       const errorMessage =
@@ -105,11 +108,14 @@ const PostMiniTask = () => {
         error.response?.data?.error ||
         "An unexpected error occurred. Please try again.";
       toast.error(errorMessage);
+    }finally{
+      setIsProcessing(false)
     }
   };
 
   return (
     <div>
+      <ToastContainer/>
       <Navbar/>
     <div className="post-task-container">
       <h2 className="post-task-title">Post a Mini Task</h2>
@@ -218,7 +224,7 @@ const PostMiniTask = () => {
         <label className="post-task-label">Skills Required <span className="hint">(Add at least one skill)</span></label>
         <div className="post-task-skills-input">
           <input type="text" value={skillInput} onChange={(e) => setSkillInput(e.target.value)} className="post-task-input" placeholder="E.g., Plumbing, Electrical Wiring..." />
-          <button type="button" onClick={handleAddSkill} className="post-task-button">Add</button>
+          <button type="button" onClick={handleAddSkill} className="post-task-button" >Add</button>
         </div>
         {/* Skills List */}
         <div className="post-task-skills-list">
@@ -231,10 +237,11 @@ const PostMiniTask = () => {
         </div>
 
         {/* Submit Button */}
-        <button type="submit" className="post-task-button">Post Task</button>
+        <button type="submit" className="post-task-button" disabled={isProcessing}>Post Task</button>
       </form>
     </div>
     <Footer/>
+     <ProcessingOverlay show={isProcessing} message="Submitting your MiniTask Posting..." />
     </div>
   );
 };

@@ -6,7 +6,7 @@ import ProfileCompletion from './UserPages/ProfileCompletion';
 import Login from './UserPages/LoginPage';
 import JobSeekerDashboard from './UserPages/JobSeekerDashboard';
 import JobListings from './UserPages/JobListings';
-import EmployerDashboard from './UserPages/EmployerDashboard';
+import EmployerDashboard from './EmployerPages/EmployerDashboard';
 import EmployerJobs from './EmployerPages/EmployerJobs';
 import Applicants from './EmployerPages/Applicants';
 import PostJobForm from './EmployerPages/JobPostingForm';
@@ -21,6 +21,19 @@ import ManageMiniTasks from './UserPages/ManageMiniTaskPage';
 import EditJob from './EmployerPages/EditJob';
 import ApplicantProfile from './EmployerPages/ApplicantProfile';
 import EmployerProfile from './EmployerPages/EmployerProfile';
+//import ChatModalPage from './UserPages/ChatModalPage';
+import FullChatPage from './UserPages/FullChatPage';
+import { ChatProvider } from './Context/ChatContext';
+import {NotificationProvider} from './Context/NotificationContext'
+import PrivateRoutes from './Utils/PrivateRoute';
+import NotificationsPage from './UserPages/NotificationPage';
+import EmployerNotificationsPage from './EmployerPages/EmployerNotificationPage';
+import JobApplicantsPage from './EmployerPages/JobApplicantsPage';
+import EmployerOnboarding from './EmployerPages/EmployerOnboarding';
+import MyMiniTaskApplications from './UserPages/UserAppliedMiniTask';
+import ApplicantsPage from './Components/MiniTaskManagementComponents/ApplicantsPage';
+
+
 
 function App() {
   return (
@@ -30,24 +43,95 @@ function App() {
       <Route path='/' element={<LandingPage/>}/>
       <Route path='/signup' element={<Signup/>}/>
       <Route path='/complete_profile' element = {<ProfileCompletion/>}/>
-      <Route path='/login' element={<Login/>}/>
-      <Route path='/h1/dashboard' element={<UserProvider><JobSeekerDashboard/></UserProvider>}/>
-      <Route path='/job/listings' element={<UserProvider><JobListings/></UserProvider>}/>
-      <Route path='/job/details/:id' element={<UserProvider><JobDetails/></UserProvider>}/>
-      <Route path='/post/mini_task' element={<PostMiniTask/>}/>
-      <Route path='/manage/mini_tasks' element={<ManageMiniTasks/>}/>
-      <Route path='/mini_task/listings' element={<MiniTaskPage/>}/>
-      <Route path='/view/applied/jobs'element={<UserProvider><ViewApplications/></UserProvider>}/>
+      <Route path='/login' element={<NotificationProvider><Login/></NotificationProvider>}/>
+      <Route path='/h1/dashboard' element={<UserProvider><ChatProvider><NotificationProvider><JobSeekerDashboard/></NotificationProvider></ChatProvider></UserProvider>}/>
+      <Route path='/job/listings' element={<UserProvider><NotificationProvider><JobListings/></NotificationProvider></UserProvider>}/>
+      <Route path='/job/details/:id' element={<UserProvider><NotificationProvider><JobDetails/></NotificationProvider></UserProvider>}/>
+      <Route path='/post/mini_task' element={<NotificationProvider><PostMiniTask/></NotificationProvider>}/>
+      <Route path='/manage/mini_tasks' element={<NotificationProvider><ManageMiniTasks/></NotificationProvider>}/>
+      <Route path='/mini_task/listings' element={<NotificationProvider><MiniTaskPage/></NotificationProvider>}/>
+      <Route path='/view/applied/jobs'element={<UserProvider><NotificationProvider><ViewApplications/></NotificationProvider></UserProvider>}/>
       <Route path='/user/modify/profile' element={<UserProvider><EditProfile/></UserProvider>}/>
+      <Route path="/chat/all_chats" element={<ChatProvider><FullChatPage/></ChatProvider>}/>
+      <Route path='/view/all_notifications' element={<NotificationProvider><NotificationsPage/></NotificationProvider>}/>
+      <Route path='/mini_task/applications' element={<UserProvider><NotificationProvider><MyMiniTaskApplications/></NotificationProvider></UserProvider>}/>
+      <Route
+        path="/manage-mini-tasks/:taskId/applicants"
+        element={<ApplicantsPage />}
+      />
+
+      <Route 
+         path='/employer/dashboard' 
+         element={
+         <UserProvider>
+         <JobsContextProvider>
+         <PrivateRoutes>
+          <NotificationProvider>
+          <EmployerDashboard />
+          </NotificationProvider>
+         </PrivateRoutes>
+        </JobsContextProvider>
+       </UserProvider>
+      }
+    />
+      <Route path='/employer/jobs' 
+      element={
+        <JobsContextProvider>
+        <PrivateRoutes>
+        <NotificationProvider>
+        <EmployerJobs/>
+        </NotificationProvider>
+        </PrivateRoutes>
+        </JobsContextProvider>
+      }/>
+
+      <Route path='/employer/applicants' element={ <PrivateRoutes><NotificationProvider><Applicants/> </NotificationProvider></PrivateRoutes>}/>
+
+      <Route path='/v1/post_job/form' element={
+         <PrivateRoutes>
+         <PostJobForm/>
+        </PrivateRoutes>
+         }/>
+
+      <Route path="/employer/edit_job/:Id" element={<NotificationProvider><EditJob/></NotificationProvider>}/>
+      <Route path='/employer/applicant-profile' element={<PrivateRoutes><NotificationProvider><ApplicantProfile/></NotificationProvider></PrivateRoutes>}/>
+      
+      
+      <Route 
+      path='/employer/profile'
+       element={
+         <UserProvider>
+           <PrivateRoutes>
+            <NotificationProvider>
+          <EmployerProfile/>
+          </NotificationProvider>
+          </PrivateRoutes>
+          </UserProvider>
+        }/>
+
+        <Route
+        path='/employer/notifications'
+        element={
+          <UserProvider>
+            <PrivateRoutes>
+              <NotificationProvider>
+                <EmployerNotificationsPage/>
+              </NotificationProvider>
+            </PrivateRoutes>
+          </UserProvider>
+        }
+        />
+      <Route
+        path='/employer/job/applicants/:Id'
+        element={<NotificationProvider><JobApplicantsPage/></NotificationProvider>}
+      />
+      <Route
+      path='/employer/onboarding'
+      element ={<EmployerOnboarding/>}
+
+      />
 
 
-      <Route path='/employer/dashboard' element={<UserProvider><JobsContextProvider><EmployerDashboard/></JobsContextProvider></UserProvider>}/>
-      <Route path='/employer/jobs' element={<JobsContextProvider><EmployerJobs/></JobsContextProvider>}/>
-      <Route path='/employer/applicants' element={<Applicants/>}/>
-      <Route path='/v1/post_job/form' element={<PostJobForm/>}/>
-      <Route path="/employer/edit_job/:Id" element={<EditJob/>}/>
-      <Route path='/employer/applicant-profile' element={<ApplicantProfile/>}/>
-      <Route path='/employer/profile' element={<UserProvider><EmployerProfile/></UserProvider>}/>
 
 
     </Routes>

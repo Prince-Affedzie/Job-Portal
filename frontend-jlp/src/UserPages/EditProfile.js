@@ -5,13 +5,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../Styles/EditProfile.css";
 import { modifyProfile } from "../APIS/API";
-import Navbar from "../Components/Navbar";
-import Footer from "../Components/Footer";
+import Navbar from "../Components/MyComponents/Navbar";
+import Footer from "../Components/MyComponents/Footer";
+import ProcessingOverlay from "../Components/MyComponents/ProcessingOverLay";
 
 const EditProfile = () => {
   const { user, setUser, fetchUserInfo, loading, setLoading } = useContext(userContext);
   const [editSection, setEditSection] = useState(null); // 'basic', 'skills', 'education', 'experience'
   const [previewImage, setPreviewImage] = useState(null);
+  const [isProcessing,setIsProcessing] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -120,6 +122,7 @@ const EditProfile = () => {
 
   const saveChanges = async () => {
     try {
+      setIsProcessing(true)
       const response = await modifyProfile(formData);
       if (response.status === 200) {
         toast.success("Profile Update Successful");
@@ -130,6 +133,8 @@ const EditProfile = () => {
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.";
       toast.error(errorMessage);
+    }finally{
+      setIsProcessing(false)
     }
   };
 
@@ -646,7 +651,7 @@ const EditProfile = () => {
                 <FaEdit onClick={() => setEditSection("experience")} className="emp-profile__edit-icon" />
               ) : (
                 <div className="emp-profile__action-icons">
-                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" />
+                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" disabled={isProcessing} />
                   <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
                 </div>
               )}
@@ -741,7 +746,7 @@ const EditProfile = () => {
           </div>
         </div>
       )}
-
+      <ProcessingOverlay show={isProcessing} message="Submitting your Changes..." />
       <Footer />
     </div>
   );

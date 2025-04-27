@@ -1,7 +1,7 @@
 import React from "react";
 import { FaTimes } from "react-icons/fa";
 import moment from "moment";
-import "../Styles/MiniTaskDetailsModal.css";
+import "../../Styles/MiniTaskDetailsModal.css";
 
 const MiniTaskDetailsModal = ({ task, onClose }) => {
   if (!task) return null; // Ensure the modal does not render without a task

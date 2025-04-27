@@ -43,16 +43,28 @@
 .applicants-table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
 }
 
-.applicants-table th,
+.applicants-table th{
+    background: #f8f9fa;
+  padding: 14px 20px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e9ecef;
+}
 .applicants-table td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+  
 }
 
 .applicants-table th {
@@ -61,34 +73,117 @@
 }
 
 /* Buttons */
-.view-btn {
-    color: #007bff;
-    text-decoration: none;
-}
-
 .action-buttons {
     display: flex;
-    gap: 5px;
-}
-
-.accept-btn, .reject-btn {
-    padding: 6px 12px;
-    border: none;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
     cursor: pointer;
-    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 110px;
+  }
+  
+  .btn svg {
+    margin-right: 6px;
+    font-size: 0.9rem;
+  }
+  
+  .info-btn {
+    background: linear-gradient(135deg, #6c7ae0, #5a6bff);
+    color: white;
+  }
+  
+  .info-btn:hover {
+    background: linear-gradient(135deg, #5a6bff, #4957d8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(90, 107, 255, 0.3);
+  }
+  
+  .accept-btn {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+  }
+  
+  .accept-btn:hover {
+    background: linear-gradient(135deg, #27ae60, #219653);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+  }
+  
+  .reject-btn {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+  }
+  
+  .reject-btn:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+  }
+  
+  .invite-btn {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+  }
+  
+  .invite-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #2471a3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+  }
+  
+  .withdraw-btn {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+  }
+  
+  .withdraw-btn:hover {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+  }
+  
+  .view-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
     border-radius: 4px;
-}
-
-.accept-btn {
-    background: #28a745;
-    color: white;
-}
-
-.reject-btn {
-    background: #dc3545;
-    color: white;
-}
-
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  
+  .view-btn:hover {
+    background: linear-gradient(135deg, #8e44ad, #7d3c98);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
+  }
+  
+  .btn.disabled {
+    background: #a0a0a0;
+    cursor: not-allowed;
+    opacity: 0.7;
+    box-shadow: none;
+  }
+  
+  .btn.disabled:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
 /* Responsive Design */
 @media (max-width: 1024px) {
     .applicants-content {
@@ -142,6 +237,22 @@
         padding: 8px;
     }
 }
+.invite-btn {
+    background-color: #f59e0b;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .invite-btn:hover {
+    background-color: #d97706;
+  }
+  
 
 .info-btn {
     background-color: #3498db;
@@ -154,5 +265,40 @@
   
   .info-btn:hover {
     background-color: #2980b9;
+  }
+  
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 1rem;
+  }
+  
+  .pagination-btn {
+    background-color: #4f46e5;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+  }
+  
+  .pagination-btn:hover:not(.disabled) {
+    background-color: #4338ca;
+  }
+  
+  .pagination-btn.disabled {
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  .pagination-info {
+    font-weight: 500;
+    color: #374151;
   }
   

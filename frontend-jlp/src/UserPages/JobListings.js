@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"; 
-import { FaSearch, FaFilter, FaClock, FaDollarSign, FaTimes } from "react-icons/fa";
+import { FaSearch, FaFilter, FaClock, FaDollarSign, FaTimes,FaMoneyBillWave,FaMapMarkerAlt  } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import "../Styles/JobListings.css";
-import Navbar from "../Components/Navbar";
-import Footer from "../Components/Footer";
+import Navbar from "../Components/MyComponents/Navbar";
+import Footer from "../Components/MyComponents/Footer";
 import { getJobs } from "../APIS/API"; // API function
 import moment from "moment";
 import debounce from "lodash.debounce"; // Optimize API calls
@@ -64,8 +64,10 @@ const JobListings = () => {
   );
 
   return (
+    <div>
+       <Navbar />
     <div className="job-listings-container">
-      <Navbar />
+     
 
       {/* Banner */}
       <div className="banner">
@@ -154,12 +156,22 @@ const JobListings = () => {
                     <span className="job-type">{job.type}</span>
                   </div>
                   <p className="company-name">{job.company}</p>
-                  <p className="job-description">{job.description.slice(0,200)+"..."}</p>
+                  <p className="job-listing-description">{job.description.slice(0,400)+"..."}</p>
+                  
                   <div className="job-meta">
-                    <span><FaDollarSign display={'hidden'} className="icon" /> ₵{job.salary} ({job.paymentStyle})</span>
+                    <span ><FaMapMarkerAlt /> {job.location.city || "N/A"}, {job.location.street || 'N/A'}</span>
+                    <span><FaMoneyBillWave  display={'hidden'} className="icon" /> ₵{job.salary} ({job.paymentStyle})</span>
                     <span><FaClock className="icon" /> {moment(job.createdAt).fromNow()}</span>
+                    
                   </div>
-                  <button className="apply-button">Apply Now</button>
+                  <div className="job-listings-job-tags">
+                  {job.jobTags?.map((tag)=>(
+                   
+                     <span className= "tag">{tag}</span>
+                    
+                    ))}
+                     </div>
+                 { /*<button className="apply-button">Apply Now</button>*/}
                 </Link>
               </div>
             ))
@@ -169,6 +181,7 @@ const JobListings = () => {
         </section>
       </div>
       <Footer />
+    </div>
     </div>
   );
 };

@@ -5,11 +5,15 @@ import { loginUser } from "../APIS/API";
 import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import RequestStatusIndicator from "../Components/MyComponents/RequestStatusIndicator";
+
 const Login = () => {
- 
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "", rememberMe: false });
   const [showPassword, setShowPassword] = useState(false);
+  const [status, setStatus] = useState('idle'); 
+  const [statusMessage, setStatusMessage] = useState('');
+  const {login} = useAuth()
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -18,30 +22,59 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Prevent multiple submissions while loading
+    if (status === 'loading') return;
+    
+    // Set loading state
+    setStatus('loading');
+    setStatusMessage('Logging you in...');
+    
     try {
+
       const response = await loginUser(formData);
-      if (response.status === 200) {
-        toast.success("Login Successful");
-        const {role} = response.data
-        if(role === "job_seeker"){
-          navigate("/job/listings");
-        }else{
-          navigate('/employer/dashboard')
-        }
-        
       
+      if (response.status === 200) {
+       
+        setStatus('success');
+        setStatusMessage('Login successful!');
+        
+        toast.success("Login Successful");
+        const {role} = response.data;
+        login(role)
+
+        
+        // Navigate after a slight delay to allow users to see the success state
+        setTimeout(() => {
+          if(role === "job_seeker"){
+            navigate("/job/listings");
+          } else {
+            navigate('/employer/dashboard');
+          }
+        }, 1000);
       } else {
+        // Set error state
+        setStatus('error');
+        setStatusMessage('Invalid email or password');
         toast.error("Invalid email or password");
       }
     } catch (error) {
+      // Set error state
+      setStatus('error');
       const errorMessage =
-                        error.response?.data?.message || // If the backend sends an error message in the 'message' field
-                        error.response?.data?.error || // If the backend sends an error in an 'error' field
-                        "An unexpected error occurred. Please try again.";
-                        console.log(errorMessage)
-                  
-                      toast.error(errorMessage);
+        error.response?.data?.message || 
+        error.response?.data?.error || 
+        "An unexpected error occurred. Please try again.";
+      
+      setStatusMessage(errorMessage);
+      toast.error(errorMessage);
     }
+  };
+  
+  // Reset status handler
+  const handleStatusReset = () => {
+    setStatus('idle');
+    setStatusMessage('');
   };
 
   return (
@@ -59,6 +92,7 @@ const Login = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded"
               required
+              disabled={status === 'loading'}
             />
           </div>
           <div>
@@ -71,11 +105,13 @@ const Login = () => {
                 onChange={handleChange}
                 className="w-full p-2 border rounded pr-10"
                 required
+                disabled={status === 'loading'}
               />
               <button
                 type="button"
                 className="absolute right-2 top-2 text-gray-600"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={status === 'loading'}
               >
                 {showPassword ? <AiFillEyeInvisible className="h-5 w-5" /> : <AiFillEye className="h-5 w-5" />}
               </button>
@@ -88,16 +124,42 @@ const Login = () => {
               checked={formData.rememberMe}
               onChange={handleChange}
               className="mr-2"
+              disabled={status === 'loading'}
             />
             <label>Remember Me</label>
           </div>
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-            Login
+          <button 
+            type="submit" 
+            className={`w-full ${
+              status === 'loading' 
+                ? 'bg-blue-400 cursor-not-allowed' 
+                : 'bg-blue-500 hover:bg-blue-600'
+            } text-white p-2 rounded flex justify-center items-center`}
+            disabled={status === 'loading'}
+          >
+            {status === 'loading' ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Logging in...
+              </>
+            ) : 'Login'}
           </button>
         </form>
         <p className="text-center mt-4">
           Don't have an account? <a href="/" className="text-blue-500">Register</a>
         </p>
+        
+        {/* Add the RequestStatusIndicator component */}
+        <RequestStatusIndicator 
+          status={status}
+          message={statusMessage}
+          hideAfter={3000}
+          onHide={handleStatusReset}
+          variant="toast" // You can change to "overlay" or "inline" based on preference
+        />
       </div>
     </div>
   );

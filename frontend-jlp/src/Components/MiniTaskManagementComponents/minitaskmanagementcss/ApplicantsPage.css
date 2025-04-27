@@ -1,0 +1,190 @@
+/* ApplicantsPage.css - Minimal and Clean Design */
+
+.applicants-page-container {
+  padding: 24px;
+  background-color: #f9fafb;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.applicants-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.applicants-page-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mini-list-item {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  transition: background 0.2s;
+}
+
+.mini-list-item:hover {
+  background-color: #f8fafc;
+}
+
+.applicant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.applicant-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.applicant-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #f1f5f9;
+}
+
+.applicant-header div {
+  flex: 1;
+  min-width: 150px;
+}
+
+.applicant-header strong {
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.applicant-location {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.verification-status {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.verified-badge,
+.not-verified-badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.verified-badge {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.not-verified-badge {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.view-details-btn {
+  background: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.view-details-btn:hover {
+  background: #2563eb;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skill-tag {
+  background-color: #f1f5f9;
+  color: #334155;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.pagination-btn {
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #2563eb;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.pagination-btn:disabled {
+  color: #cbd5e1;
+}
+
+.page-number {
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .applicants-page-container {
+    padding: 16px;
+  }
+  
+  .applicant-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+.assign-btn {
+  background: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+}
+
+.assign-btn:hover {
+  background: #2563eb;
+}
+.assign-button-wrapper {
+  margin-top: auto; /* push to the bottom */
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}

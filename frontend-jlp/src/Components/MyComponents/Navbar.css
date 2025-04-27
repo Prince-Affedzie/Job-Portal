@@ -14,6 +14,7 @@
 
 /* Logo */
 .logo {
+  font-family: Arial, sans-serif;
   font-size: 22px;
   font-weight: bold;
   text-decoration: none;
@@ -22,6 +23,7 @@
 
 /* Nav Links */
 .nav-links {
+  font-family: Arial, sans-serif;
   list-style: none;
   display: flex;
   gap: 20px;
@@ -120,56 +122,97 @@
 /* Notification Icon */
 .notification-container {
   position: relative;
+  display: inline-block;
   cursor: pointer;
+  z-index: 1000;
 }
 
 .notification-icon {
-  font-size: 22px;
-  color: white;
+  font-size: 1.5rem;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.notification-icon:hover {
+  color: #007bff;
 }
 
 .notification-badge {
   position: absolute;
   top: -5px;
   right: -5px;
-  background: red;
+  background-color: red;
   color: white;
-  font-size: 12px;
-  padding: 3px 6px;
+  font-size: 0.7rem;
+  padding: 2px 6px;
   border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  z-index: 10;
 }
 
-/* Notification Dropdown */
 .notification-dropdown {
   position: absolute;
-  top: 35px;
+  top: 120%;
   right: 0;
-  background: white;
-  color: black;
-  width: 220px;
-  border-radius: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border: 1px solid #ddd;
+  width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  border-radius: 6px;
   padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  transition: all 0.3s ease;
+  white-space: normal;
 }
 
-.notification-dropdown p {
-  margin: 0;
-  font-size: 14px;
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
+.notification-item {
+  padding: 8px 6px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.875rem;
+  color: #444;
+  text-align: left;
+  word-wrap: break-word;
 }
 
-.notification-dropdown p:last-child {
+.notification-item:last-child {
   border-bottom: none;
 }
 
-.notification-dropdown p:hover {
-  background: #f2f2f2;
+/* Responsive styles */
+@media (max-width: 768px) {
+  .notification-dropdown {
+    position: fixed;
+    width: 90vw;
+    max-width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    top: 60px; /* Adjust based on your header height */
+    max-height: 50vh;
+  }
+  
+  .notification-item {
+    font-size: 0.8rem;
+    padding: 10px 8px;
+  }
 }
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .notification-dropdown {
+    width: 95vw;
+    padding: 8px;
+  }
+}
+
 
 /* Mobile Menu Button */
 .menu-toggle {

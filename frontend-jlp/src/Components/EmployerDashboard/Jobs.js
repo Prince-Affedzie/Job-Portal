@@ -3,40 +3,8 @@ import "../../Styles/EmployerDashboard.css";
 import EmployerNavbar from "./EmployerNavbar";
 
 const JobsWithApplicants = () => {
-  const [jobs, setJobs] = useState([
-    {
-      "id": "job1",
-      "title": "Frontend Developer",
-      "postedDate": "2025-03-20"
-    },
-    {
-      "id": "job2",
-      "title": "Graphic Designer",
-      "postedDate": "2025-03-22"
-    }
-  ]
-  );
-  const [applicants, setApplicants] = useState([
-    {
-      "id": "app1",
-      "name": "Alice Johnson",
-      "status": "Pending",
-      "jobId": "job1"
-    },
-    {
-      "id": "app2",
-      "name": "Michael Smith",
-      "status": "Interviewed",
-      "jobId": "job1"
-    },
-    {
-      "id": "app3",
-      "name": "David Brown",
-      "status": "Shortlisted",
-      "jobId": "job2"
-    }
-  ]
-  );
+  const [jobs, setJobs] = useState([]);
+  const [applicants, setApplicants] = useState([]);
   const [expandedJobId, setExpandedJobId] = useState(null);
 
   // Fetch Jobs

@@ -1,15 +1,23 @@
 import { createContext,useEffect,useState } from "react";
 
 import { fetchUser } from "../APIS/API";
-import { getRecentApplications } from "../APIS/API";
+import { getRecentApplications,getYourAppliedMiniTasks,getNotifications } from "../APIS/API";
+
 
 export const userContext = createContext()
+
 
 export const UserProvider =({children})=>{
     
     const [user,setUser] = useState()
     const [loading,setLoading] =useState(false)
     const [recentApplications,setRecentApplications] =useState([])
+    const [minitasks,setMiniTasks] = useState([])
+    
+   
+    
+   
+    
 
     const fetchUserInfo =async()=>{
       if (user && Object.keys(user).length > 0) return;
@@ -50,13 +58,34 @@ export const UserProvider =({children})=>{
       }
     }
 
+    const fetchAppliedMiniTasks = async()=>{
+      try{
+
+        const response = await getYourAppliedMiniTasks()
+        if(response.status===200){
+          console.log(response.data)
+          setMiniTasks(response.data)
+        }else{
+          setMiniTasks([])
+        }
+
+      }catch(err){
+        console.log(err)
+        setMiniTasks([])
+      }
+
+    }
+
+    
     useEffect(()=>{
         fetchUserInfo()
         fetchRecentApplications()
+        fetchAppliedMiniTasks()
+        
     },[user])
 
     return(
-        <userContext.Provider value={{user,setUser,fetchUserInfo,fetchRecentApplications,recentApplications,loading, setLoading}}>
+        <userContext.Provider value={{user,setUser,fetchUserInfo,fetchRecentApplications,fetchAppliedMiniTasks,recentApplications,minitasks,loading, setLoading,}}>
              {children}
         </userContext.Provider>
     )

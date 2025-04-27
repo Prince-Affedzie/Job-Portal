@@ -1,23 +1,19 @@
-/* Container that shifts when panel opens */
-.manage-minitask-container {
-  transition: margin-left 0.3s ease;
-  position: relative;
-}
-
 /* Sliding panel */
 .edit-minitask-panel {
   position: fixed;
   top: 0;
   left: -100%;
-  width: 400px;
-  max-width: 100vw;
+  width: 420px;
+  max-width: 100%;
   height: 100%;
-  background-color: #fff;
-  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
-  padding: 1.5rem;
+  background-color: #ffffff;
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+  padding: 2rem 1.5rem;
   transition: left 0.3s ease;
   z-index: 1000;
   overflow-y: auto;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 /* Show panel */
@@ -25,83 +21,80 @@
   left: 0;
 }
 
-/* Shift main content on large screens */
-.manage-minitask-container.shifted {
-  margin-left: 400px;
-}
-
 /* Close (X) button */
 .edit-minitask-close-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   background: transparent;
   border: none;
-  font-size: 1.7rem;
+  font-size: 1.8rem;
   cursor: pointer;
+  color: #555;
 }
 
-/* Fixed Edit Button */
-.edit-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 1rem 2rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  z-index: 999;
+.edit-minitask-close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  padding: 0.2rem;
 }
 
-.edit-btn:hover {
-  background-color: #0056b3;
+/* Heading */
+.edit-minitask-panel h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #333;
 }
 
-/* Form styles */
+/* Form */
 form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
+/* Label */
 label {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
 }
 
-
+/* Inputs, Textarea, Selects */
 textarea,
-select {
-  padding: 0.8rem;
+select,
+.input {
+  padding: 0.85rem 1rem;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1rem;
-  width: 100%;
-  box-sizing: border-box;
-}
-.input{
-  padding: 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s, background-color 0.3s;
   width: 100%;
   box-sizing: border-box;
 }
 
 textarea[name="description"] {
-  min-height: 120px;
-  resize: vertical; /* allows user to resize if needed */
+  min-height: 140px;
+  resize: vertical;
 }
 
-/* Button group styles */
+/* Focus state */
+textarea:focus,
+select:focus,
+.input:focus {
+  border-color: #007bff;
+  background-color: #ffffff;
+  outline: none;
+}
+
+/* Buttons */
 form button[type="submit"],
 form button.edit-modal-close-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.85rem 1.5rem;
   font-size: 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -129,26 +122,17 @@ form button.edit-modal-close-btn:hover {
   .edit-minitask-panel {
     width: 100%;
     left: -100%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
 
   .edit-minitask-panel.show {
     left: 0;
   }
 
-  .manage-minitask-container.shifted {
-    margin-left: 0;
-  }
-
-  .edit-btn {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.9rem;
-    bottom: 15px;
-    right: 15px;
-  }
-
   form button[type="submit"],
   form button.edit-modal-close-btn {
-    font-size: 0.95rem;
-    padding: 0.65rem 1.25rem;
+    width: 100%;
+    font-size: 1rem;
   }
 }

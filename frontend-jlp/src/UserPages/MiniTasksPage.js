@@ -2,15 +2,19 @@ import { useState, useEffect } from "react";
 import { FaSearch, FaClock, FaFilter, FaTimes } from "react-icons/fa";
 import { getMiniTasks } from "../APIS/API";
 import "../Styles/MiniTaskPage.css";
-import Navbar from "../Components/Navbar";
-import Footer from "../Components/Footer";
+import Navbar from "../Components/MyComponents/Navbar";
+import Footer from "../Components/MyComponents/Footer";
 import moment from "moment";
 import debounce from "lodash.debounce"; 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SkeletonLoader from "../Components/SkeletonLoader";
-import MiniTaskDetailsModal from "../Components/MiniTaskDetailsModal";
+import SkeletonLoader from "../Components/MyComponents/SkeletonLoader";
+import MiniTaskDetailsModal from "../Components/MyComponents/MiniTaskDetailsModal";
 import { applyToMiniTask } from "../APIS/API";
+import RequestStatusIndicator from "../Components/MyComponents/RequestStatusIndicator";
+import LoadingButton from "../Components/MyComponents/LoadingButton";
+import { useRequestStatus } from "../hooks/useRequestStatus";
+import ProcessingOverlay from "../Components/MyComponents/ProcessingOverLay";
 
 const MiniTaskPage = () => {
   const [tasks, setTasks] = useState([]);
@@ -21,7 +25,9 @@ const MiniTaskPage = () => {
   const [selectedTask,setSelectedTask] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
-
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  
   const categoryOptions = {
     "Creative Tasks":["Graphic Design","Video Editing","Flyer Design","Poster Design","Logo Design","Voice Over"],
     "Delivery & Errands": ["Package Delivery", "Grocery Shopping", "Laundry","Line Waiting"],
@@ -65,22 +71,33 @@ const MiniTaskPage = () => {
 
    
   const applyToTask =async(Id)=>{
+    
+   
     try{
+       setIsProcessing(true);
        const response = await applyToMiniTask(Id)
        if(response.status ===200){
+       
         toast.success("Application Successful")
        }else{
+        
         toast.error("An Error Occured. Please try again Later")
        }
     }catch(error){
+      
        const errorMessage =
                  error.response?.data?.message ||
                 error.response?.data?.error ||
                  "An unexpected error occurred. Please try again.";
-                console.log(errorMessage);
+                
                   toast.error(errorMessage);
+                 
+    }finally{
+      setIsProcessing(false);
     }
   }
+
+  
 
   // Handle Search
   const handleSearch = (e) => {
@@ -102,13 +119,15 @@ const MiniTaskPage = () => {
     }, [selectedCategory,selectedSubCategory]);
 
   // Format time ago
-  const timeAgo = (deadline) => {
-    return deadline ? moment(deadline).fromNow() : "N/A";
+   const timeAgo = (deadline) => {
+     return deadline ? moment(deadline).fromNow() : "N/A";
   };
 
   return (
+    <div>
+        <Navbar />
     <div className="mini-task-container">
-      <Navbar />
+    
       <ToastContainer/>
 
       {/* Hero Section */}
@@ -185,7 +204,8 @@ const MiniTaskPage = () => {
                     <span className="mini-task-budget">₵{task.budget}</span>
                   </div>
                 </div>
-                <button className="mini-task-apply-btn" onClick={()=> applyToTask(task._id)}>Apply Now</button>
+                <button className="mini-task-apply-btn" onClick={()=> applyToTask(task._id)} disabled={isProcessing}>Apply Now
+                </button>
                
               </div>
             ))
@@ -198,6 +218,8 @@ const MiniTaskPage = () => {
       </div>
 
       <Footer />
+    </div>
+    <ProcessingOverlay show={isProcessing} message="Submitting your Application..." />
     </div>
   );
 };

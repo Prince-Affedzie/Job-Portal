@@ -1,4 +1,4 @@
-import "../Styles/SkeletonLoader.css";
+import "../../Styles/SkeletonLoader.css";
 
 const SkeletonLoader = () => {
   return (

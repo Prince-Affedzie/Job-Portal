@@ -14,7 +14,7 @@
     padding: 50px 20px;
     border-radius: 8px;
     margin-bottom: 20px;
-    margin-top: 10px;
+    margin-top: 5px;
   }
   
   .banner h1 {
@@ -159,9 +159,10 @@
     color: #555;
   }
   
-  .job-description {
+  .job-listing-description {
     font-size: 14px;
     color: #666;
+    background-color: #fff;
   }
   
   .job-meta {
@@ -245,11 +246,19 @@
   }
 
   /* Job Tags Styling */
-.job-tags {
+.job-listings-job-tags {
   margin-top: 10px;
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 8px; /* Space between tags */
+}
+
+.job-meta span{
+
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .tag {

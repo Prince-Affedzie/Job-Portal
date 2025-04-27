@@ -7,7 +7,7 @@ const AssignApplicantModal = ({task, applicants, onAssign, isOpen, onClose }) =>
 
   const handleAssign = () => {
     if (selected) {
-      onAssign(selected);
+      onAssign(selected.id,selected.name);
       onClose();
     }
   };
@@ -32,12 +32,15 @@ const AssignApplicantModal = ({task, applicants, onAssign, isOpen, onClose }) =>
         <label htmlFor="applicantSelect">Select an applicant:</label>
         <select
           id="applicantSelect"
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
+          //value={selected}
+          onChange={(e) => {
+            const value = JSON.parse(e.target.value);
+            setSelected(value); // selected will now be an object with id and name
+          }}
         >
           <option value="">-- Choose an applicant --</option>
           {applicants.map((user, i) => (
-            <option key={i} value={user._id}>
+            <option key={i} value={JSON.stringify({ id: user._id, name: user.name })}> 
               {user.name} {user.isVerified && "✔"}
             </option>
           ))}
@@ -51,7 +54,7 @@ const AssignApplicantModal = ({task, applicants, onAssign, isOpen, onClose }) =>
           >
             Assign
           </button>
-          <button onClick={onClose} className="cancel-btn">Cancel</button>
+          <button onClick={onClose} className="assign-applicants-cancel-btn">Cancel</button>
         </div>
       </div>
     </div>

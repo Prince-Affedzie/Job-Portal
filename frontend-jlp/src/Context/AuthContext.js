@@ -1,33 +1,37 @@
-import { createContext,useState,useContext } from "react";
+// src/Context/AuthContext.jsx
+import { createContext, useContext, useState, useEffect } from "react";
 
-export const AuthContext = createContext()
+const AuthContext = createContext();
 
-export const AuthProvider = ({children})=>{
-    const [token,setToken] = useState(null)
+export const AuthProvider = ({ children }) => {
+  const [role, setRole] = useState(() => {
+    return localStorage.getItem("role") || null;
+  });
+  
 
-    const login =(userToken)=>{
-        setToken(userToken)
-    }
-
-    const logout=()=>{
-        setToken(null)
-    }
-
-    const isAuthenticated = !!token
-
-    return(
-        <AuthContext.Provider value={{login,logout,isAuthenticated}}>
-            {children}
-
-        </AuthContext.Provider>
-    )
-}
-
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-      throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
+  const login = (userRole) => {
+    setRole(userRole);
+    localStorage.setItem("role", userRole); // persist across reloads
   };
 
+  const logout = () => {
+    setRole(null);
+    localStorage.removeItem("role");
+  };
+
+  useEffect(() => {
+    // Optional: Sync role with localStorage if needed
+    const storedRole = localStorage.getItem("role");
+    if (storedRole && !role) {
+      setRole(storedRole);
+    }
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ role, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);

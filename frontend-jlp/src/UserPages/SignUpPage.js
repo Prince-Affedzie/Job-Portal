@@ -34,7 +34,12 @@ const Signup = () => {
       if (response.status === 200) {
         toast.success("You signed up successfully!");
         const {role} = response.data
-        navigate("/complete_profile",role);
+        console.log(role)
+        if(role === "employer"){
+          navigate('/employer/onboarding')
+        }else{
+        navigate("/complete_profile",{state:{role}});
+        }
       } else {
         toast.error(response.message || "Oops! Couldn't Sign Up");
       }
@@ -131,8 +136,8 @@ const Signup = () => {
             <option value="" disabled>
               Select Role
             </option>
-            <option value="job_seeker">Job Seeker</option>
-            <option value="employer">Employer</option>
+            <option value="job_seeker">I'm Looking For Job</option>
+            <option value="employer">I want to employ Talents</option>
           </select>
           <button type="submit" className="bg-blue-500 text-white p-2 rounded">
             Sign Up

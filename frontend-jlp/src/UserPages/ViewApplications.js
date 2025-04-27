@@ -1,143 +1,314 @@
-import { useState, useEffect, useContext } from "react";
-import { FaSearch } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaSearch, FaBriefcase, FaBuilding, FaCalendarAlt, FaCheckCircle, FaClock } from "react-icons/fa";
 import moment from "moment";
 import "../Styles/ViewApplications.css";
-import { userContext } from "../Context/FetchUser";
-import Navbar from "../Components/Navbar";
+import Navbar from "../Components/MyComponents/Navbar";
 import { getRecentApplications } from "../APIS/API";
 
 const ViewApplications = () => {
-  const { recentApplications, fetchRecentApplications } = useContext(userContext);
+  const [applications, setApplications] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredApplications, setFilteredApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedApplication, setSelectedApplication] = useState(null); // Modal state
+  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [filter, setFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [applicationsPerPage] = useState(6);
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await getRecentApplications();
-        if (response.status === 200) {
-          setFilteredApplications(response.data);
-        } else {
-          setFilteredApplications([]);
-        }
-      } catch (err) {
-        console.log(err);
-        setFilteredApplications([]);
-      }
-      setLoading(false);
-    };
-
-    fetchData();
+    fetchApplications();
   }, []);
 
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
+  useEffect(() => {
+    filterAndSortApplications();
+  }, [searchQuery, filter, sortBy, applications]);
 
-    const filtered = recentApplications.filter((app) =>
-      app.job?.title.toLowerCase().includes(query)
-    );
+  const fetchApplications = async () => {
+    setLoading(true);
+    try {
+      const response = await getRecentApplications();
+      if (response.status === 200) {
+        setApplications(response.data);
+        setFilteredApplications(response.data);
+      } else {
+        setApplications([]);
+        setFilteredApplications([]);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterAndSortApplications = () => {
+    let filtered = [...applications];
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(app => 
+        app.job?.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.job?.company?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply status filter
+    if (filter !== "all") {
+      filtered = filtered.filter(app => app.status.toLowerCase() === filter);
+    }
+
+    // Apply sorting
+    if (sortBy === "newest") {
+      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortBy === "oldest") {
+      filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    } else if (sortBy === "alphabetical") {
+      filtered.sort((a, b) => {
+        const titleA = a.job?.title || "";
+        const titleB = b.job?.title || "";
+        return titleA.localeCompare(titleB);
+      });
+    }
 
     setFilteredApplications(filtered);
+    setCurrentPage(1);
   };
 
   // Get Status Badge Class
   const getStatusClass = (status) => {
     switch (status.toLowerCase()) {
-      case "pending":
-        return "status-badge status-pending";
-      case "accepted":
-        return "status-badge status-accepted";
-      case "rejected":
-        return "status-badge status-rejected";
-      default:
-        return "status-badge";
+      case "pending": return "status-badge status-pending";
+      case "accepted": return "status-badge status-accepted";
+      case "rejected": return "status-badge status-rejected";
+      default: return "status-badge";
     }
   };
 
+  // Pagination
+  const indexOfLastApplication = currentPage * applicationsPerPage;
+  const indexOfFirstApplication = indexOfLastApplication - applicationsPerPage;
+  const currentApplications = filteredApplications.slice(indexOfFirstApplication, indexOfLastApplication);
+  const totalPages = Math.ceil(filteredApplications.length / applicationsPerPage);
+
+  const renderTimeAgo = (date) => {
+    return moment(date).fromNow();
+  };
+
+  const toggleFilters = () => setIsFilterExpanded(!isFilterExpanded);
+
   return (
-    <div>
+    <div className="app-view-container">
       <Navbar />
       <div className="applications-container">
-        <h1>My Applications</h1>
+        <header className="app-header">
+          <h1>My Applications</h1>
+          <p className="app-subtitle">Track and manage your job applications</p>
+        </header>
 
-        {/* Search Bar */}
-        <div className="search-bar">
-          <FaSearch className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search applications..."
-            value={searchQuery}
-            onChange={handleSearch}
-          />
-        </div>
+        <div className="app-dashboard">
+          <div className="app-stats">
+            <div className="stat-card total">
+              <span className="stat-number">{applications.length}</span>
+              <span className="stat-label">Total</span>
+            </div>
+            <div className="stat-card pending">
+              <span className="stat-number">
+                {applications.filter(app => app.status.toLowerCase() === "pending").length}
+              </span>
+              <span className="stat-label">Pending</span>
+            </div>
+            <div className="stat-card accepted">
+              <span className="stat-number">
+                {applications.filter(app => app.status.toLowerCase() === "accepted").length}
+              </span>
+              <span className="stat-label">Accepted</span>
+            </div>
+            <div className="stat-card rejected">
+              <span className="stat-number">
+                {applications.filter(app => app.status.toLowerCase() === "rejected").length}
+              </span>
+              <span className="stat-label">Rejected</span>
+            </div>
+          </div>
 
-        {/* Show Loader While Fetching Data */}
-        {loading ? (
-               <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center">
-               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
-               <p className="text-lg font-medium text-gray-700">Fetching your Jobs Applications...</p>
-             </div>
-         ) : (
-          <div className="applications-list">
-            {filteredApplications.length > 0 ? (
-              filteredApplications.map((app) => (
-                <div key={app._id} className="application-card">
-                  <h3><strong>Title:</strong>{app.job?.title || "N/A"}</h3>
-                  <p><strong>Company:</strong> {app.job?.company || "N/A"}</p>
-                  <p><strong>Applied On:</strong> {moment(app.createdAt).format("MMMM DD, YYYY")}</p>
-                  <p><strong>Status:</strong> <span className={getStatusClass(app.status)}>{app.status}</span></p>
-                  <button className="view-details-btn" onClick={() => setSelectedApplication(app)}>
-                    View Details
+          <div className="app-controls">
+            <div className="search-bar">
+              <FaSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search by job title or company..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+            <button className="filter-toggle" onClick={toggleFilters}>
+              Filters {isFilterExpanded ? "▲" : "▼"}
+            </button>
+          </div>
+
+          {isFilterExpanded && (
+            <div className="advanced-filters">
+              <div className="filter-group">
+                <label>Status:</label>
+                <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="accepted">Accepted</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+              
+              <div className="filter-group">
+                <label>Sort by:</label>
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="alphabetical">Alphabetical</option>
+                </select>
+              </div>
+            </div>
+          )}
+
+          {loading ? (
+            <div className="applications-loader">
+              <div className="loader-spinner"></div>
+              <p>Fetching your applications...</p>
+            </div>
+          ) : (
+            <>
+              <div className="applications-list">
+                {currentApplications.length > 0 ? (
+                  currentApplications.map((app) => (
+                    <div key={app._id} className="application-card">
+                      <div className="card-header">
+                        <h3 className="app-title">
+                          <FaBriefcase className="app-icon" />
+                          {app.job?.title || "N/A"}
+                        </h3>
+                        
+                        <span className={getStatusClass(app.status)}>{app.status}</span>
+                      </div>
+                      
+                      <div className="app-info">
+                        <p>
+                          <FaBuilding className="info-icon" />
+                          <span>Company: {app.job?.company || "N/A"}</span>
+                        </p>
+                        <p>
+                          <FaBuilding className="info-icon" />
+                          <span>Company Email: {app.job.companyEmail || "N/A"}</span>
+                        </p>
+                        <p>
+                          <FaCalendarAlt className="info-icon" />
+                          <span>Applied {renderTimeAgo(app.createdAt)}</span>
+                        </p>
+                      </div>
+                      
+                      <div className="card-footer">
+                        <button 
+                          className="view-details-btn" 
+                          onClick={() => setSelectedApplication(app)}
+                        >
+                          View Details
+                        </button>
+                        <span className="application-date">
+                          <FaClock /> {moment(app.createdAt).format("MMM DD, YYYY")}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-applications">
+                    <img src="/images/no-applications.svg" alt="No applications found" className="no-data-image" />
+                    <h3>No Applications Found</h3>
+                    <p>Try adjusting your search filters or apply for new positions</p>
+                  </div>
+                )}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="pagination">
+                  <button 
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    className="view-app-page-btn prev-btn"
+                  >
+                    &laquo; Prev
+                  </button>
+                  
+                  <div className="page-info">
+                    Page {currentPage} of {totalPages}
+                  </div>
+                  
+                  <button
+                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                    disabled={currentPage === totalPages}
+                    className="view-app-page-btn next-btn"
+                  >
+                    Next &raquo;
                   </button>
                 </div>
-              ))
-            ) : (
-              <p>No applications found.</p>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Modal for Viewing Details */}
-      {selectedApplication && (
-     <div className="custom-modal-overlay">
-    <div className="custom-modal-content">
-      <button className="custom-close-btn" onClick={() => setSelectedApplication(null)}>&times;</button>
-      <h2 className="modal-job-title">{selectedApplication.job?.title || "N/A"}</h2>
-
-      <div className="modal-details">
-        <p><strong>Company:</strong> {selectedApplication.job?.company || "N/A"}</p>
-        <p><strong>Applied On:</strong> {moment(selectedApplication.createdAt).format("MMMM DD, YYYY")}</p>
-        <p><strong>Job Status:</strong> 
-          <span className={`badge badge-${selectedApplication.job?.status?.toLowerCase()}`}>
-            {selectedApplication.job?.status || "N/A"}
-          </span>
-        </p>
-        <p><strong>Application Status:</strong> 
-          <span className={`badge badge-${selectedApplication.status?.toLowerCase()}`}>
-            {selectedApplication.status}
-          </span>
-        </p>
-        <p><strong>Job Description:</strong></p>
-        <p className="job-description">{selectedApplication.job?.description || "No description available."}</p>
-
-        <p><strong>Interview Invitation:</strong>  
-          {selectedApplication.inviteForInterview ? (
-            <span className="badge badge-success">Invited for Interview 🎉</span>
-          ) : (
-            <span className="badge badge-danger">Not Invited Yet ❌</span>
+              )}
+            </>
           )}
-        </p>
+        </div>
       </div>
-    </div>
-  </div>
-)}
 
-
+      {selectedApplication && (
+        <div className="custom-modal-overlay" onClick={() => setSelectedApplication(null)}>
+          <div className="custom-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="custom-close-btn" onClick={() => setSelectedApplication(null)}>
+              &times;
+            </button>
+            
+            <div className={`modal-status-ribbon status-${selectedApplication.status.toLowerCase()}`}>
+              {selectedApplication.status}
+            </div>
+            
+            <h2 className="modal-job-title">{selectedApplication.job?.title || "N/A"}</h2>
+            <h3 className="modal-company">{selectedApplication.job?.company || "N/A"}</h3>
+            
+            <div className="modal-details">
+              <div className="modal-info-grid">
+                <div className="modal-info-item">
+                  <span className="info-label">Applied On</span>
+                  <span className="info-value">{moment(selectedApplication.createdAt).format("MMMM DD, YYYY")}</span>
+                </div>
+                
+                <div className="modal-info-item">
+                  <span className="info-label">Job Status</span>
+                  <span className={`badge badge-${selectedApplication.job?.status?.toLowerCase() || "pending"}`}>
+                    {selectedApplication.job?.status || "N/A"}
+                  </span>
+                </div>
+                
+                <div className="modal-info-item">
+                  <span className="info-label">Interview</span>
+                  {selectedApplication.inviteForInterview ? (
+                    <span className="badge badge-success">
+                      <FaCheckCircle /> Invited
+                    </span>
+                  ) : (
+                    <span className="badge badge-danger">Not Yet</span>
+                  )}
+                </div>
+              </div>
+              
+              <div className="modal-section">
+                <h4>Job Description</h4>
+                <p className="job-description">
+                  {selectedApplication.job?.description 
+                    ? `${selectedApplication.job.description.slice(0, 300)}${selectedApplication.job.description.length > 300 ? "..." : ""}`
+                    : "No description available."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
