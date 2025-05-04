@@ -1,13 +1,14 @@
 const {UserModel} = require("../Models/UserModel")
+const EmployerProfile = require('../Models/EmployerProfile')
 
 const verifyEligibility = async(req,res,next)=>{
     try{
 
         const {id,role} = req.user
-
-        const user = await UserModel.findById(id)
+       
+        const user = await EmployerProfile.findOne({userId:id})
         
-        if(!user || user.isVerified === false || user.businessVerified === false || role === 'job_seeker'){
+        if(!user || user.isVerified === false || role === 'job_seeker'){
             return res.status(403).json({message:"You are not Verified to Post Jobs. Please Verify Your Business Profile"})
         }
 

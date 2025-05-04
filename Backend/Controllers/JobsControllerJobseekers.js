@@ -3,7 +3,12 @@ const {ApplicationModel} = require("../Models/ApplicationModel")
 const {MiniTask} =require("../Models/MiniTaskModel")
 const { UserModel } = require('../Models/UserModel')
 const {NotificationModel} = require('../Models/NotificationModel')
+const  cloudinary =require('../Utils/Cloudinary')
 const io = require('../app')
+const { uploader } = cloudinary; 
+const streamifier = require('streamifier');
+
+
 
 let socketIO = null;
 
@@ -122,30 +127,69 @@ const applyToJob = async(req,res)=>{
         const hasAlreadyApplied = job.applicantsId.some(Id=>{
             return Id.equals(id)
         })
-        console.log(hasAlreadyApplied)
+        
         if(hasAlreadyApplied){
             return res.status(400).json({message:"You have already Applied to this job"})
         }
 
         const application = new ApplicationModel({
-           user:id,
-           job:Id,
-           coverLetter:coverLetter,
-           resume:resume,
-           reviewer:job.employerId
-        })
+            user:id,
+            job:Id,
+            coverLetter:coverLetter,
+            reviewer:job.employerId
+         })
+
+         if (req.file) {
+                  const uploadeResume = await new Promise((resolve, reject) => {
+                    const stream = uploader.upload_stream(
+                      {
+                        folder: 'resumes',
+                        resource_type: 'raw',
+                        public_id: req.file.originalname.split('.')[0], // removes extension
+                        format: req.file.originalname.split('.').pop(), // adds extension
+                        use_filename: true,
+                         unique_filename: false,
+                      },
+                      (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                      }
+                    );
+            
+                    streamifier.createReadStream(req.file.buffer).pipe(stream);
+                  });
+            
+                  
+                  application.resume = uploadeResume.secure_url;
+                }
+
+        
         
          await UserModel.findOneAndUpdate(
             {'_id':id},
             { $push: { appliedJobs: Id } }, 
-            { new: true } // Returns the updated document
+            { new: true } 
         )
         
         
         job.noOfApplicants = job.noOfApplicants + 1
         job.applicantsId.push(id)
+
+        const notification = new NotificationModel({
+            user:job.employerId,
+            message:` New Pending Application Received for your job posting "${job.title}".`,
+            title:"New Job Application"
+
+        })
+        if (socketIO) {
+            socketIO.to(job.employerId.toString()).emit('notification', notification);
+            console.log(`Notification sent to ${job.employerId}`);
+        } else {
+            console.warn("SocketIO is not initialized!");
+        }
         await application.save()
         await job.save()
+        await notification.save()
         res.status(200).json({message:"Job Application Successful"})
              
       
@@ -233,7 +277,7 @@ const assignMiniTask =async(req,res)=>{
 
         })
         if (socketIO) {
-            socketIO.to(applicantId).emit('notification', notification);
+            socketIO.to(applicantId.toString()).emit('notification', notification);
             console.log(`Notification sent to ${applicantId}`);
         } else {
             console.warn("SocketIO is not initialized!");
@@ -395,8 +439,22 @@ const yourAppliedMiniTasks = async(req,res)=>{
         res.status(500).json({message:"Internal Server Error"})
     }
 }
+const viewMiniTaskInfo = async(req,res)=>{
+    try{
+        const {Id} = req.params
+        const task = await MiniTask.findById(Id).populate('employer','name phone')
+        if(!task){
+            return res.status(400).json({message: 'Task not Found'})
+        }
+        res.status(200).json(task)
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+}
 
 
 module.exports = {viewJob,viewAllApplications,viewApplication,applyToJob,jobSearch,
     jobSearchFilter,allJobs,postMiniTask,assignMiniTask,getMiniTasks,applyToMiniTask,
-    getRecentJobApplications,getCreatedMiniTasks,editMiniTask,deleteMiniTask,yourAppliedMiniTasks,setSocketIO}
+    getRecentJobApplications,getCreatedMiniTasks,editMiniTask,deleteMiniTask,yourAppliedMiniTasks,setSocketIO,viewMiniTaskInfo}

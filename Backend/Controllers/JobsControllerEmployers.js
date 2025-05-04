@@ -1,11 +1,46 @@
 const { ApplicationModel } = require("../Models/ApplicationModel")
 const {JobModel} = require("../Models/JobsModel")
 const {NotificationModel} = require("../Models/NotificationModel")
+const { UserModel } = require("../Models/UserModel")
+const EmployerProfile = require( "../Models/EmployerProfile")
+const {Interview} = require('../Models/InterviewModel')
+const {sendInterviewInviteEmail} = require('../Utils/NodemailerConfig')
+
 
 let socketIo =null
 
 function setSocketInstance(ioInstance){
     socketIo = ioInstance
+}
+
+
+const employerSignUp =async(req,res)=>{
+    const {id} = req.user
+    try{
+
+        
+        const {companyName, companyEmail,companyLine, companyLocation, companyWebsite,businessDocs} = req.body
+        const user = await UserModel.findById(id)
+        if(!user){
+            return res.status(400).json({message: "No User found"})
+        }
+        const profile = new EmployerProfile({
+            userId : user._id,
+            companyName,
+            companyEmail,
+            companyLine,
+            companyLocation,
+            companyWebsite,
+            businessDocs
+            
+        })
+        await profile.save()
+        res.status(200).json({message: 'Employer Profile Successfully Created'})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server error"})
+    }
 }
 
 const addJob = async(req,res)=>{
@@ -15,6 +50,13 @@ const addJob = async(req,res)=>{
         const {title,description,category,jobType,industry,deliveryMode,company, companyEmail,
             location,paymentStyle, salary,skillsRequired,experienceLevel,responsibilities, deadLine,tags} = req.body
             console.log(req.body)
+
+        const employerprofile = await EmployerProfile.findOne({userId:id})
+        if(!employerprofile){
+           return res.status(400).json({message:"Employer Profile not Found"})
+        }
+        
+
         const job = new JobModel({
             title:title,
             description: description,
@@ -30,6 +72,7 @@ const addJob = async(req,res)=>{
             responsibilities:responsibilities,
             deadLine:deadLine,
             employerId:id,
+            employerProfileId:employerprofile._id,
             company:company,
             companyEmail:companyEmail,
             jobTags:tags
@@ -331,6 +374,85 @@ const interviewController = async(req,res)=>{
 
 }
 
+const createInterviewInvite = async(req,res)=>{
+    try{
+        const {id} = req.user
+        console.log(req.body)
+        const {invitationsTo,interviewDate,interviewTime,location,jobId} = req.body
+        const employer = await EmployerProfile.findOne({userId:id})
+        const job  = await JobModel.findById(jobId)
+        if(!employer || !job){
+            return res.status(400).json({message:"Employer Profile or Job Not Found"})
+        }
+        let invitedApplicants = await Promise.all(
+            invitationsTo.map((id)=>UserModel.findById(id))
+        )
+       
+        console.log(invitedApplicants)
+        
+        let invitedApplicantsEmail = invitedApplicants
+            .filter(app =>app && app.email)
+            .map(app=>app.email)
+        
+        const interview = new Interview({
+            invitedBy : employer._id,
+            invitationsTo:invitationsTo,
+            interviewDate: interviewDate,
+            interviewTime:interviewTime,
+            location:location,
+            job :jobId
+        })
+       
+        await interview.save()
+        if(invitedApplicantsEmail.length === 0){
+            return res.status(400).json({message:"Applicants List can't be empty"})
+        }
+        let message = `
+           Dear Applicant,
+
+            Congratulations! ${employer.companyName} has invited you to an interview for the position of "${job.title}" that you applied for.
+
+            Please find the interview details below:
+
+             -Date: ${new Date(interview.interviewDate).toDateString()}
+             -Time: ${interview.interviewTime}
+             -Location: ${interview.location}
+
+             We wish you the very best in your interview.
+
+            Kind regards,  
+            ${employer.companyName} Recruitment Team
+           `;
+        
+        sendInterviewInviteEmail(employer,invitedApplicantsEmail,message)
+
+        for await (const app of  invitedApplicants) {
+            notification = new NotificationModel({
+                user:app._id,
+                message:`Congratulations! You've been invited to an Interview For this Job: "${job.title}". Please check  your email for more details or contact the employer.`,
+                title:"Invite For An Interview"
+            })
+
+            if(socketIo){
+            
+                socketIo.to(app._id.toString()).emit('notification',notification)
+            }else {
+                console.warn("SocketIO is not initialized!");
+            }
+
+            await notification.save()
+    
+        }
+        res.status(200).json({message:'Invitation Message sent'})
+        
+
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
 
 
 
@@ -338,4 +460,5 @@ const interviewController = async(req,res)=>{
 
 
 module.exports = {addJob,editJob,deleteJob,modifyApplication,viewSingleApplication,viewJob,
-    getAllPostedJobs,viewJobApplications,jobSearch,jobSearchFilter,viewAllApplications,modifyJobStatus,interviewController,setSocketInstance}
+    getAllPostedJobs,viewJobApplications,jobSearch,jobSearchFilter,viewAllApplications,modifyJobStatus,
+    interviewController,setSocketInstance,employerSignUp,createInterviewInvite}

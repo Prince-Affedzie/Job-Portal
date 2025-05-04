@@ -10,6 +10,7 @@ const {JobModel} = require('./Models/JobsModel')
 
 const {userRouter} = require("./Routes/UserRoutes")
 const {employerRoute} = require("./Routes/EmpoyerRoutes")
+const {adminRouter} = require('./Routes/AdminRoute')
 const {seekRouter} = require("./Routes/JobSeekerRoutes")
 const {authenticateSocket} = require('./MiddleWare/VerifyToken')
 const jobController = require('./Controllers/JobsControllerJobseekers')
@@ -35,6 +36,7 @@ const server = http.createServer(app)
 app.use("/api",userRouter)
 app.use("/api",employerRoute)
 app.use("/api",seekRouter)
+app.use("/api",adminRouter)
 
 mongoose.connect(process.env.DB_URL)
        .then(()=>{

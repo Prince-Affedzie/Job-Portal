@@ -1,41 +1,14 @@
-const multer = require("multer")
-const path = require("path")
+// middleware/multer.js
+const multer = require('multer');
 
-const storage = multer.diskStorage({
-    destination:(req,file,cb)=>{
-        if(file.fieldname === "profile_image"){
-            cb(null, "../Backend/Uploads/profile_images")
-
-        }
-        else if(file.fieldname === "resume"){
-          cb(null,"../Backend/Uploads/resumes")
-        }
-    },
-    filename:(req,file,cb)=>{
-        cb(null,`${file.fieldname}-${Date.now()}-${path.extname(file.originalname)}`)
-    }
-
-})
-
-const fileFilter = (req, file, cb) => {
-  const fileTypes = /\.(pdf|doc|docx|jpeg|jpg|png)$/i;
-  const mimeTypes = /^(application\/pdf|application\/msword|application\/vnd.openxmlformats-officedocument.wordprocessingml.document|image\/jpeg|image\/jpg|image\/png)$/i;
-
-    
-    const extname = fileTypes.test(path.extname(file.originalname));
-    const mimetype = mimeTypes.test(file.mimetype);
-    
-    if (extname && mimetype) {
-      return cb(null, true);
-    } else {
-      return cb('Error: Images Only');
-    }
-  };
+// Store files in memory (so we can stream to Cloudinary)
+const storage = multer.memoryStorage();
 
 const upload = multer({
-    storage:storage,
-    fileFilter:fileFilter,
-     limits : {fieldSize:1000000}
-})
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB file size limit
+  },
+});
 
-module.exports ={upload}
+module.exports = {upload};

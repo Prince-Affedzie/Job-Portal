@@ -62,7 +62,7 @@ const userSchema = new Schema({
     appliedJobs:[
         {
         type:mongoose.Schema.Types.ObjectId,
-        ref:"jobs"
+        ref:"JOb"
     }],
     profileCompleted: {
         type: Boolean,

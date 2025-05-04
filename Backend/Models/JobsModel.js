@@ -13,7 +13,7 @@ const jobSchema = new schema({
     category:{
         type :String,
        
-        enum: ["Administration",'Banking',,'Development','Marketing','Software Development','Administrative Assistance','Sales',
+        enum: ["Administration",'Banking','Development','Marketing','Software Development','Administrative Assistance','Sales',
             'Accounting','Information Technology','Health','Education','Design','Engineering','Human Resources','Project Management','Customer Service',
              'Agriculture','Tourism and Hospitality','Consulting','Finance','Non-profit and NGO','Legal','Manufacturing','Logistics and Supply Chain',
              'others'
@@ -48,10 +48,14 @@ const jobSchema = new schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     },
+    employerProfileId:{
+           type: mongoose.Schema.Types.ObjectId,
+           ref:'EmployerProfile'
+    },
     paymentStyle:{
         type: String,
         required:true,
-        enum:['Fixed','Range','Negotiable','hourly','Monthly']
+        enum:['Fixed','Range','Negotiable','Hourly','Monthly']
     },
     salary:{
         type: String,
