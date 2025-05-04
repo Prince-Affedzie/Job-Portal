@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaSearch, FaClock, FaFilter, FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { getMiniTasks } from "../APIS/API";
 import "../Styles/MiniTaskPage.css";
 import Navbar from "../Components/MyComponents/Navbar";
@@ -15,8 +16,10 @@ import RequestStatusIndicator from "../Components/MyComponents/RequestStatusIndi
 import LoadingButton from "../Components/MyComponents/LoadingButton";
 import { useRequestStatus } from "../hooks/useRequestStatus";
 import ProcessingOverlay from "../Components/MyComponents/ProcessingOverLay";
+import Pagination from "../Components/MyComponents/Pagination";
 
 const MiniTaskPage = () => {
+  const navigate = useNavigate()
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,6 +29,17 @@ const MiniTaskPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const tasksPerPage = 30;
+  const [currentPage, setCurrentPage] = useState(1);
+
+
+  const totalPages = Math.ceil(tasks.length / tasksPerPage);
+
+  const indexOfLastTask = currentPage * tasksPerPage;
+  const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+  const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
+
+  
   
   
   const categoryOptions = {
@@ -72,9 +86,9 @@ const MiniTaskPage = () => {
    
   const applyToTask =async(Id)=>{
     
-   
+    setIsProcessing(true);
     try{
-       setIsProcessing(true);
+       
        const response = await applyToMiniTask(Id)
        if(response.status ===200){
        
@@ -124,9 +138,10 @@ const MiniTaskPage = () => {
   };
 
   return (
-    <div>
+    <div  className="mini-task-list-page">
         <Navbar />
-    <div className="mini-task-container">
+        <ProcessingOverlay show={isProcessing} message="Submitting your Application..." />
+    <div className="mini-task-list-container">
     
       <ToastContainer/>
 
@@ -136,6 +151,32 @@ const MiniTaskPage = () => {
         <p>Browse through short-term gigs and apply for tasks that match your skills.</p>
         <button className="mini-task-browse-btn">Browse Tasks</button>
       </div>
+
+      {/* Category Cards Section */}
+    {/* Category Cards Section */}
+ <div className="mini-task-category-cards">
+  <div
+    className={`mini-task-category-card ${selectedCategory === "" ? "active" : ""}`}
+    onClick={() => {
+      setSelectedCategory("");
+      setSelectedSubCategory("");
+    }}
+  >
+    All
+  </div>
+  {Object.keys(categoryOptions).map((category) => (
+    <div
+      key={category}
+      className={`mini-task-category-card ${selectedCategory === category ? "active" : ""}`}
+      onClick={() => {
+        setSelectedCategory(category);
+        setSelectedSubCategory("");
+      }}
+    >
+      {category}
+    </div>
+  ))}
+  </div>
 
       {/* Header */}
       <header className="mini-task-header">
@@ -152,7 +193,7 @@ const MiniTaskPage = () => {
           className="mini-task-filter-toggle"
           onClick={() => setShowFilters(!showFilters)}
         >
-          <FaFilter className="mini-task-icon" /> Filters
+          <FaFilter className="mini-task-icon" /> Click To Apply Filters
         </button>
       </header>
 
@@ -186,40 +227,63 @@ const MiniTaskPage = () => {
            ))}
        </select>
         )}
-          <select><option>All Types</option><option>Remote</option></select>
+          <select><option>All Types</option>
+          <option value= 'remote'>Remote</option>
+          <option value='on-site'>On-site</option>
+          </select>
         </aside>
 
         {/* Task Listings */}
         <section className="mini-task-list">
           {loading ? 
             Array(6).fill(0).map((_, index) => <SkeletonLoader key={index} />
-          ) : (
-            filteredTasks.map((task) => (
+          ) : tasks.length > 0 ?(
+            currentTasks.map((task) => (
               <div key={task.id} className="mini-task-card">
                 <div className="mini-task-details" onClick={() => setSelectedTask(task)}>
                   <h3 className="mini-task-title">{task.title}</h3>
-                  <p className="mini-task-description">{task.description}</p>
+                  <p className="mini-task-description">{task.description.slice(0,120)+"..."}</p>
                   <div className="mini-task-meta">
                     <FaClock /> {timeAgo(task.deadline)} | 
                     <span className="mini-task-budget">₵{task.budget}</span>
                   </div>
                 </div>
-                <button className="mini-task-apply-btn" onClick={()=> applyToTask(task._id)} disabled={isProcessing}>Apply Now
+
+                <button
+                    className="mini-task-view-btn"
+                    onClick={() => navigate(`/view/mini_task/info/${task._id}`)}
+                  >
+                    View Details
+                  </button>
+               
+                <button className="mini-task-apply-btn" onClick={()=> applyToTask(task._id)} disabled={isProcessing}>
+                  Apply Now
                 </button>
+               
+                
+                
                
               </div>
             ))
+          ):(
+            <p>No Tasks match your criteria.</p>
           )}
           {selectedTask && (
             <MiniTaskDetailsModal task={selectedTask} onClose={() => setSelectedTask(null)} />
           )}
           
         </section>
+        
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
 
       <Footer />
     </div>
-    <ProcessingOverlay show={isProcessing} message="Submitting your Application..." />
+   
     </div>
   );
 };

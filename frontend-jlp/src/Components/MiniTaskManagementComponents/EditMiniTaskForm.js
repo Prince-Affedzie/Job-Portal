@@ -44,11 +44,11 @@ const EditMiniTaskForm = ({ task, onUpdate, onClose, isOpen }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData || !formData._id) {
-      console.error("❌ formData or _id is missing:", formData);
+      console.error(" formData or _id is missing:", formData);
       return;
     }
 
-    console.log("✅ Sending update:", formData);
+    console.log(" Sending update:", formData);
     onUpdate(formData);
     onClose(); // Close the panel after updating
   };

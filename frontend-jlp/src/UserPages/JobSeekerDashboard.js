@@ -67,7 +67,7 @@ const JobSeekerDashboard = () => {
               <div className="relative">
                 {user?.profileImage ? (
                   <img
-                    src={`http://localhost:5000/Uploads/profile_images/${user.profileImage}`}
+                    src={user.profileImage}
                     alt="Profile"
                     className="w-16 h-16 rounded-full border-2 border-white"
                   />
@@ -292,7 +292,7 @@ const JobSeekerDashboard = () => {
                               <p className="text-xs text-gray-600 mt-2">By {task.employer.name}</p>
                               <p className="text-xs text-gray-600 mt-2">Employer Phone: {task.employer.phone}</p>
                               <div className="mt-3">
-                                <button className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 px-3 rounded">
+                                <button onClick={()=>navigate(`/view/mini_task/info/${task._id}`)} className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 px-3 rounded">
                                   View Details
                                 </button>
                               </div>
@@ -410,9 +410,9 @@ const JobSeekerDashboard = () => {
                             ? "Assigned to You" 
                          : "Assigned to Someone Else"}
                         </span>                             
-                          {/* <button className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 px-3 rounded">
+                          { <button onClick={()=>navigate(`/view/mini_task/info/${task._id}`)} className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 px-3 rounded">
                                 View Details
-                              </button> */}
+                              </button> }
                             </div>
                           </div>
                         ))}

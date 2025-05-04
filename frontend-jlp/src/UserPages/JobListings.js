@@ -7,11 +7,27 @@ import Footer from "../Components/MyComponents/Footer";
 import { getJobs } from "../APIS/API"; // API function
 import moment from "moment";
 import debounce from "lodash.debounce"; // Optimize API calls
+import Pagination from "../Components/MyComponents/Pagination";
 
 const JobListings = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  
+const categories = ["Administration",'Banking','Development','Marketing','Software Development','Administrative Assistance','Sales',
+  'Accounting','Information Technology','Health','Education','Design','Engineering','Human Resources','Project Management','Customer Service',
+   'Agriculture','Tourism and Hospitality','Consulting','Finance','Non-profit and NGO','Legal','Manufacturing','Logistics and Supply Chain',
+   'others'
+]
+  const tasksPerPage = 30;
+    const [currentPage, setCurrentPage] = useState(1);
+  
+  
+    const totalPages = Math.ceil(jobs.length / tasksPerPage);
+  
+    const indexOfLastTask = currentPage * tasksPerPage;
+    const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+    const currentJobs = jobs.slice(indexOfFirstTask, indexOfLastTask);
   
   // Filters
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,6 +60,8 @@ const JobListings = () => {
       setLoading(false);
     }
   };
+
+
 
   // Debounced function to optimize API calls
   const debouncedFetchJobs = debounce(fetchJobs, 500);
@@ -86,8 +104,29 @@ const JobListings = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+
+        <div className ="category-scroll-wrapper">
+        <div className="category-scroll-bar">
+        <button 
+        className={selectedCategory === "All Categories" ? "active" : ""}
+        onClick={() => setSelectedCategory("All Categories")}
+         >
+         All
+        </button>
+               {categories.map((category) => (
+              <button 
+              key={category} 
+            className={selectedCategory === category ? "active" : ""}
+                onClick={() => setSelectedCategory(category)}
+              >
+         {category}
+           </button>
+        ))}
+          </div>
+        </div>
+
         <button className="filter-toggle-btn" onClick={() => setShowFilters(!showFilters)}>
-          <FaFilter className="icon" /> Filters
+          <FaFilter className="icon" />Click To Apply Filters
         </button>
       </header>
 
@@ -132,6 +171,9 @@ const JobListings = () => {
           />
         </aside>
 
+       
+
+
         {/* Job Listings */}
         <section className="job-listings">
           {loading ? (
@@ -148,7 +190,7 @@ const JobListings = () => {
               ))}
             </>
           )  : jobs.length > 0 ? (
-            jobs.map((job) => (
+            currentJobs.map((job) => (
               <div key={job._id} className="job-card">
                 <Link to={`/job/details/${job._id}`}>
                   <div className="job-header">
@@ -180,6 +222,11 @@ const JobListings = () => {
           )}
         </section>
       </div>
+      <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
       <Footer />
     </div>
     </div>

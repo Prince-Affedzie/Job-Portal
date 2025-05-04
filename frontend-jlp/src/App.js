@@ -1,5 +1,6 @@
 import './App.css';
 import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
+import RouteProtection from './Utils/checkIfLoggedIn';
 import LandingPage from './UserPages/LandingPage';
 import Signup from './UserPages/SignUpPage';
 import ProfileCompletion from './UserPages/ProfileCompletion';
@@ -32,7 +33,20 @@ import JobApplicantsPage from './EmployerPages/JobApplicantsPage';
 import EmployerOnboarding from './EmployerPages/EmployerOnboarding';
 import MyMiniTaskApplications from './UserPages/UserAppliedMiniTask';
 import ApplicantsPage from './Components/MiniTaskManagementComponents/ApplicantsPage';
+import MiniTaskInfo from './UserPages/MiniTaskInfo';
+import { AdminProvider } from './Context/AdminContext';
 
+
+import AdminDashboard from './AdminPages/AdminDashboard';
+import AdminUserManagement  from './AdminPages/UsersManagement';
+import AdminUserDetails from './AdminPages/UserInfo';
+import AdminEditUserPage from './AdminPages/AdminEditUser';
+import AdminJobManagementDashboard from './AdminPages/AdminJobManagement';
+import JobDetailsAdminView from './AdminPages/JobInfo';
+import ViewApplicantsAdmin from './AdminPages/AdminViewJobApplicants';
+import AdminEditJob from './AdminPages/AdminEditJob';
+import AdminEmployerList from './AdminPages/AdminViewEmployerProfiles';
+import AdminEmployerDetail from './AdminPages/AdminViewEmployerProfileDetails';
 
 
 function App() {
@@ -42,7 +56,7 @@ function App() {
 
       <Route path='/' element={<LandingPage/>}/>
       <Route path='/signup' element={<Signup/>}/>
-      <Route path='/complete_profile' element = {<ProfileCompletion/>}/>
+      <Route path='/complete_profile' element = {<RouteProtection><ProfileCompletion/></RouteProtection>}/>
       <Route path='/login' element={<NotificationProvider><Login/></NotificationProvider>}/>
       <Route path='/h1/dashboard' element={<UserProvider><ChatProvider><NotificationProvider><JobSeekerDashboard/></NotificationProvider></ChatProvider></UserProvider>}/>
       <Route path='/job/listings' element={<UserProvider><NotificationProvider><JobListings/></NotificationProvider></UserProvider>}/>
@@ -51,7 +65,7 @@ function App() {
       <Route path='/manage/mini_tasks' element={<NotificationProvider><ManageMiniTasks/></NotificationProvider>}/>
       <Route path='/mini_task/listings' element={<NotificationProvider><MiniTaskPage/></NotificationProvider>}/>
       <Route path='/view/applied/jobs'element={<UserProvider><NotificationProvider><ViewApplications/></NotificationProvider></UserProvider>}/>
-      <Route path='/user/modify/profile' element={<UserProvider><EditProfile/></UserProvider>}/>
+      <Route path='/user/modify/profile' element={<UserProvider><NotificationProvider><EditProfile/></NotificationProvider></UserProvider>}/>
       <Route path="/chat/all_chats" element={<ChatProvider><FullChatPage/></ChatProvider>}/>
       <Route path='/view/all_notifications' element={<NotificationProvider><NotificationsPage/></NotificationProvider>}/>
       <Route path='/mini_task/applications' element={<UserProvider><NotificationProvider><MyMiniTaskApplications/></NotificationProvider></UserProvider>}/>
@@ -59,6 +73,10 @@ function App() {
         path="/manage-mini-tasks/:taskId/applicants"
         element={<ApplicantsPage />}
       />
+      <Route path='/view/mini_task/info/:Id' element={<UserProvider><NotificationProvider><MiniTaskInfo/></NotificationProvider></UserProvider>}/>
+
+
+
 
       <Route 
          path='/employer/dashboard' 
@@ -128,8 +146,19 @@ function App() {
       <Route
       path='/employer/onboarding'
       element ={<EmployerOnboarding/>}
-
       />
+
+      <Route path='/admin/dashboard' element={<AdminProvider><AdminDashboard/></AdminProvider>}/>
+      <Route path='/admin/usermanagement' element={<AdminProvider><AdminUserManagement/></AdminProvider>}/>
+      <Route path='/admin/get/user_info/:Id' element={<AdminProvider><AdminUserDetails/></AdminProvider>}/>
+      <Route path='/admin/edit/user/:Id'element={<AdminProvider><AdminEditUserPage/></AdminProvider>}/>
+      <Route path='/admin/jobmanagement' element={<AdminProvider><AdminJobManagementDashboard/></AdminProvider>}/>
+      <Route path='/admin/:Id/job_details' element={<AdminProvider><JobDetailsAdminView/></AdminProvider>}/>
+      <Route path='/admin/:jobId/view_applicants' element={<AdminProvider><ViewApplicantsAdmin/></AdminProvider>}/>
+      <Route path ='/admin/:Id/edit_job' element={<AdminProvider><AdminEditJob/></AdminProvider>}/>
+      <Route path='/admin/get_employers/list' element={<AdminProvider><AdminEmployerList/></AdminProvider>}/>
+      <Route path='/admin/:employerId/employer_profile/details' element={<AdminProvider>< AdminEmployerDetail/></AdminProvider>}/>
+
 
 
 

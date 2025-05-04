@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="footer-content">
         {/* Left: Logo and About */}
         <div className="footer-section about">
-          <h2>JobPortal</h2>
+          <h2>WorkaFlow</h2>
           <p>Connecting professionals with great opportunities.</p>
         </div>
 

@@ -1,13 +1,33 @@
 // src/pages/NotificationsPage.jsx
-import React, { useContext } from 'react';
+import React, { useContext,useEffect } from 'react';
 import { notificationContext } from '../Context/NotificationContext';
 import { FaBell, FaClock } from 'react-icons/fa';
 import '../Styles/NotificationPage.css';
 import Navbar from '../Components/MyComponents/Navbar';
+import {markNotificationAsRead} from '../APIS/API'
 
 const NotificationsPage = () => {
   const { notifications } = useContext(notificationContext);
 
+const markAllNotificationAsRead =async(ids)=>{
+  try{
+    const response = await markNotificationAsRead(ids)
+    if(response.status ===200){
+      console.log('All Notifications marked read')
+    }
+
+  }catch(err){
+    console.log(err)
+  }
+}
+  useEffect(() => {
+    // Only mark unread notifications as read
+    const unread = notifications.filter(n => !n.read);
+    if (unread.length > 0) {
+      markAllNotificationAsRead({ids:unread.map(n => n._id)});   
+    }
+  }, [notifications]);
+  
   return (
     <div>
         <Navbar/>

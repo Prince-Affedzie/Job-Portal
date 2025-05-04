@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getJobById, modifyJob } from '../APIS/API';
+import { getJobById, modifyJob,} from '../APIS/API';
 import Sidebar from '../Components/EmployerDashboard/SideBar';
 import EmployerNavbar from '../Components/EmployerDashboard/EmployerNavbar';
 import '../Styles/EditJob.css';
@@ -179,12 +179,13 @@ const EditJob = () => {
             />
             <label>Deadline</label>
             <input
-              name="deadLine"
-              value={new Date(formState.deadLine).toLocaleDateString()}
-              onChange={handleChange}
-              placeholder="Deadline"
-              type="date"
-            />
+            name="deadLine"
+              value={formState.deadLine ? new Date(formState.deadLine).toISOString().split('T')[0] : ''}
+            onChange={handleChange}
+             placeholder="Deadline"
+             type="date"
+             />
+
             <label>Mode of Delivery</label>
             <select
               name="deliveryMode"

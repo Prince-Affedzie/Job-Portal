@@ -1,58 +1,45 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { completeProfile } from '../APIS/API'; // Adjust this path as needed
+import { employerSignUp } from '../APIS/API'; // Adjust this path as needed
 import 'react-toastify/dist/ReactToastify.css';
+import ProcessingOverlay from '../Components/MyComponents/ProcessingOverLay';
 
 const EmployerOnboarding = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    location: {
-      region: '',
-      city: '',
-      town: '',
-      street: ''
-    },
-    businessName: '',
-    businessRegistrationProof: null,
+    companyName: '',
+    companyEmail: '',
+    companyLine: '',
+    companyLocation: '',
+    companyWebsite: '',
+    businessDocs: [],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessing,setIsProcessing] = useState(false)
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes('location')) {
-      const [key] = name.split('.');
-      setFormData((prevData) => ({
-        ...prevData,
-        location: {
-          ...prevData.location,
-          [key]: value
-        }
-      }));
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  // Handle file input change
   const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      businessRegistrationProof: e.target.files[0]
-    });
+    setFormData(prev => ({
+      ...prev,
+      businessDocs: Array.from(e.target.files),
+    }));
   };
 
-  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setIsProcessing(true)
 
     try {
-      const response = await completeProfile(formData);
+      const response = await employerSignUp(formData);
       if (response.status === 200) {
         toast.success('Profile completed successfully!');
         setTimeout(() => {
@@ -68,102 +55,112 @@ const EmployerOnboarding = () => {
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
+      setIsProcessing(false)
     }
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-        <h2 className="text-2xl font-bold text-center text-indigo-600 mb-6">Complete Your Employer Profile</h2>
-        
-        <form onSubmit={handleSubmit}>
-          {/* Location Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div className="flex flex-col">
-              <label htmlFor="region" className="text-sm font-medium text-gray-700">Region</label>
-              <input
-                type="text"
-                id="region"
-                name="location.region"
-                value={formData.location.region}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="city" className="text-sm font-medium text-gray-700">City</label>
-              <input
-                type="text"
-                id="city"
-                name="location.city"
-                value={formData.location.city}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div className="flex flex-col">
-              <label htmlFor="town" className="text-sm font-medium text-gray-700">Town</label>
-              <input
-                type="text"
-                id="town"
-                name="location.town"
-                value={formData.location.town}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="street" className="text-sm font-medium text-gray-700">Street</label>
-              <input
-                type="text"
-                id="street"
-                name="location.street"
-                value={formData.location.street}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-          </div>
+    <div className="bg-gradient-to-tr from-indigo-50 to-white min-h-screen flex items-center justify-center p-4">
+      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-2xl w-full max-w-2xl">
+        <h2 className="text-3xl font-extrabold text-center text-indigo-700 mb-8">Complete Your Company Profile</h2>
 
-          {/* Business Name */}
-          <div className="flex flex-col mb-6">
-            <label htmlFor="businessName" className="text-sm font-medium text-gray-700">Business Name</label>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Company Name */}
+          <div className="flex flex-col">
+            <label htmlFor="companyName" className="text-sm font-medium text-gray-700 mb-1">Company Name</label>
             <input
               type="text"
-              id="businessName"
-              name="businessName"
-              value={formData.businessName}
+              id="companyName"
+              name="companyName"
+              value={formData.companyName}
               onChange={handleChange}
-              className="mt-1 p-2 border border-gray-300 rounded-md"
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="e.g., Acme Corporation"
               required
             />
           </div>
 
-          {/* Business Registration Proof */}
-          <div className="flex flex-col mb-6">
-            <label htmlFor="businessRegistrationProof" className="text-sm font-medium text-gray-700">Business Registration Proof</label>
+          {/* Company Email */}
+          <div className="flex flex-col">
+            <label htmlFor="companyEmail" className="text-sm font-medium text-gray-700 mb-1">Company Email</label>
+            <input
+              type="email"
+              id="companyEmail"
+              name="companyEmail"
+              value={formData.companyEmail}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="e.g., contact@acmecorp.com"
+              required
+            />
+          </div>
+
+          {/* Company Line (Phone Number) */}
+          <div className="flex flex-col">
+            <label htmlFor="companyLine" className="text-sm font-medium text-gray-700 mb-1">Company Phone Number</label>
+            <input
+              type="tel"
+              id="companyLine"
+              name="companyLine"
+              value={formData.companyLine}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="e.g., +1 234 567 8901"
+              required
+            />
+          </div>
+
+          {/* Company Location */}
+          <div className="flex flex-col">
+            <label htmlFor="companyLocation" className="text-sm font-medium text-gray-700 mb-1">Company Address</label>
+            <input
+              type="text"
+              id="companyLocation"
+              name="companyLocation"
+              value={formData.companyLocation}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="e.g., 123 Main St, Springfield"
+              required
+            />
+          </div>
+
+          {/* Company Website */}
+          <div className="flex flex-col">
+            <label htmlFor="companyWebsite" className="text-sm font-medium text-gray-700 mb-1">Company Website</label>
+            <input
+              type="url"
+              id="companyWebsite"
+              name="companyWebsite"
+              value={formData.companyWebsite}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="e.g., https://www.acmecorp.com"
+            />
+          </div>
+
+          {/* Business Registration Documents */}
+          <div className="flex flex-col">
+            <label htmlFor="businessDocs" className="text-sm font-medium text-gray-700 mb-1">Business Registration Documents (Upload multiple files)</label>
             <input
               type="file"
-              id="businessRegistrationProof"
-              name="businessRegistrationProof"
+              id="businessDocs"
+              name="businessDocs"
               onChange={handleFileChange}
-              className="mt-1 p-2 border border-gray-300 rounded-md"
+              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              multiple
               required
             />
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-8">
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-2 px-4 rounded-md text-white ${isSubmitting ? 'bg-gray-500' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+              className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-300 ${
+                isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
+              }`}
             >
               {isSubmitting ? 'Submitting...' : 'Complete Profile'}
             </button>

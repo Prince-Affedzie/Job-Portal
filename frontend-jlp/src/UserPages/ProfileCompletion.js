@@ -45,8 +45,8 @@ const ProfileCompletion = () => {
   const [step, setStep] = useState(1);
   const [profile, setProfile] = useState({
     skills: [],
-    profile_image: "",
-    profile_image_preview: "",
+    profileImage: "",
+    profileImage_preview: "",
     bio: "",
     phone: "",
     location: { city: "", town: "", street: "", region: "" },
@@ -192,18 +192,18 @@ const ProfileCompletion = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setErrors((prev) => ({ ...prev, profile_image: "Image size should be less than 5MB" }));
+        setErrors((prev) => ({ ...prev, profileImage: "Image size should be less than 5MB" }));
         return;
       }
       
       const imageUrl = URL.createObjectURL(file);
       setProfile((prev) => ({
         ...prev,
-        profile_image: file,
-        profile_image_preview: imageUrl,
+        profileImage: file,
+        profileImage_preview: imageUrl,
       }));
-      if (errors.profile_image) {
-        setErrors((prev) => ({ ...prev, profile_image: null }));
+      if (errors.profileImage) {
+        setErrors((prev) => ({ ...prev, profileImage: null }));
       }
     }
   };
@@ -237,15 +237,15 @@ const ProfileCompletion = () => {
       const formData = new FormData();
       
       Object.keys(profile).forEach((key) => {
-        if (key === "profile_image" && profile.profile_image) {
-          formData.append(key, profile.profile_image);
+        if (key === "profileImage" && profile.profileImage) {
+          formData.append(key, profile.profileImage);
         } else if (key === "skills") {
           profile.skills.forEach((skill) => formData.append("skills[]", skill));
         } else if (key === "location") {
           Object.keys(profile.location).forEach((locKey) =>
             formData.append(`location[${locKey}]`, profile.location[locKey])
           );
-        } else if (key !== "profile_image_preview") {
+        } else if (key !== "profileImage_preview") {
           formData.append(key, profile[key]);
         }
       });
@@ -531,7 +531,7 @@ const ProfileCompletion = () => {
                     <div className="flex flex-col md:flex-row items-center gap-6">
                       {/* Upload Area */}
                       <div className={`flex-1 w-full border-2 border-dashed rounded-xl p-6 text-center flex flex-col items-center justify-center bg-gray-50 transition-all ${
-                        errors.profile_image ? "border-red-300" : profile.profile_image_preview ? "border-green-300 bg-green-50" : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                        errors.profileImage ? "border-red-300" : profile.profileImage_preview ? "border-green-300 bg-green-50" : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
                       }`}>
                         <input
                           type="file"
@@ -544,7 +544,7 @@ const ProfileCompletion = () => {
                           htmlFor="profile-image"
                           className="w-full flex flex-col items-center cursor-pointer"
                         >
-                          {profile.profile_image_preview ? (
+                          {profile.profileImage_preview ? (
                             <div className="text-green-600 mb-2">
                               <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -553,8 +553,8 @@ const ProfileCompletion = () => {
                           ) : (
                             <AiOutlineCloudUpload size={40} className="text-blue-500 mb-2" />
                           )}
-                          <p className={`text-sm ${profile.profile_image_preview ? "text-green-600" : "text-gray-500"}`}>
-                            {profile.profile_image_preview ? "Image Selected" : "Drag & drop or click to browse"}
+                          <p className={`text-sm ${profile.profileImage_preview ? "text-green-600" : "text-gray-500"}`}>
+                            {profile.profileImage_preview ? "Image Selected" : "Drag & drop or click to browse"}
                           </p>
                           <p className="text-xs text-gray-400 mt-1">
                             JPG, PNG or GIF format
@@ -565,9 +565,9 @@ const ProfileCompletion = () => {
                       {/* Preview Area */}
                       <div className="flex flex-col items-center w-full md:w-1/3">
                         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 shadow-lg">
-                          {profile.profile_image_preview ? (
+                          {profile.profileImage_preview ? (
                             <img
-                              src={profile.profile_image_preview}
+                              src={profile.profileImage_preview}
                               alt="Profile preview"
                               className="w-full h-full object-cover"
                             />
@@ -581,7 +581,7 @@ const ProfileCompletion = () => {
                         {profile.profile_image_preview && (
                           <button
                             type="button"
-                            onClick={() => setProfile(prev => ({ ...prev, profile_image: "", profile_image_preview: "" }))}
+                            onClick={() => setProfile(prev => ({ ...prev, profileImage: "", profileImage_preview: "" }))}
                             className="mt-3 text-sm text-red-600 hover:text-red-800 focus:outline-none"
                           >
                             Remove Image
@@ -589,7 +589,7 @@ const ProfileCompletion = () => {
                         )}
                       </div>
                     </div>
-                    {errors.profile_image && <p className="text-red-500 text-xs mt-1">{errors.profile_image}</p>}
+                    {errors.profileImage && <p className="text-red-500 text-xs mt-1">{errors.profileImage}</p>}
                   </div>
                   
                   <div className="flex justify-between pt-6">

@@ -380,8 +380,12 @@ const JobDetails = () => {
                     
                     {/* Company Info Card */}
                     <div className="company-info-card">
-                        <h3>About {job.company}</h3>
-                        <p>A leading company in the {job.jobType} industry with opportunities for growth and development.</p>
+                    <h3>Financial Protection</h3>
+                     <p className="safety-text">
+                        <strong>Never pay any initial money or incentives</strong> to anyone. 
+                         This platform does not require any upfront payments to secure Jobs.
+                         If someone asks for payment, it's a scam.
+                        </p>
                     </div>
                 </div>
             </div>

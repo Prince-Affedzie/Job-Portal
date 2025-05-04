@@ -3,10 +3,10 @@ import {
   FaCalendarAlt, FaFileAlt, FaCheckCircle, FaTimesCircle, 
   FaClock, FaDownload, FaEllipsisV, FaLinkedin 
 } from "react-icons/fa";
-import { StatusBadge } from "../../EmployerPages/JobApplicantsPage";
-import { ImageWithFallback } from "../../EmployerPages/JobApplicantsPage";
-import { MatchScoreIndicator } from "../../EmployerPages/JobApplicantsPage";
-import { formatDate } from "../../EmployerPages/JobApplicantsPage";
+
+import { ImageWithFallback } from "./Utils";
+import { MatchScoreIndicator } from "./Utils";
+import { formatDate } from "./Utils";
 
 const ProfileModal = ({ applicant, onClose, onStatusChange, }) => {
   const statusOptions = ["Reviewing", "Shortlisted", "Interview", "Offered", "Rejected"];
@@ -55,7 +55,7 @@ const ProfileModal = ({ applicant, onClose, onStatusChange, }) => {
             
             <div className="md:text-right">
               <div className="mb-2">
-                <StatusBadge status={applicant.status} />
+                {/*<StatusBadge status={applicant.status} />*/}
               </div>
               {/*<div className="mt-2">
                 <p className="text-sm font-medium text-gray-700 mb-1">Match Score</p>
@@ -79,7 +79,7 @@ const ProfileModal = ({ applicant, onClose, onStatusChange, }) => {
               {applicant.resume && (
                 <div className="bg-gray-50 p-3 rounded">
                   <p className="text-xs text-gray-500">Resume</p>
-                  <a href={`${process.env.REACT_APP_BACKEND_URL}/uploads/${applicant.resume}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+                  <a href={applicant.resume} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
                     <FaDownload className="mr-1" /> Download
                   </a>
                 </div>

@@ -338,5 +338,52 @@
   100% { background-position: 200% 0; }
 }
 
+.category-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+}
 
-  
+.category-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.category-scroll-bar {
+  display: inline-flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+.category-scroll-bar button {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border: none;
+  background-color: #f1f1f1;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.category-scroll-bar button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .category-scroll-bar button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-scroll-bar button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}

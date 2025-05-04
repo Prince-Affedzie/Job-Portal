@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState,useContext,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes, FaUserCircle, FaBell } from "react-icons/fa";
 import "./Navbar.css";
@@ -11,13 +11,17 @@ const Navbar = () => {
   const {notifications,fetchNotifications} = useContext( notificationContext)
   console.log(notifications)
 
-  const [jobsDropdownOpen, setJobsDropdownOpen] = useState(false);
+  useEffect(()=>{
+    fetchNotifications()
+  },[])
+
+  //const [jobsDropdownOpen, setJobsDropdownOpen] = useState(false);
 
   return (
     <nav className="navbar">
       {/* Left: Logo */}
       <Link to="/" className="logo">
-        JobPortal
+        WorkaFlow
       </Link>
 
       {/* Center: Nav Links */}
@@ -29,26 +33,7 @@ const Navbar = () => {
           <li>
           <Link to="/job/listings">Regular Jobs</Link>
           </li>
-        <li
-          className="dropdown-parent"
-          onMouseEnter={() => setJobsDropdownOpen(true)}
-          onMouseLeave={() => setJobsDropdownOpen(false)}
-        >
-          {/*<Link to="/job/listings" onClick={() => setMenuOpen(false)}>
-            Find Jobs
-          </Link>*/}
-
-           
-
-          {/* Dropdown for Mini Tasks & Normal Jobs */}
-          {/*<ul className={`dropdown-menu ${jobsDropdownOpen ? "visible" : ""}`}>
-            <li>
-              
-            </li>
-            <li>
-             
-            </li>
-          </ul>*/}
+        <li >
         </li>
         <li>
           <Link  to="/post/mini_task" onClick={() => setMenuOpen(false)}>
@@ -60,13 +45,13 @@ const Navbar = () => {
       {/* Right: Notifications, Profile & Menu Toggle */}
       <div className="nav-icons">
         {/* Notification Bell */}
-   <Link to="/view/all_notifications"  className="notification-container" onClick={() => setShowNotifications(!showNotifications)}>
+   <Link to="/view/all_notifications"  className="notification-container" >
     <FaBell className="notification-icon" />
-    {notifications && notifications?.length > 0 && (
-      <span className="notification-badge">
-        {notifications.length}
-      </span>
-    )}
+    {notifications && notifications.filter(n => !n.read).length > 0 && (
+    <span className="notification-badge">
+      {notifications.filter(n => !n.read).length}
+    </span>
+  )}
    {/* {showNotifications && (
       <div className="notification-dropdown">
         {notifications && notifications.length > 0 ? 

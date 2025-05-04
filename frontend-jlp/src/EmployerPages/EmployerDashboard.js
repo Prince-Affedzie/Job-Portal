@@ -118,110 +118,107 @@ const EmployerDashboard = () => {
           </div>
 
           {/* Recent Jobs Section */}
-          <div className="employer-recent-jobs">
-            <div className="section-header">
-              <div className="section-header-left">
-                <h3>Recent Jobs</h3>
-                <span className="section-subtitle">Manage your job postings</span>
+          <div className="w-full bg-white rounded-xl shadow-md p-6 mt-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+             <h3 className="text-xl font-semibold text-gray-800">Recent Jobs</h3>
+         <p className="text-sm text-gray-500">Manage your job postings</p>
+           </div>
+          <div className="flex gap-2 items-center">
+           <div className="relative">
+           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+          type="text"
+          placeholder="Search jobs..."
+          className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition">
+        <FaFilter /> <span className="hidden sm:inline">Filter</span>
+      </button>
+     </div>
+        </div>
+
+   {loading ? (
+    <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+      <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mb-4" />
+      <p>Loading your job listings...</p>
+    </div>
+   ) : filteredJobs.length === 0 ? (
+    <div className="flex flex-col items-center text-center py-20 text-gray-500">
+      <img src="/api/placeholder/200/200" alt="No jobs" className="w-32 h-32 mb-4" />
+      <h4 className="text-lg font-semibold mb-1">No jobs found</h4>
+      <p className="mb-4">You haven't posted any jobs yet or none match your search criteria.</p>
+      <Link to="/v1/post_job/form" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+        <FaPlus /> Post Your First Job
+      </Link>
+    </div>
+  ) : (
+    <>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {displayJobs.map((job) => (
+          <div key={job._id} className="bg-gray-50 border rounded-lg p-4 shadow-sm hover:shadow-md transition">
+            <div className="flex justify-between items-start mb-2">
+              <h4 className="text-lg font-medium text-gray-800">{job.title}</h4>
+              <span className="text-sm text-gray-400 flex items-center gap-1">
+                <FaRegCalendarAlt /> {job.createdAt ? new Date(job.createdAt).toLocaleDateString() : "Recently added"}
+              </span>
+            </div>
+            <div className="text-sm text-gray-600 space-y-1 mb-3">
+              <div className="flex items-center gap-2">
+                <FaUsers className="text-gray-500" />
+                <span>{job.noOfApplicants || 0} Applicants</span>
               </div>
-              <div className="job-search-tools">
-                <div className="search-box">
-                  <FaSearch className="search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Search jobs..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <button className="filter-btn">
-                  <FaFilter /> Filter
-                </button>
+              <div className="flex items-center gap-2">
+                <FaClock className="text-gray-500" />
+                <span>{job.jobDuration || "Full-time"}</span>
               </div>
             </div>
-
-            {loading ? (
-              <div className="employer-job-list-loading">
-                <div className="loading-spinner"></div>
-                <p>Loading your job listings...</p>
-              </div>
-            ) : filteredJobs.length === 0 ? (
-              <div className="employer-job-list-empty">
-                <img 
-                  src="/api/placeholder/200/200" 
-                  alt="No jobs" 
-                  className="empty-state-image"
+            <div className="mb-3">
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-300 rounded-full`}
+                  style={{
+                    width: `${job.noOfApplicants ? Math.min(job.noOfApplicants * 10, 100) : 5}%`,
+                    backgroundColor: job.status === "Active" ? "#10b981" : "#9ca3af",
+                  }}
                 />
-                <h4>No jobs found</h4>
-                <p>You haven't posted any jobs yet or none match your search criteria.</p>
-                <Link to="/v1/post_job/form" className="employer-post-job-btn">
-                  <FaPlus /> Post Your First Job
-                </Link>
               </div>
-            ) : (
-              <>
-                <div className="employer-job-list-d">
-                  {displayJobs.map((job) => (
-                    <div className="employer-job-card-d" key={job._id}>
-                      <div className="job-card-header">
-                        <h4>{job.title}</h4>
-                        <span className="job-date">
-                          <FaRegCalendarAlt /> {job.createdAt ? new Date(job.createdAt).toLocaleDateString() : "Recently added"}
-                        </span>
-                      </div>
-                      <div className="job-card-details">
-                        <div className="job-detail-item">
-                          <FaUsers className="job-detail-icon" />
-                          <span>{job.noOfApplicants || 0} Applicants</span>
-                        </div>
-                        <div className="job-detail-item">
-                          <FaClock className="job-detail-icon" />
-                          <span>{job.jobDuration || "Full-time"}</span>
-                        </div>
-                      </div>
-                      <div className="job-activity-indicator">
-                        <div className="activity-bar">
-                          <div 
-                            className="activity-progress" 
-                            style={{ 
-                              width: `${job.noOfApplicants ? Math.min(job.noOfApplicants * 10, 100) : 5}%`,
-                              backgroundColor: job.status === "Active" ? "#10b981" : "#9ca3af" 
-                            }}
-                          ></div>
-                        </div>
-                        <span className="activity-text">
-                          {job.noOfApplicants 
-                            ? `${job.noOfApplicants} applicant${job.noOfApplicants !== 1 ? 's' : ''} so far` 
-                            : "Awaiting applicants"}
-                        </span>
-                      </div>
-                      <div className="job-card-footer">
-                        <div className={`job-status ${job.status === "Active" ? "active" : "inactive"}`}>
-                          {job.status || "Active"}
-                        </div>
-                        <Link
-                          to={`/employer/job/applicants/${job._id}`}
-                          className="employer-view-applicants-btn"
-                        >
-                          View Applicants
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {filteredJobs.length > 3 && (
-                  <div className="show-more-container">
-                    <button 
-                      className="show-more-btn"
-                      onClick={() => setShowAllJobs(!showAllJobs)}
-                    >
-                      {showAllJobs ? "Show Less" : `Show All (${filteredJobs.length})`}
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
+              <p className="text-xs text-gray-500 mt-1">
+                {job.noOfApplicants
+                  ? `${job.noOfApplicants} applicant${job.noOfApplicants !== 1 ? "s" : ""} so far`
+                  : "Awaiting applicants"}
+              </p>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className={`text-xs font-semibold px-3 py-1 rounded-full ${job.status === "Active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
+                {job.status || "Active"}
+              </span>
+              <Link
+                to={`/employer/job/applicants/${job._id}`}
+                className="text-blue-600 text-sm font-medium hover:underline"
+              >
+                View Applicants
+              </Link>
+            </div>
           </div>
+        ))}
+      </div>
+      {filteredJobs.length > 3 && (
+        <div className="text-center mt-6">
+          <button
+            onClick={() => setShowAllJobs(!showAllJobs)}
+            className="text-blue-600 font-medium hover:underline"
+          >
+            {showAllJobs ? "Show Less" : `Show All (${filteredJobs.length})`}
+          </button>
+        </div>
+      )}
+    </>
+  )}
+</div>
 
           {/* Notifications Section - Enhanced */}
           <div className="employer-notifications">

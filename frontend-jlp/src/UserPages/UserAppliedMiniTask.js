@@ -3,8 +3,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import '../Styles/UserMinitaskApp.css';
 import { userContext } from "../Context/FetchUser";
 import Navbar from '../Components/MyComponents/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const MyMiniTaskApplications = () => {
+  const navigate = useNavigate()
   const { loading, user, minitasks, fetchAppliedMiniTasks } = useContext(userContext);
   const [filter, setFilter] = useState('all');
   
@@ -110,14 +112,14 @@ const MyMiniTaskApplications = () => {
                     <div className="mini-list-actions">
                       <button
                         className="view-details-btn"
-                        onClick={() => window.location.href = `/minitasks/${task._id}`}
+                        onClick={() => navigate(`/view/mini_task/info/${task._id}`) }
                       >
                         View Details
                       </button>
                       {(task.assignedTo && task.assignedTo === user?._id && task.status === "In-progress") && (
                         <button
                           className="submit-proof-btn"
-                          onClick={() => window.location.href = `/minitasks/${task._id}/submit-proof`}
+                          onClick={() => navigate(`/minitasks/${task._id}/submit-proof`) }
                         >
                           Submit Proof
                         </button>

@@ -1,8 +1,12 @@
-.mini-task-container {
+.mini-task-list-page{
+  background-color: #fff;
+}
+.mini-task-list-container {
     font-family: Arial, sans-serif;
     max-width: 1300px;
     margin: 0 auto;
     padding: 10px;
+    background-color: #fff;
     
   }
   
@@ -162,13 +166,7 @@
     color: #007bff;
   }
   
-  .mini-task-apply-btn {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-  }
+  
   
   /* Mobile Styles */
   @media (max-width: 768px) {
@@ -218,4 +216,123 @@
       align-items: flex-start;
     }
   }
+  .mini-task-category-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
+    justify-content: center;
+    background: #f8f9fa; /* light background */
+  }
   
+  .mini-task-category-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  
+  .mini-task-category-card:hover {
+    background-color: #e9ecef;
+  }
+  
+  .mini-task-category-card.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+  
+  /* Small Screen (Mobile) */
+  @media (max-width: 600px) {
+    .mini-task-category-card {
+      font-size: 13px;
+      padding: 8px 12px;
+    }
+  }
+
+  /* Style for the Apply Now button */
+.mini-task-apply-btn {
+  background-color: #28a745; /* Green color for Apply Now */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+  /* Space between buttons */
+}
+
+/* Hover effect for the Apply Now button */
+.mini-task-apply-btn:hover {
+  background-color: #218838; /* Darker shade for hover */
+  transform: translateY(-2px);
+}
+
+/* Active effect for the Apply Now button */
+.mini-task-apply-btn:active {
+  background-color: #1e7e34; /* Darker shade on click */
+  transform: translateY(0);
+}
+
+/* Focus state for accessibility */
+.mini-task-apply-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5); /* Focus ring */
+}
+
+/* Style for the View Details button */
+.mini-task-view-btn {
+  background-color: #007bff; /* Blue color for View Details */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+  margin-right: 10px;
+}
+
+/* Hover effect for the View Details button */
+.mini-task-view-btn:hover {
+  background-color: #0056b3; /* Darker shade for hover */
+  transform: translateY(-2px);
+}
+
+/* Active effect for the View Details button */
+.mini-task-view-btn:active {
+  background-color: #00408d; /* Darker shade on click */
+  transform: translateY(0);
+}
+
+/* Focus state for accessibility */
+.mini-task-view-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Focus ring */
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  .mini-task-apply-btn,
+  .mini-task-view-btn {
+    width: 60%; /* Buttons take full width on smaller screens */
+    padding: 12px 0; /* Increase padding for easier tap targets */
+    font-size: 1.1rem; /* Slightly larger text for readability */
+    margin-right: 0; /* Remove right margin */
+    margin-bottom: 10px; /* Add space below buttons */
+  }
+
+  /* Optional: Stack the buttons vertically */
+  .mini-task-apply-btn + .mini-task-view-btn {
+    margin-top: 10px; /* Add margin between stacked buttons */
+  }
+}

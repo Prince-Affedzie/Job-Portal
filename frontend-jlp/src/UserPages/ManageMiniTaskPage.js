@@ -237,18 +237,11 @@ const [newStatus, setNewStatus] = useState("");
                     {task.applicants?.length || 0} applicant(s)
                   </span>
                   <div className="task-actions">
-                    <button onClick={() =>{ setSelectedTask(task); setIsViewModalOpen(true);}}> View </button>
+                    <button onClick={() =>navigate(`/view/mini_task/info/${task._id}`)}> View </button>
                     <button onClick={() => { setSelectedTask(task); setPanelVisible(true); }}>Edit</button>
                     <button onClick={() => handleDeleteTask(task._id)} disabled={isProcessing}>Delete</button>
                     <button onClick={() => handleViewApplicants(task._id)}>View Applicants</button>
-                    <button onClick={() => {
-                      if (task.applicants?.length > 0) {
-                        setCurrentTask(task);
-                        setIsAssignModalOpen(true);
-                      } else {
-                        alert("No applicants to assign");
-                      }
-                    }}>Assign</button>
+                    
                     {/* --- New Change Status Button --- */}
                   {editingStatusTaskId === task._id ? (
                 <div className="flex flex-col items-start gap-2 mt-2">
@@ -327,21 +320,7 @@ const [newStatus, setNewStatus] = useState("");
           />
         )}
 
-        {/* Applicants Modal */}
-       {/* <ApplicantsModal
-          applicants={currentTask?.applicants || []}
-          isOpen={isApplicantsModalOpen}
-          onClose={() => setIsApplicantsModalOpen(false)}
-        /> */}
-
-        {/* Assign Applicant Modal */}
-        <AssignApplicantModal
-          task={currentTask}
-          applicants={currentTask?.applicants || []}
-          onAssign={(id, name) => handleAssignApplicant(currentTask._id, id, name)}
-          onClose={() => setIsAssignModalOpen(false)}
-          isOpen={isAssignModalOpen}
-        />
+        
       </div>
 
       <ProcessingOverlay show={isProcessing} message="Processing your request..." />

@@ -37,7 +37,7 @@ const LandingPage = () => {
       <nav className="bg-white shadow-md py-4 px-6 fixed w-full z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-indigo-600">JobConnect</h1>
+            <h1 className="text-2xl font-bold text-indigo-600">WorkaFlow</h1>
           </div>
           
           {/* Desktop Navigation */}

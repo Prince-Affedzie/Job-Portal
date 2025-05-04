@@ -6,13 +6,14 @@ import "../Styles/EmployerProfile.css";
 import EmployerNavbar from '../Components/EmployerDashboard/EmployerNavbar';
 import Footer from "../Components/MyComponents/Footer";
 import { userContext } from "../Context/FetchUser";
-import {modifyProfile} from '../APIS/API'
+import {modifyProfile,uploadImage } from '../APIS/API'
 
 const EmployerProfile = () => {
   const { loading,user, setUser, fetchUserInfo, setLoading } = useContext(userContext);
  
   const [previewImage, setPreviewImage] = useState(null);
   const [editSection, setEditSection] = useState(null); // 'personal', 'business', 'location'
+  const [isProcessing,setIsProcessing] = useState(false)
 
   // Initialize employer state from user context when available
   const [employer, setEmployer] = useState({
@@ -93,6 +94,31 @@ const EmployerProfile = () => {
       setEmployer((prev) => ({ ...prev, profileImage: file }));
     }
   };
+
+  const saveImageChanges = async()=>{
+      try{
+  
+        if (employer.profileImage instanceof File) {
+          setIsProcessing(true)
+          console.log(employer.profileImage)
+          const res = await uploadImage(employer.profileImage);
+          if (res.status === 200) {
+            toast.success("Profile Update Successful");
+            setEditSection(null);
+          } else {
+            toast.error("An error occurred. Please try again later");
+          }
+        }
+  
+  
+      }catch(error){
+        const errorMessage = error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.";
+        toast.error(errorMessage);
+      }finally{
+        setIsProcessing(false)
+      }
+    }
+  
 
   const saveChanges = async() => {
     console.log("Updated employer:", employer);
@@ -175,7 +201,7 @@ const EmployerProfile = () => {
           <img
             src={
               previewImage ||
-              (employer.profileImage ? `http://your-image-host.com/${employer.profileImage}` : '/default-avatar.png')
+              (employer.profileImage ?employer.profileImage : '/default-avatar.png')
             }
             alt="Profile"
             className="emp-profile__avatar"
@@ -195,6 +221,20 @@ const EmployerProfile = () => {
             <label htmlFor="profile-image" className="emp-profile__upload-btn">
               Change Profile Picture
             </label>
+             {previewImage && (
+                   <button 
+                    type="button"
+                    className="emp-profile__save-image-btn"
+                    onClick={saveImageChanges}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? (
+                      <FaSpinner className="emp-profile__spinner-icon" />
+                    ) : (
+                      "Save Profile Picture"
+                    )}
+                  </button>
+                )}
           </div>
         </div>
 

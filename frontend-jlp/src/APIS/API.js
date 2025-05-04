@@ -3,12 +3,38 @@ import axios from "axios"
 const API = axios.create({baseURL:"http://localhost:5000",withCredentials:true,timeout: 10000, })
 export const signUp =(data)=>API.post("/api/user/signup",data)
 export const loginUser =(data)=>API.post("/api/user/login",data)
-export const completeProfile = (data)=>API.put("/api/user/edit_profile",data)
+export const completeProfile = (data)=>
+  API.put("/api/user/edit_profile",data,{
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },})
+
 export const fetchUser =()=>API.get("/api/user/view_profile")
-export const modifyProfile =(data)=>API.put("/api/user/edit_profile",data)
+export const modifyProfile = (formData) => 
+    API.put("/api/user/edit_profile", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+
+export const uploadImage = (file) => {
+    console.log(file)
+    const form = new FormData();
+    form.append("profileImage", file);
+    for (let pair of form.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+  
+    return API.put("/api/user/image_profile", form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  };
+  
 export const authenticateChat =(targetUserId) =>API.post("/api/user/athenticate",{targetUserId:targetUserId})
 export const createNotification =(data)=>API.post('/api/notifications',data)
 export const getNotifications = ()=>API.get('/api/notifications')
+export const markNotificationAsRead =(ids)=>API.put(`/api/mark_notifications/read`,ids)
 
 
 // Job Handling APIs
@@ -30,9 +56,11 @@ export const deleteMiniTask=(Id)=>API.delete(`/api/h1/v2/delete/mini_task/${Id}`
 export const updateMiniTask =(Id,data) =>API.put(`/api/h1/v2/edit/mini_task/${Id}`,{body:data})
 export const assignApplicantToTask =(taskId,applicantId)=>API.put(`/api/h1/v2/assign/mini_task/${taskId}/${applicantId}`)
 export const getYourAppliedMiniTasks =()=>API.get("/api/h1/v2/get_your_apllied/mini_tasks")
+export const getMiniTaskInfo = (Id)=>API.get(`/api/h1/v2/get_min_task_info/${Id}`)
 
 
 // Employer APIs
+export const employerSignUp = (data)=>API.post('/api/h1/v1/employer_sign_up',data)
 export const getPostedJobs = ()=>API.get('/api/h1/v1/get_created/jobs')
 export const getAllApplications =()=>API.get("/api/h1/v1/view_all/applications")
 export const getSpecificJobApplications =(Id)=>API.get(`/api/h1/v1/view_job/applications/${Id}`)
@@ -42,4 +70,22 @@ export const removeJob =(Id) => API.delete(`/api/h1/v1/delete_job/${Id}`)
 export const modifyJobState=(Id,state)=>API.put(`/api/h1/v1/modify/job_status/${Id}`,state)
 export const modifyApplication = (Id,status)=>API.put(`/api/h1/v1/modify/application/${Id}`,status)
 export const manageInterviewInvite =(Id,interviewState)=>API.put(`/api/h1/v1/interview_invite/${Id}`,{interviewState:interviewState})
+export const scheduleAnInterview = (data)=>API.post('/api/h1/v1/create_interview_invite',data)
 
+
+//Admin Api 
+export const getAllUsers = ()=>API.get('/api/get/all_users')
+export const getAllJobs = ()=>API.get('/api/admin/get_all_jobs')
+export const getAdminProfile = ()=>API.get('/api/admin/get_profile')
+export const getSingleUser =(Id)=>API.get(`/api/admin/get_single_user/${Id}`)
+export const modifyUserInfo=(Id,data)=>API.put(`/api/admin/modify_user_info/${Id}`,data)
+export const removeUser = (Id)=>API.delete(`/api/admin/remove_user/${Id}`)
+
+export const getSingleJobInfo = (Id)=>API.get(`/api/admin/get_single_job/${Id}`)
+export const modifyJobStatus = (Id,state)=>API.put(`/api/admin/change_job_status/${Id}`,state)
+export const deleteJob = (Id)=>API.delete(`/api/admin/remove_job/${Id}`)
+export const updateJobByAdmin =(Id,update)=>API.put(`/api/admin/update_job/${Id}`,update)
+export const getEmployersProfiles = ()=>API.get('/api/admin/get_employers/profiles')
+export const getSingleEmployerProfile =(Id)=>API.get(`/api/admin/get_single_employer/profile/${Id}`)
+export const updateEmployerStatus =(Id,update)=>API.put(`/api/admin/update_employer_profile/${Id}`,update)
+export const removeEmployerProfile = (Id)=>API.delete(`/api/admin/delete_employer/profile/${Id}`)

@@ -149,7 +149,7 @@ const Login = () => {
           </button>
         </form>
         <p className="text-center mt-4">
-          Don't have an account? <a href="/" className="text-blue-500">Register</a>
+          Don't have an account? <a href="/signup" className="text-blue-500">Register</a>
         </p>
         
         {/* Add the RequestStatusIndicator component */}

@@ -4,9 +4,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { signUp } from "../APIS/API";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { useAuth } from "../Context/AuthContext";
 
 const Signup = () => {
   const navigate = useNavigate();
+   const {login} = useAuth()
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -36,6 +38,7 @@ const Signup = () => {
         const {role} = response.data
         console.log(role)
         if(role === "employer"){
+          login(role)
           navigate('/employer/onboarding')
         }else{
         navigate("/complete_profile",{state:{role}});

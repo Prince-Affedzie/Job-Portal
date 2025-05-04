@@ -13,7 +13,7 @@ const EmployerNavbar = () => {
   return (
     <nav className="employer-navbar">
       <div className="employer-logo">
-        <Link to="/employer/dashboard">JobPortal</Link>
+        <Link to="/employer/dashboard">WorkaFlow</Link>
       </div>
 
       {/* Desktop/Mobile Nav Links */}
@@ -33,8 +33,10 @@ const EmployerNavbar = () => {
       <div className="navbar-right-section">
         <Link to="/employer/notifications" className="notification-wrapper" onClick={() => setShowNotifications(!showNotifications)}>
           <FaBell className="notification-icon" />
-          {notifications && notifications.length > 0 && (
-            <span className="notification-badge">{notifications.length}</span>
+          {notifications && notifications.filter(n => !n.read).length > 0 && (
+           <span className="notification-badge">
+             {notifications.filter(n => !n.read).length}
+              </span>
           )}
         </Link>
         <Link to="/employer/profile" className="profile-link">
