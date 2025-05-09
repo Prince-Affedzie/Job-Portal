@@ -35,4 +35,19 @@ const verifyMiniTaskPostings = async(req,res,next)=>{
     }
 }
 
-module.exports = {verifyEligibility,verifyMiniTaskPostings}
+const verifyAdminRoute = async(req,res,next)=>{
+    try{
+        const {id} = req.user
+        const user = await UserModel.findById(id)
+        if(!user || user.role !== 'admin'){
+            return res.status(404).json({message:'UnAuthorised Access'})
+        }
+        next()
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:'Internal Server Error'})
+    }
+}
+
+module.exports = {verifyEligibility,verifyMiniTaskPostings,verifyAdminRoute}

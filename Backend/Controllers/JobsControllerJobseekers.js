@@ -269,6 +269,7 @@ const assignMiniTask =async(req,res)=>{
             return res.status(404).json({message:"Task not Found"})
         }
         miniTask.assignedTo = applicantId
+        miniTask.status = "Assigned"
 
         const notification = new NotificationModel({
             user:applicantId,
@@ -442,7 +443,7 @@ const yourAppliedMiniTasks = async(req,res)=>{
 const viewMiniTaskInfo = async(req,res)=>{
     try{
         const {Id} = req.params
-        const task = await MiniTask.findById(Id).populate('employer','name phone')
+        const task = await MiniTask.findById(Id).populate('employer','name phone profileImage isVerified')
         if(!task){
             return res.status(400).json({message: 'Task not Found'})
         }

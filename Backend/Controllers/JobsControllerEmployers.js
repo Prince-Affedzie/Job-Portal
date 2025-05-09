@@ -5,6 +5,9 @@ const { UserModel } = require("../Models/UserModel")
 const EmployerProfile = require( "../Models/EmployerProfile")
 const {Interview} = require('../Models/InterviewModel')
 const {sendInterviewInviteEmail} = require('../Utils/NodemailerConfig')
+const  cloudinary =require('../Utils/Cloudinary')
+const { uploader } = cloudinary; 
+const streamifier = require('streamifier');
 
 
 let socketIo =null
@@ -18,8 +21,8 @@ const employerSignUp =async(req,res)=>{
     const {id} = req.user
     try{
 
-        
-        const {companyName, companyEmail,companyLine, companyLocation, companyWebsite,businessDocs} = req.body
+        console.log(req.body)
+        const {companyName, companyEmail,companyLine,personalLine,companyLocation, companyWebsite,} = req.body
         const user = await UserModel.findById(id)
         if(!user){
             return res.status(400).json({message: "No User found"})
@@ -31,9 +34,34 @@ const employerSignUp =async(req,res)=>{
             companyLine,
             companyLocation,
             companyWebsite,
-            businessDocs
+           
             
         })
+        if(req.file){
+                     const uploadedbusinessdocs = await new Promise((resolve, reject) => {
+                        const stream = uploader.upload_stream(
+                        {
+                             folder: 'business docs',
+                             resource_type: 'raw',
+                             public_id: req.file.originalname.split('.')[0], // removes extension
+                             format: req.file.originalname.split('.').pop(), // adds extension
+                             use_filename: true,
+                             unique_filename: false,
+                            },
+                             (error, result) => {
+                            if (error) reject(error);
+                             else resolve(result);
+                             }
+                             );
+                                
+                             streamifier.createReadStream(req.file.buffer).pipe(stream);
+                             });
+                                
+                                      
+                             profile.businessDocs = uploadedbusinessdocs.secure_url;
+        }
+        user.phone = personalLine
+        await user.save()
         await profile.save()
         res.status(200).json({message: 'Employer Profile Successfully Created'})
 
@@ -236,7 +264,7 @@ const viewJobApplications = async(req,res)=>{
       .populate({
         path :'job',
         select:'title noOfApplicants status salary createdAt deliveryMode'
-        }).exec()
+        }).sort({createdAt:-1}).exec()
 
        
         res.status(200).json(applications)
@@ -452,6 +480,22 @@ const createInterviewInvite = async(req,res)=>{
         res.status(500).json({message:"Internal Server Error"})
     }
 }
+const getEmployerProfile = async(req,res)=>{
+    try{
+        const {id} = req.user
+        console.log(id)
+        const employerprofile = await EmployerProfile.findOne({userId:id}).populate('userId')
+        if(!employerprofile){
+            return res.status(400).json({message:"Account not Found"})
+        }
+        console.log("I'm sending",employerprofile )
+        res.status(200).json(employerprofile)
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server  Error"})
+    }
+}
 
 
 
@@ -461,4 +505,4 @@ const createInterviewInvite = async(req,res)=>{
 
 module.exports = {addJob,editJob,deleteJob,modifyApplication,viewSingleApplication,viewJob,
     getAllPostedJobs,viewJobApplications,jobSearch,jobSearchFilter,viewAllApplications,modifyJobStatus,
-    interviewController,setSocketInstance,employerSignUp,createInterviewInvite}
+    interviewController,setSocketInstance,employerSignUp,createInterviewInvite,getEmployerProfile}

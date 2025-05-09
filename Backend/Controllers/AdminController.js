@@ -49,14 +49,14 @@ const adminLogin = async(req,res)=>{
             return res.status(400).json({message:"All fields are required"})
         }
         const findUser = await UserModel.findOne({email})
-        if(!findUser){
-            return res.status(404).json({message: "Account doesn't Exist"})
+        if(!findUser || findUser.role !== 'admin'){
+            return res.status(404).json({message: "UnAuthorised Access"})
         }
         const isPasswordMatch = await bcrypt.compare(password,findUser.password)
         if(!isPasswordMatch){
             return res.status(401).json({message:"Invalid email or Password"})
         }
-        const token = jwt.sign({id:findUser._id,role:findUser.role},process.env.token,{expiresIn:"4h"})
+        const token = jwt.sign({id:findUser._id,role:findUser.role},process.env.token,{expiresIn:"1d"})
         res.cookie("token",token,{httpOnly:true,sameSite:"strict",secure:false})
         res.status(200).json({message:"Login Successful",role:findUser.role})
 
@@ -126,7 +126,7 @@ const adminEditProfile = async(req,res)=>{
 
 const getAllUsers = async(req,res)=>{
     try{
-        const users = await UserModel.find()
+        const users = await UserModel.find().sort({createdAt:-1})
         res.status(200).json(users)
 
     }catch(err){
@@ -148,6 +148,40 @@ const getSingleUser = async(req,res)=>{
     }catch(err){
         console.log(err)
         res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
+const adminAddUser = async(req,res)=>{
+    try{
+         const {name,email,role,password,} =req.body
+            if(!name || !email || !role || !password){
+                return res.status(400).json({message: "All fields are required"})
+            }
+        
+            if(!validator.isEmail(email)){
+                return res.status(400).json({message:"Invalid Email"})
+            }
+        
+            const userExist = await UserModel.findOne({email})
+            if(userExist){
+                return res.status(400).json({mesaage: "Email had Already been taken"})
+            }
+            const hashedPassword = await bcrypt.hash(password,10)
+        
+            const user = new UserModel({
+                name,
+                email,
+                role,
+                password:hashedPassword
+            })
+        
+            await user.save()
+            const token = jwt.sign({id:user._id,role:user.role},process.env.token,{expiresIn:"1d"})
+            res.cookie("token",token,{httpOnly:true,sameSite:"strict",secure:false})
+            res.status(200).json({message:"Registration Successful",role:user.role})
+        }catch(err){
+        console.log(err)
+        res.status(500).json({message: "Internal Server Error"})
     }
 }
 
@@ -209,6 +243,46 @@ const getAllJobs = async(req,res)=>{
     }catch(err){
         console.log(err)
         res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
+const adminAddJob = async(req,res)=>{
+    try{
+
+        const {id} = req.user
+                const {title,description,category,jobType,industry,deliveryMode,company, companyEmail,
+                location,paymentStyle, salary,skillsRequired,experienceLevel,responsibilities, deadLine,tags} = req.body
+                console.log(req.body)
+        
+                
+        
+                const job = new JobModel({
+                    title:title,
+                    description: description,
+                    category:category,
+                    jobType:jobType,
+                    industry:industry,
+                    deliveryMode:deliveryMode,
+                    location:location,
+                    paymentStyle:paymentStyle,
+                    salary:salary,
+                    skillsRequired:skillsRequired,
+                    experienceLevel:experienceLevel,
+                    responsibilities:responsibilities,
+                    deadLine:deadLine,
+                    employerId:id,
+                    company:company,
+                    companyEmail:companyEmail,
+                    jobTags:tags
+                })
+
+                await job.save()
+                res.status(200).json({message:"Job Added Successfully"})
+        
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:'Internal Server Error'})
     }
 }
 
@@ -283,7 +357,7 @@ const upDateJob = async(req,res)=>{
 
 const getAllEmployerProfiles = async(req,res)=>{
     try{
-        const employers = await EmployerProfile.find().populate('userId')
+        const employers = await EmployerProfile.find().populate('userId').sort({createdAt:-1})
         res.status(200).json(employers)
 
     }catch(err){
@@ -345,7 +419,94 @@ const deleteEmployerProfile = async(req,res)=>{
     }
 }
 
+const getAllMiniTasks = async(req,res)=>{
+    try{
+        const minitasks = await MiniTask.find().populate('employer').sort({createdAt:-1})
+        .populate('applicants')
+        .populate('assignedTo').sort({createdAt:-1})
 
-module.exports = {adminSignup,adminLogin,adminLogout,adminEditProfile, adminProfile,modifyUserInfo,getAllEmployerProfiles,
-    getAllUsers,getSingleUser, removeUser,getAllJobs,getSingleJob,controlJobStatus,removeJob,upDateJob,
-    getSingleEmployerProfile,modifyEmployerProfile,deleteEmployerProfile}
+        res.status(200).json(minitasks)
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+
+}
+
+const getSingleMinitask = async(req,res)=>{
+    try{
+        const {Id} = req.params
+        const task = await MiniTask.findById(Id).populate('employer')
+        .populate('applicants')
+        .populate('assignedTo')
+        if(!task){
+                res.status.status(400).json({message:'Task Not Found'})
+        } 
+        res.status(200).json(task)
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
+const modifyMiniTaskStatus =async(req,res)=>{
+    try{
+        const {Id} = req.params
+        console.log(req.body)
+        const {status} =  req.body
+        const task = await MiniTask.findById(Id)
+        if(!task){
+            res.status.status(400).json({message:'Task Not Found'})
+        } 
+        task.status = status
+        await task.save()
+        res.status(200).json({message:"Task Updated Successfully"})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
+const deleteMiniTask = async(req,res)=>{
+    try{
+        const {Id} = req.params
+        const task = await MiniTask.findById(Id)
+        if(!task){
+            res.status.status(400).json({message:'Task Not Found'})
+        } 
+        await task.deleteOne()
+        res.status(200).json({message:"Task Deleted Successfully"})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
+const modifyMiniTask = async(req,res)=>{
+    try{
+        const {Id} = req.params
+        const update = req.body
+        const task = await MiniTask.findById(Id)
+        if(!task){
+            res.status.status(400).json({message:'Task Not Found'})
+        } 
+        Object.assign(task,update)
+        await task.save()
+        res.status(200).json({message:'Mini Task Updated Successfully'})
+
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
+
+
+module.exports = {adminSignup,adminLogin,adminLogout,adminEditProfile, adminProfile,adminAddUser,modifyUserInfo,getAllEmployerProfiles,
+    getAllUsers,getSingleUser, removeUser,getAllJobs,getSingleJob,adminAddJob,controlJobStatus,removeJob,upDateJob,
+    getSingleEmployerProfile,modifyEmployerProfile,deleteEmployerProfile,getAllMiniTasks,getSingleMinitask,
+    modifyMiniTaskStatus,deleteMiniTask, modifyMiniTask }

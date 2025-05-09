@@ -10,13 +10,10 @@ const employerProfileSchema = new mongoose.Schema({
   companyLocation:{type: String },
   companyWebsite: { type: String },
   
-  businessDocs: [
-    {
-      fileUrl: String,
+  businessDocs: {
+      type: String,
      
-    }
-  ],
-  
+    },
   isVerified: { type: Boolean, default: false },
   verificationStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   verificationNotes: { type: String },

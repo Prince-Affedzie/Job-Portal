@@ -26,7 +26,7 @@ app.use(BodyParser.json())
 app.use(express.static("/Static"))
 app.use('/Uploads',express.static('Uploads'))
 app.use(cors({
-    origin:"http://localhost:3000",
+    origin:process.env.Frontend_Url,
     credentials: true
 
 }))
