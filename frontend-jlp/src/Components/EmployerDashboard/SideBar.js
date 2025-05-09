@@ -13,14 +13,32 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 import "../../Styles/EmployerSidebar.css";
+import { logoutUser } from '../../APIS/API';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Context/AuthContext';
+
 
 const EmployerSidebar = () => {
   const [isOpen, setIsOpen] = useState(false); // for mobile
   const [desktopCollapsed, setDesktopCollapsed] = useState(false); // for desktop
+  const {logout} = useAuth()
+  const navigate = useNavigate()
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
   const toggleDesktopCollapse = () => setDesktopCollapsed(!desktopCollapsed);
+
+  const handleLogout = async () => {
+    try {
+      const res = await logoutUser();
+      if (res.status === 200) {
+        logout();
+        navigate('/login');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <>
@@ -64,7 +82,7 @@ const EmployerSidebar = () => {
             <FaCog className="employer-icon" />
             <span className="text-label">Account Settings</span>
           </Link>
-          <Link to="/logout" className="employer-logout" onClick={closeSidebar}>
+          <Link  className="employer-logout" onClick={()=>handleLogout()}>
             <FaSignOutAlt className="employer-icon" />
             <span className="text-label">Logout</span>
           </Link>

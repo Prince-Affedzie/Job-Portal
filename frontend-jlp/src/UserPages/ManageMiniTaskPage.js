@@ -40,7 +40,7 @@ const [newStatus, setNewStatus] = useState("");
       const response = await getMiniTasksposted();
       if (response.status === 200) {
         setTasks(response.data);
-        console.log(response.data);
+       
       } else {
         setTasks([]);
       }
@@ -75,7 +75,7 @@ const [newStatus, setNewStatus] = useState("");
 
   const handleUpdateTask = async (updatedTask) => {
     if (!updatedTask || !updatedTask._id) {
-      console.error(" No ID in updatedTask", updatedTask);
+      
       return;
     }
     try {

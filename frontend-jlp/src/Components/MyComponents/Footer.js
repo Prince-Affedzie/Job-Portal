@@ -37,7 +37,7 @@ const Footer = () => {
 
       {/* Bottom Section */}
       <div className="footer-bottom">
-        <p>© 2025 JobPortal. All Rights Reserved.</p>
+        <p>© 2025 WorkaFlow. All Rights Reserved.</p>
       </div>
     </footer>
   );

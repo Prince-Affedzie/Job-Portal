@@ -11,9 +11,10 @@ const EmployerOnboarding = () => {
     companyName: '',
     companyEmail: '',
     companyLine: '',
+    personalLine: '',
     companyLocation: '',
     companyWebsite: '',
-    businessDocs: [],
+    businessDocs: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessing,setIsProcessing] = useState(false)
@@ -29,17 +30,29 @@ const EmployerOnboarding = () => {
   const handleFileChange = (e) => {
     setFormData(prev => ({
       ...prev,
-      businessDocs: Array.from(e.target.files),
+      businessDocs: e.target.files[0],
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setIsProcessing(true)
-
+    setIsProcessing(true);
+  
+    // Convert to FormData
+    const data = new FormData();
+    data.append('companyName', formData.companyName);
+    data.append('companyEmail', formData.companyEmail);
+    data.append('companyLine', formData.companyLine);
+    data.append('personalLine', formData.personalLine);
+    data.append('companyLocation', formData.companyLocation);
+    data.append('companyWebsite', formData.companyWebsite);
+    data.append('businessDocs', formData.businessDocs)
+   
+    
+  
     try {
-      const response = await employerSignUp(formData);
+      const response = await employerSignUp(data); // API must handle FormData
       if (response.status === 200) {
         toast.success('Profile completed successfully!');
         setTimeout(() => {
@@ -50,14 +63,17 @@ const EmployerOnboarding = () => {
       }
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred. Please try again.";
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "An unexpected error occurred. Please try again.";
       console.log(errorMessage);
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
   };
+  
 
   return (
     <div className="bg-gradient-to-tr from-indigo-50 to-white min-h-screen flex items-center justify-center p-4">
@@ -105,7 +121,21 @@ const EmployerOnboarding = () => {
               value={formData.companyLine}
               onChange={handleChange}
               className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="e.g., +1 234 567 8901"
+              placeholder="e.g., + 233 567 8901"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="personalLine" className="text-sm font-medium text-gray-700 mb-1">Personal Phone Number</label>
+            <input
+              type="tel"
+              id="personalLine"
+              name="personalLine"
+              value={formData.personalLine}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="e.g., + 233 567 8901"
               required
             />
           </div>
@@ -141,14 +171,13 @@ const EmployerOnboarding = () => {
 
           {/* Business Registration Documents */}
           <div className="flex flex-col">
-            <label htmlFor="businessDocs" className="text-sm font-medium text-gray-700 mb-1">Business Registration Documents (Upload multiple files)</label>
+            <label htmlFor="businessDocs" className="text-sm font-medium text-gray-700 mb-1">Business Registration Documents Or Your Ghana Card</label>
             <input
               type="file"
               id="businessDocs"
               name="businessDocs"
               onChange={handleFileChange}
               className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              multiple
               required
             />
           </div>

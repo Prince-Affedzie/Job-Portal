@@ -1,11 +1,12 @@
 import React ,{useState,useEffect,createContext} from 'react'
-import { getPostedJobs } from '../APIS/API'
+import { getPostedJobs,getEmployerProfile } from '../APIS/API'
 
 export const jobsCreatedContext = createContext()
 
 export const JobsContextProvider = ({children})=>{
     const [Jobs,setJobs] = useState([])
     const [loading,setLoading] = useState(false)
+    const [employerprofile,setEmployerProfile] = useState()
 
     const fetchJobs = async()=>{
         try{
@@ -27,12 +28,16 @@ export const JobsContextProvider = ({children})=>{
         }
     }
 
+    
+
     useEffect(()=>{
+
         fetchJobs()
+        
     },[])
 
     return(
-        <jobsCreatedContext.Provider value={{Jobs,loading,fetchJobs}}>
+        <jobsCreatedContext.Provider value={{Jobs,loading,employerprofile,fetchJobs,}}>
             {children}
         </jobsCreatedContext.Provider>
     )

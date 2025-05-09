@@ -1,8 +1,9 @@
 import axios from "axios"
-
-const API = axios.create({baseURL:"http://localhost:5000",withCredentials:true,timeout: 10000, })
+const BackendURL = process.env.REACT_APP_BACKEND_URL
+const API = axios.create({baseURL:BackendURL,withCredentials:true,timeout: 10000, })
 export const signUp =(data)=>API.post("/api/user/signup",data)
 export const loginUser =(data)=>API.post("/api/user/login",data)
+export const logoutUser =()=>API.post('/api/user/logout')
 export const completeProfile = (data)=>
   API.put("/api/user/edit_profile",data,{
   headers: {
@@ -60,7 +61,10 @@ export const getMiniTaskInfo = (Id)=>API.get(`/api/h1/v2/get_min_task_info/${Id}
 
 
 // Employer APIs
-export const employerSignUp = (data)=>API.post('/api/h1/v1/employer_sign_up',data)
+export const employerSignUp = (data)=>API.post('/api/h1/v1/employer_sign_up',data,
+  {headers: {
+  "Content-Type": "multipart/form-data",
+}})
 export const getPostedJobs = ()=>API.get('/api/h1/v1/get_created/jobs')
 export const getAllApplications =()=>API.get("/api/h1/v1/view_all/applications")
 export const getSpecificJobApplications =(Id)=>API.get(`/api/h1/v1/view_job/applications/${Id}`)
@@ -71,21 +75,31 @@ export const modifyJobState=(Id,state)=>API.put(`/api/h1/v1/modify/job_status/${
 export const modifyApplication = (Id,status)=>API.put(`/api/h1/v1/modify/application/${Id}`,status)
 export const manageInterviewInvite =(Id,interviewState)=>API.put(`/api/h1/v1/interview_invite/${Id}`,{interviewState:interviewState})
 export const scheduleAnInterview = (data)=>API.post('/api/h1/v1/create_interview_invite',data)
+export const getEmployerProfile = ()=>API.get('/api/h1/v1/get_employer_profile')
 
 
 //Admin Api 
+export const adminLogin = (data)=>API.post(`/api/admin/login`,data)
 export const getAllUsers = ()=>API.get('/api/get/all_users')
 export const getAllJobs = ()=>API.get('/api/admin/get_all_jobs')
 export const getAdminProfile = ()=>API.get('/api/admin/get_profile')
 export const getSingleUser =(Id)=>API.get(`/api/admin/get_single_user/${Id}`)
+export const adminAddUser = (data)=>API.post('/api/admin/add_new_user',data)
 export const modifyUserInfo=(Id,data)=>API.put(`/api/admin/modify_user_info/${Id}`,data)
 export const removeUser = (Id)=>API.delete(`/api/admin/remove_user/${Id}`)
 
 export const getSingleJobInfo = (Id)=>API.get(`/api/admin/get_single_job/${Id}`)
 export const modifyJobStatus = (Id,state)=>API.put(`/api/admin/change_job_status/${Id}`,state)
+export const adminAddJob =(data)=>API.post('/api/admin/add_job',data)
 export const deleteJob = (Id)=>API.delete(`/api/admin/remove_job/${Id}`)
 export const updateJobByAdmin =(Id,update)=>API.put(`/api/admin/update_job/${Id}`,update)
 export const getEmployersProfiles = ()=>API.get('/api/admin/get_employers/profiles')
 export const getSingleEmployerProfile =(Id)=>API.get(`/api/admin/get_single_employer/profile/${Id}`)
 export const updateEmployerStatus =(Id,update)=>API.put(`/api/admin/update_employer_profile/${Id}`,update)
 export const removeEmployerProfile = (Id)=>API.delete(`/api/admin/delete_employer/profile/${Id}`)
+
+export const getAllMiniTasks = ()=>API.get('/api/admin/get_all_mintasks')
+export const getSingleMinitask = (Id)=>API.get(`/api/admin/get_single_mintask/${Id}`)
+export const modifyMiniTaskStatus = (Id,status)=>API.put(`/api/admin/modify_mini_task_status/${Id}`,status)
+export const adminDeleteMiniTask =(Id)=>API.delete(`/api/admin/delete_mini_task/${Id}`)
+export const updateMiniTaskByAdmin =(Id,update) =>API.put(`/api/admin/modify_mini_task/${Id}`,update)

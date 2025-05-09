@@ -275,35 +275,49 @@
   /* Badge Styles */
   .emp-profile__badges {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .emp-profile__badge-item {
+    display: flex;
+    align-items: center;
     gap: 10px;
-    margin-top: 20px;
+  }
+  
+  .emp-profile__badge-label {
+    font-weight: 500;
+    min-width: 150px;
+    color: #555;
   }
   
   .emp-profile__badge {
-    display: inline-block;
-    padding: 6px 12px;
-    font-size: 12px;
-    border-radius: 20px;
-    color: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 14px;
     font-weight: 500;
   }
   
   .emp-profile__badge--verified {
-    background-color: #10b981;
+    background-color: #d1f7d1;
+    color: #2e7d32;
   }
   
   .emp-profile__badge--unverified {
-    background-color: #f87171;
+    background-color: #ffe0e0;
+    color: #b71c1c;
   }
   
   .emp-profile__badge--eligible {
-    background-color: #3b82f6;
+    background-color: #e0f7fa;
+    color: #00796b;
   }
   
   .emp-profile__badge--not-eligible {
-    background-color: #9ca3af;
+    background-color: #fbe9e7;
+    color: #d84315;
   }
+  
   
   /* Responsive Adjustments */
   @media screen and (max-width: 1024px) {

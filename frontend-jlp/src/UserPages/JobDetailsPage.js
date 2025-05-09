@@ -18,6 +18,8 @@ import {
 import Navbar from "../Components/MyComponents/Navbar";
 import { getJobDetails, applyToJob } from "../APIS/API";
 import ProcessingOverlay from "../Components/MyComponents/ProcessingOverLay";
+import CoverLetterField from "../Components/MyComponents/coverLetter";
+import '../Styles/coverLetter.css'
 
 const JobDetails = () => {
     const { id } = useParams();
@@ -29,6 +31,7 @@ const JobDetails = () => {
     const [formStep, setFormStep] = useState(1);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isProcessing,setIsProcessing] = useState(false)
+    const [isEditorExpanded, setIsEditorExpanded] = useState(false);
 
     const [applicationData, setApplicationData] = useState({
         fullName: "",
@@ -133,48 +136,42 @@ const JobDetails = () => {
         }
     };
 
-    if (loading) return (
-        <div className="job-details-loading-container">
-            <div className="job-details-loading">
-                <div className="job-details-skeleton title"></div>
-                <div className="job-details-skeleton text"></div>
-                <div className="job-details-skeleton short"></div>
-                <div className="job-details-skeleton text"></div>
-                <div className="pulse-loader"></div>
-                <p>Loading job details...</p>
-            </div>
-        </div>
-    );
     
-   /* if (error) return (
-        <div className="error-container">
-            <div className="error-message">
-                <FaExclamationCircle />
-                <h2>Something went wrong</h2>
-                <p>{error}</p>
-                <button onClick={() => window.location.reload()}>Try Again</button>
-            </div>
-        </div>
-    );*/
     
-    if (!job) return (
-        <div className="not-found-container">
+   
+    
+    const isDeadlinePassed =job? new Date(job.deadLine) < new Date():false;
+    const daysUntilDeadline =job? Math.ceil((new Date(job.deadLine) - new Date()) / (1000 * 60 * 60 * 24)):0;
+
+    return (
+        <div className="job-details-page">
+          
+           <Navbar />
+           <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+         
+         {loading?(
+             <div className="job-details-loading-container">
+             <div className="job-details-loading">
+                 <div className="job-details-skeleton title"></div>
+                 <div className="job-details-skeleton text"></div>
+                 <div className="job-details-skeleton short"></div>
+                 <div className="job-details-skeleton text"></div>
+                 <div className="pulse-loader"></div>
+                 <p>Loading job details...</p>
+             </div>
+         </div>
+         ):!job?(
+            <div className="not-found-container">
             <div className="not-found">
                 <h2>Job Not Found</h2>
                 <p>The job listing you're looking for might have been removed or is no longer available.</p>
                 <button onClick={() => window.history.back()}>Go Back</button>
             </div>
         </div>
-    );
 
-    const isDeadlinePassed = new Date(job.deadLine) < new Date();
-    const daysUntilDeadline = Math.ceil((new Date(job.deadLine) - new Date()) / (1000 * 60 * 60 * 24));
-
-    return (
-        <div className="job-details-page">
-            <Navbar />
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
-
+         ):(
+            <>
+         
             {/* Hero Section */}
             <div className="job-hero">
                 <div className="job-hero-content">
@@ -357,16 +354,12 @@ const JobDetails = () => {
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Cover Letter</label>
-                                            <textarea 
-                                                name="coverLetter" 
-                                                value={applicationData.coverLetter} 
-                                                onChange={handleChange}
-                                                placeholder="Tell us why you're the perfect fit for this role..."
-                                                rows="6"
-                                                required
-                                            ></textarea>
-                                        </div>
+                                              <CoverLetterField 
+                                             value={applicationData.coverLetter} 
+                                             onChange={handleChange}
+                                            
+                                            />
+                                           </div>
 
                                         <div className="form-actions">
                                             <button type="button" className="back-btn" onClick={prevStep}>Back</button>
@@ -376,6 +369,8 @@ const JobDetails = () => {
                                 )}
                             </div>
                         )}
+                        {/* Add this right before the closing tag of your application-form-container div */}
+                        {isEditorExpanded && <div className="modal-backdrop" onClick={() => setIsEditorExpanded(false)}></div>}
                     </div>
                     
                     {/* Company Info Card */}
@@ -389,6 +384,9 @@ const JobDetails = () => {
                     </div>
                 </div>
             </div>
+            </>
+            )}
+           
         </div>
     );
 };

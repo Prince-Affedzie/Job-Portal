@@ -3,54 +3,45 @@ import { useParams, Link } from "react-router-dom";
 import { FaFileAlt, FaUser } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import '../Styles/JobApplicantsPage.css'
 
 import Sidebar from "../Components/EmployerDashboard/SideBar";
 import EmployerNavbar from "../Components/EmployerDashboard/EmployerNavbar";
 import ProfileModal from "./JobApplicantsPageComponents/ApplicantsProfileModal";
 import InterviewInviteModal from "../Components/EmployerDashboard/InterviewInviteModal";
 import { getSpecificJobApplications, modifyApplication } from "../APIS/API";
-import "../Styles/JobApplicantsPage.css";
 
-// Import the component files
+// Import components
 import JobDetailsSummary from "./JobApplicantsPageComponents/JobSummary";
 import ApplicantsControls from "./JobApplicantsPageComponents/ApplicantsControl";
 import StatusStats from "./JobApplicantsPageComponents/StatusStats";
 import ApplicantCard from "./JobApplicantsPageComponents/ApplicantsCard";
 import Pagination from "./JobApplicantsPageComponents/Pagination";
 
-const JobApplicantsPage = () => {
-  const { Id } = useParams();
+// Custom hook for applicants management
+const useApplicantsManager = (jobId) => {
   const [loading, setLoading] = useState(true);
   const [jobDetails, setJobDetails] = useState(null);
   const [applicants, setApplicants] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("dateApplied");
-  const [sortOrder, setSortOrder] = useState("desc");
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [selectedApplicants, setSelectedApplicants] = useState([]);
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [notes, setNotes] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const applicantsPerPage = 10;
 
-  // Fetch data on component mount
+  // Fetch data on mount
   useEffect(() => {
     fetchApplicantsData();
-  }, [Id]);
+  }, [jobId]);
 
   const fetchApplicantsData = async () => {
     try {
       setLoading(true);
-      const response = await getSpecificJobApplications(Id);
+      const response = await getSpecificJobApplications(jobId);
       
       if (response.status === 200) {
         // Set job details
         if (response.data.length > 0) {
           const firstApp = response.data[0];
           setJobDetails({
-            id:firstApp.job._id,
+            id: firstApp.job._id,
             title: firstApp.job.title,
             status: firstApp.job.status, 
             location: firstApp.job.deliveryMode, 
@@ -63,7 +54,7 @@ const JobApplicantsPage = () => {
         // Transform applications data
         const transformedApplicants = response.data.map(app => ({
           id: app._id,
-          userId:app.user._id,
+          userId: app.user._id,
           name: app.user.name,
           email: app.user.email || "Email not provided",
           phone: app.user.phone || "Phone not provided",
@@ -84,7 +75,6 @@ const JobApplicantsPage = () => {
           linkedIn: app.user.linkedIn || ""
         }));
         
-
         setApplicants(transformedApplicants);
       } else {
         toast.error("Failed to load applicants data");
@@ -104,7 +94,10 @@ const JobApplicantsPage = () => {
       
       if (response.status === 200) {
         toast.success(`Application ${status.status} successfully`);
-        setApplicants(prev => prev.map(app => app.id === id ? { ...app, status: status.status } : app));
+        setApplicants(prev => prev.map(app => 
+          app.id === id ? { ...app, status: status.status } : app
+        ));
+        
         if (selectedApplicant && selectedApplicant.id === id) {
           setSelectedApplicant(prev => ({ ...prev, status: status.status }));
         }
@@ -117,26 +110,6 @@ const JobApplicantsPage = () => {
     }
   };
 
-  // Filter applicants
-  const filteredApplicants = applicants
-    .filter(applicant => 
-      (filterStatus === "all" || applicant.status.toLowerCase() === filterStatus.toLowerCase()) &&
-      (applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-       applicant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       applicant.skills?.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())))
-    );
-
-  // Pagination
-  const indexOfLastApplicant = currentPage * applicantsPerPage;
-  const indexOfFirstApplicant = indexOfLastApplicant - applicantsPerPage;
-  const currentApplicants = filteredApplicants.slice(indexOfFirstApplicant, indexOfLastApplicant);
-  const totalPages = Math.ceil(filteredApplicants.length / applicantsPerPage);
-
-  // Scroll to top on page change
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPage]);
-
   // Toggle applicant selection
   const toggleApplicant = (id) => {
     setSelectedApplicants((prev) =>
@@ -144,22 +117,33 @@ const JobApplicantsPage = () => {
     );
   };
 
-  // Open interview invite modal
-  const openInviteModal = () => {
-    if (selectedApplicants.length === 0) {
-      alert("Select at least one applicant.");
-      return;
-    }
-    setIsModalOpen(true);
-  };
-
   // Handle profile view
   const handleViewProfile = (applicant) => {
     setSelectedApplicant(applicant);
-    setShowProfileModal(true);
-    setNotes(""); // Reset notes
   };
-  
+
+  return {
+    loading,
+    jobDetails,
+    applicants,
+    selectedApplicant,
+    setSelectedApplicant,
+    selectedApplicants,
+    handleAppStatusChange,
+    toggleApplicant,
+    handleViewProfile
+  };
+};
+
+// Custom hook for filtering and pagination
+const useApplicantsFiltering = (applicants) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [sortBy, setSortBy] = useState("dateApplied");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const applicantsPerPage = 10;
+
   // Get status counts for the filter tabs
   const getStatusCounts = () => {
     const statusMap = {
@@ -184,8 +168,108 @@ const JobApplicantsPage = () => {
     
     return statusMap;
   };
+
+  // Filter and sort applicants
+  const filteredApplicants = applicants
+    .filter(applicant => 
+      (filterStatus === "all" || applicant.status.toLowerCase() === filterStatus.toLowerCase()) &&
+      (applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+       applicant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       applicant.skills?.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())))
+    )
+    .sort((a, b) => {
+      let comparison = 0;
+      if (sortBy === "dateApplied") {
+        comparison = new Date(a.dateApplied) - new Date(b.dateApplied);
+      } else if (sortBy === "name") {
+        comparison = a.name.localeCompare(b.name);
+      } else if (sortBy === "matchScore") {
+        comparison = a.matchScore - b.matchScore;
+      }
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+
+  // Pagination
+  const indexOfLastApplicant = currentPage * applicantsPerPage;
+  const indexOfFirstApplicant = indexOfLastApplicant - applicantsPerPage;
+  const currentApplicants = filteredApplicants.slice(indexOfFirstApplicant, indexOfLastApplicant);
+  const totalPages = Math.ceil(filteredApplicants.length / applicantsPerPage);
+
+  // Scroll to top on page change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
+  return {
+    searchTerm,
+    setSearchTerm,
+    filterStatus,
+    setFilterStatus,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
+    currentPage,
+    setCurrentPage,
+    statusCounts: getStatusCounts(),
+    filteredApplicants,
+    currentApplicants,
+    totalPages
+  };
+};
+
+// Main component
+const JobApplicantsPage = () => {
+  const { Id } = useParams();
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
+  const [notes, setNotes] = useState("");
   
-  const statusCounts = getStatusCounts();
+  // Use custom hooks
+  const {
+    loading,
+    jobDetails,
+    applicants,
+    selectedApplicant,
+    setSelectedApplicant,
+    selectedApplicants,
+    handleAppStatusChange,
+    toggleApplicant,
+    handleViewProfile
+  } = useApplicantsManager(Id);
+
+  const {
+    searchTerm,
+    setSearchTerm,
+    filterStatus,
+    setFilterStatus,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
+    currentPage,
+    setCurrentPage,
+    statusCounts,
+    filteredApplicants,
+    currentApplicants,
+    totalPages
+  } = useApplicantsFiltering(applicants);
+
+  // View profile handler with modal management
+  const onViewProfile = (applicant) => {
+    handleViewProfile(applicant);
+    setShowProfileModal(true);
+    setNotes(""); // Reset notes
+  };
+  
+  // Open interview invite modal
+  const openInviteModal = () => {
+    if (selectedApplicants.length === 0) {
+      toast.warning("Select at least one applicant");
+      return;
+    }
+    setIsInterviewModalOpen(true);
+  };
 
   return (
     <div className="job-applicants-container">
@@ -196,15 +280,14 @@ const JobApplicantsPage = () => {
         <Sidebar />
         <div className="employer-dashboard-content job-applicants-page">
           <div className="applicants-page-header">
-               <h2>Applicants for This Job</h2>
-               <button
-                  onClick={openInviteModal}
-                 className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-                  >
-                  Send Interview Invite
-             </button>
-        </div>
-
+            <h2>Applicants for This Job</h2>
+            <button
+              onClick={openInviteModal}
+              className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+            >
+              Send Interview Invite
+            </button>
+          </div>
 
           {loading ? (
             <div className="loading-container">
@@ -221,6 +304,7 @@ const JobApplicantsPage = () => {
           ) : (
             <>
               <JobDetailsSummary jobDetails={jobDetails} />
+              
               <ApplicantsControls 
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
@@ -231,11 +315,13 @@ const JobApplicantsPage = () => {
                 sortOrder={sortOrder}
                 setSortOrder={setSortOrder}
               />
+              
               <StatusStats 
                 statusCounts={statusCounts} 
                 filterStatus={filterStatus}
                 setFilterStatus={setFilterStatus}
               />
+              
               {filteredApplicants.length === 0 ? (
                 <div className="no-applicants">
                   <div className="empty-state-icon"><FaUser /></div>
@@ -248,14 +334,15 @@ const JobApplicantsPage = () => {
                     <ApplicantCard 
                       key={applicant.id}
                       applicant={applicant} 
-                      onViewProfile={handleViewProfile}
+                      onStatusChange={handleAppStatusChange}
+                      onViewProfile={onViewProfile}
                       selectedApplicants={selectedApplicants}
                       toggleApplicant={toggleApplicant}
                     />
                   ))}
-                  
                 </div>
               )}
+              
               {totalPages > 1 && (
                 <Pagination 
                   currentPage={currentPage} 
@@ -280,10 +367,10 @@ const JobApplicantsPage = () => {
       )}
       
       {/* Interview Invite Modal */}
-      {isModalOpen && (
+      {isInterviewModalOpen && (
         <InterviewInviteModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          isOpen={isInterviewModalOpen}
+          onClose={() => setIsInterviewModalOpen(false)}
           selectedApplicants={selectedApplicants}
           jobId={jobDetails?.id || ""}
         />

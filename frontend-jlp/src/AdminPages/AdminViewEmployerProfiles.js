@@ -110,7 +110,7 @@ const AdminEmployerList = () => {
         <div className="hidden lg:block w-64 bg-white shadow-md">
           <AdminSidebar />
         </div>
-        <main className="flex-1 bg-gray-50 p-6">
+        <main className="flex-1 bg-white p-6">
           <div className="bg-white p-6 rounded-xl shadow-md">
             <Title level={3}>Employers Overview</Title>
             {loading ? (

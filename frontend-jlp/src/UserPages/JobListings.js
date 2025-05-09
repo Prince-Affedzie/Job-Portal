@@ -72,15 +72,6 @@ const categories = ["Administration",'Banking','Development','Marketing','Softwa
     return () => debouncedFetchJobs.cancel(); // Cleanup function
   }, [searchTerm, selectedCategory, selectedJobType, minSalary, maxSalary]);
 
-  // Skeleton Loader Component
-  const SkeletonLoader = () => (
-    <div className="skeleton-loader">
-      <div className="skeleton-header"></div>
-      <div className="skeleton-text"></div>
-      <div className="skeleton-meta"></div>
-    </div>
-  );
-
   return (
     <div>
        <Navbar />

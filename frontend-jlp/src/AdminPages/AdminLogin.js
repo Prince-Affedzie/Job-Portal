@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { loginUser } from "../APIS/API";
+import { adminLogin } from "../APIS/API";
 import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import RequestStatusIndicator from "../Components/MyComponents/RequestStatusIndicator";
 
-const Login = () => {
+const AdminLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "", rememberMe: false });
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +32,7 @@ const Login = () => {
     
     try {
 
-      const response = await loginUser(formData);
+      const response = await adminLogin(formData);
       
       if (response.status === 200) {
        
@@ -46,10 +46,10 @@ const Login = () => {
         
         // Navigate after a slight delay to allow users to see the success state
         setTimeout(() => {
-          if(role === "job_seeker" || role === "admin"){
-            navigate("/job/listings");
+          if(role === "admin"){
+            navigate("/admin/dashboard");
           } else {
-            navigate('/employer/dashboard');
+            navigate('/login');
           }
         }, 1000);
       } else {
@@ -165,4 +165,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

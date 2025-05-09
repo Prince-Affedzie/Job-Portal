@@ -35,14 +35,15 @@ const MiniTaskInfo = () => {
   }, [Id]);
 
   const handleApply =async(Id)=>{
-      
+    
+    setIsProcessing(true);
      
       try{
-         setIsProcessing(true);
+        
          const response = await applyToMiniTask(Id)
          if(response.status ===200){
          
-          toast.success("Application Successful")
+          toast.success("You’ve shown interest in this job! Stay Tuned — the client might reach out soon.")
          }else{
           
           toast.error("An Error Occured. Please try again Later")
@@ -99,7 +100,7 @@ const MiniTaskInfo = () => {
     return (
       <div className="mini-task-container">
         <Navbar />
-        <ProcessingOverlay show={isProcessing} message="Submitting your Application..." />
+      
         <div className="mini-task-content">
           {renderSkeleton()}
         </div>
@@ -111,6 +112,7 @@ const MiniTaskInfo = () => {
     <div className="mini-task-container">
     <ToastContainer/>
       <Navbar />
+      <ProcessingOverlay show={isProcessing} message="Submitting your Interest..."/>
       
       {showScamAlert && <ScamAlert />}
       
@@ -182,18 +184,30 @@ const MiniTaskInfo = () => {
 
           <div className="right-column">
             {/* Employer Info */}
-            <section className="card employer-info">
-              <h3>About the Employer</h3>
+           <section className="card employer-info">
+             <h3>About the Employer</h3>
               <div className="employer-profile">
                 <div className="employer-avatar">
-                  {task.employer.name.charAt(0).toUpperCase()}
-                </div>
-                <div className="employer-details">
-                  <h4>{task.employer.name}</h4>
-                  <div className="phone-number">{task.employer.phone}</div>
-                </div>
+                   {task.employer.profileImage ? (
+               <img src={task.employer.profileImage } alt={`${task.employer.name}'s avatar`} className="avatar-img" />
+                  ) : (
+              <span>{task.employer.name.charAt(0).toUpperCase()}</span>
+               )}
               </div>
-            </section>
+              <div className="employer-details">
+                <h4 className="flex items-center gap-2">
+               {task.employer.name}
+                {task.employer.isVerified ? (
+                 <span className="badge verified">Verified</span>
+                 ) : (
+                <span className="badge unverified">Unverified</span>
+              )}
+                 </h4>
+             <div className="phone-number">{task.employer.phone}</div>
+             </div>
+              </div>
+           </section>
+
 
             {/* Safety Tips & Apply Button */}
             <section className="card safety-tips">
@@ -234,11 +248,11 @@ const MiniTaskInfo = () => {
 </div>
 
               <button 
-                className={`apply-btn ${applyClicked ? 'applied' : ''}`}
+                className={`mini-task-apply-btn ${applyClicked ? 'applied' : ''}`}
                 onClick={()=> handleApply(task._id)}
                 disabled={isProcessing}
               >
-                {applyClicked ? "Application Sent!" : "Apply Now"}
+                {applyClicked ? "Interest Sent!" : " I'm Interested"}
               </button>
             </section>
           </div>

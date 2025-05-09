@@ -26,10 +26,27 @@
   padding: 15px 0;
 }
 
-.employer-icon{
-  height: 30px;
-  width: 30px;
+.employer-icon {
+  font-size: 1.1rem; /* Adjusts icon size */
+  margin-right: 10px; /* Spacing between icon and text */
+  color: #444; /* Softer icon color */
+  transition: color 0.3s ease;
 }
+
+.employer-sidebar-links a:hover .employer-icon {
+  color: #1e40af; /* Highlight on hover */
+}
+.employer-sidebar-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  color: #333;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background-color 0.2s ease;
+}
+
 
 .employer-sidebar.collapsed .employer-sidebar-links a span,
 .employer-sidebar.collapsed .employer-sidebar-links a .text-label {

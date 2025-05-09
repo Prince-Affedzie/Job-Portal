@@ -13,7 +13,7 @@ const markAllNotificationAsRead =async(ids)=>{
   try{
     const response = await markNotificationAsRead(ids)
     if(response.status ===200){
-      console.log('All Notifications marked read')
+      
     }
 
   }catch(err){

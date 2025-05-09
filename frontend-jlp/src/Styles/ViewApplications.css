@@ -75,6 +75,15 @@
 .stat-card.pending { border-top: 4px solid #ecc94b; }
 .stat-card.pending .stat-number { color: #ecc94b; }
 
+.stat-card.reviewing { border-top: 4px solid #744210; }
+.stat-card.reviewing.stat-number { color: #744210; }
+
+.stat-card.shortlisted { border-top: 4px solid #6b46c1; }
+.stat-card.shortlisted.stat-number { color: #6b46c1; }
+
+.stat-card.offered { border-top: 4px solid #b7791f; }
+.stat-card.offered.stat-number { color: #b7791f; }
+
 .stat-card.accepted { border-top: 4px solid #48bb78; }
 .stat-card.accepted .stat-number { color: #48bb78; }
 

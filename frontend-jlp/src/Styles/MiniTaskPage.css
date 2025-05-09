@@ -178,9 +178,14 @@
     .mini-task-search-bar {
       max-width: 100%;
     }
+    
   
     .mini-task-filter-toggle {
-      display: block;
+      width: 100%;
+      margin-top: 10px;
+      text-align: center;
+      justify-content: center;
+      display:flex
     }
   
     .mini-task-content {
@@ -217,44 +222,67 @@
     }
   }
   .mini-task-category-cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 20px;
-    justify-content: center;
-    background: #f8f9fa; /* light background */
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 16px 12px;
+  background: #f8f9fa;
+  scroll-behavior: smooth;
+  gap: 16px;
+  border-radius: 10px;
+}
+
+/* Individual card styling */
+.mini-task-category-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex: 0 0 auto; /* Prevent shrinking */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.mini-task-category-card:hover {
+  background-color: #e9ecef;
+}
+
+.mini-task-category-card.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .mini-task-category-cards {
+    gap: 12px;
+    padding: 12px 10px;
   }
-  
+
   .mini-task-category-card {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    flex: 0 0 auto;
+    font-size: 13px;
+    padding: 8px 16px;
   }
-  
-  .mini-task-category-card:hover {
-    background-color: #e9ecef;
-  }
-  
-  .mini-task-category-card.active {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
-  
-  /* Small Screen (Mobile) */
-  @media (max-width: 600px) {
-    .mini-task-category-card {
-      font-size: 13px;
-      padding: 8px 12px;
-    }
-  }
+}
+
+/* Optional scrollbar styling */
+.mini-task-category-cards::-webkit-scrollbar {
+  height: 6px;
+}
+
+.mini-task-category-cards::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.mini-task-category-cards::-webkit-scrollbar-track {
+  background: transparent;
+}
 
   /* Style for the Apply Now button */
 .mini-task-apply-btn {

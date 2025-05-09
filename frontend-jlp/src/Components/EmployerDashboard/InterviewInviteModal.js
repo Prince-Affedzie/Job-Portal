@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { scheduleAnInterview } from "../../APIS/API";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const InterviewInviteModal = ({ isOpen, onClose, selectedApplicants, jobId }) => {
   const [interviewDate, setInterviewDate] = useState("");
@@ -22,7 +24,7 @@ const InterviewInviteModal = ({ isOpen, onClose, selectedApplicants, jobId }) =>
 
     setLoading(true);
     try {
-      await scheduleAnInterview({
+    const response =  await scheduleAnInterview({
         invitationsTo: selectedApplicants,
         jobId,
         interviewDate:interviewDate,
@@ -30,15 +32,15 @@ const InterviewInviteModal = ({ isOpen, onClose, selectedApplicants, jobId }) =>
         location:location
 
       });
-
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-        onClose();
-      }, 2000);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to send invitations.");
+if(response.status ===200){
+  setSuccess(true);
+  toast.success('Interview Invitation Sent Successfully')
+}
+else{
+   toast.error(response.errorMessage || `Operation failed.`);
+}
+   } catch (error) {
+     toast.error(error.response?.data?.message || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }

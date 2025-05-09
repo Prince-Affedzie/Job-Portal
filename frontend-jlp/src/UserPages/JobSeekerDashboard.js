@@ -9,7 +9,7 @@ import { notificationContext } from "../Context/NotificationContext";
 const JobSeekerDashboard = () => {
   const navigate = useNavigate();
   const { user, fetchUserInfo, fetchRecentApplications, recentApplications, minitasks } = useContext(userContext);
-  console.log(recentApplications)
+ 
   const {notifications}  = useContext( notificationContext)
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
@@ -65,15 +65,18 @@ const JobSeekerDashboard = () => {
           <div className="flex flex-wrap items-center justify-between">
             <div className="flex items-center gap-4 mb-4 md:mb-0">
               <div className="relative">
-                {user?.profileImage ? (
-                  <img
-                    src={user.profileImage}
-                    alt="Profile"
-                    className="w-16 h-16 rounded-full border-2 border-white"
-                  />
-                ) : (
-                  <FaUserCircle className="w-16 h-16 text-white" />
-                )}
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-lg border-4 border-white bg-gray-100">
+                      {user?.profileImage ? (
+                      <img
+                     src={user.profileImage}
+                     alt="Profile"
+                    className="w-full h-full object-cover"
+                     />
+                      ) : (
+                 <FaUserCircle className="w-full h-full text-gray-400" />
+                   )}
+                  </div>
+
                 <div className={`absolute bottom-0 right-0 w-4 h-4 border-2 border-white rounded-full ${profileCompletion === 100 ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
               </div>
               <div>
@@ -94,7 +97,7 @@ const JobSeekerDashboard = () => {
                 className="px-4 py-2 bg-white text-indigo-700 rounded-lg font-medium flex items-center gap-2 hover:bg-opacity-90 transition-all shadow"
               >
                 <FaClipboardList />
-                Manage Your Mini Task Jobs
+                Mini Tasks You’ve Posted
               </button>
             </div>
           </div>
@@ -223,7 +226,7 @@ const JobSeekerDashboard = () => {
                     }`}
                   >
                     <FaTasks />
-                    Mini Tasks
+                    Mini Jobs
                   </button>
                 </div>
               </div>
@@ -235,7 +238,7 @@ const JobSeekerDashboard = () => {
                     <div>
                       <h3 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
                         <FaRegCalendarCheck className="text-green-500" />
-                       Your Recent Applications
+                       Your Job Recent Applications
                       </h3>
                       
                       {loading ? (
@@ -276,7 +279,7 @@ const JobSeekerDashboard = () => {
                     <div>
                       <h3 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
                         <MdOutlineRecommend className="text-indigo-500" />
-                       Your Mini Job Applications
+                       Your Recent Mini Job Applications
                       </h3>
                       
                       {loading ? (

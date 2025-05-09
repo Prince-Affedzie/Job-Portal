@@ -20,7 +20,7 @@ const [user,setUser] = useState()
             const response = await getNotifications()
             if(response.status ===200){
               setNotifications(response.data)
-              console.log(response.data)
+              
             }else{
               setNotifications([])
             }

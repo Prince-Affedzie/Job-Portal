@@ -87,6 +87,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     max-height: 20rem;
     margin-top:1rem;
+    
   }
   
   .task-header h1 {
@@ -220,17 +221,25 @@
   }
   
   .employer-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #3498db;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #edf2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #4a5568;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
   
   .employer-details h4 {
     margin: 0 0 0.5rem 0;
@@ -430,3 +439,21 @@
       flex: 1;
     }
   }
+  .badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge.verified {
+  background-color: #38a169; /* green */
+  color: white;
+}
+
+.badge.unverified {
+  background-color: #e53e3e; /* red */
+  color: white;
+}

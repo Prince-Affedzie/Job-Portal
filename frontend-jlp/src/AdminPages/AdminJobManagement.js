@@ -92,7 +92,7 @@ const AdminJobManagementDashboard = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-4 overflow-auto bg-gray-50">
+        <div className="flex-1 p-4 overflow-auto bg-white">
              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                        <div className="bg-white p-4 rounded-lg shadow flex items-center justify-between">
                        <div>

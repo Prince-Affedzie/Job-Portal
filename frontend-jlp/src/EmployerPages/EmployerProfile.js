@@ -7,10 +7,12 @@ import EmployerNavbar from '../Components/EmployerDashboard/EmployerNavbar';
 import Footer from "../Components/MyComponents/Footer";
 import { userContext } from "../Context/FetchUser";
 import {modifyProfile,uploadImage } from '../APIS/API'
+import { useEmployerProfileContext } from "../Context/EmployerProfileContext";
+
 
 const EmployerProfile = () => {
   const { loading,user, setUser, fetchUserInfo, setLoading } = useContext(userContext);
- 
+  const {loading1,employerprofile,fetchEmloyerProfile} = useEmployerProfileContext()
   const [previewImage, setPreviewImage] = useState(null);
   const [editSection, setEditSection] = useState(null); // 'personal', 'business', 'location'
   const [isProcessing,setIsProcessing] = useState(false)
@@ -33,11 +35,14 @@ const EmployerProfile = () => {
     },
   });
 
+  
+
   useEffect(() => {
     const loadUserData = async () => {
      
       try {
         await fetchUserInfo();
+        await fetchEmloyerProfile(); 
       } catch (error) {
         console.error("Error fetching user data:", error);
       } 
@@ -46,16 +51,18 @@ const EmployerProfile = () => {
     loadUserData();
   }, []);
 
+
+
   // Update employer state when user data is available
   useEffect(() => {
-    if (user && Object.keys(user).length > 0) {
+    if (user && employerprofile && Object.keys(user).length > 0) {
       setEmployer({
         name: user.name || "",
         email: user.email || "",
         phone: user.phone || "",
-        businessName: user.businessName || "",
-        businessRegistrationProof: user.businessRegistrationProof || null,
-        businessVerified: user.businessVerified || false,
+        businessName: employerprofile.companyName || "",
+        businessRegistrationProof: employerprofile.businessDocs || null,
+        businessVerified: employerprofile.isVerified || false,
         miniTaskEligible: user.miniTaskEligible || false,
         isVerified: user.isVerified || false,
         profileImage: user.profileImage || "",
@@ -161,7 +168,7 @@ const EmployerProfile = () => {
     </div>
   );
 
-  if (loading) {
+  if (loading || loading1) {
     return (
       <div className="emp-profile__page">
         <EmployerNavbar />
@@ -175,7 +182,7 @@ const EmployerProfile = () => {
   }
 
   // If user data failed to load or is empty
-  if (!user || Object.keys(user).length === 0) {
+  if (!user || Object.keys(user).length === 0 || !employerprofile || Object.keys(employerprofile).length === 0) {
     return (
       <div className="emp-profile__page">
         <EmployerNavbar />
@@ -310,14 +317,14 @@ const EmployerProfile = () => {
           <div className="emp-profile__section">
             <div className="emp-profile__section-header">
               <h3 className="emp-profile__section-title">Business Info</h3>
-              {editSection !== "business" ? (
+              {/*{editSection !== "business" ? (
                 <FaEdit onClick={() => setEditSection("business")} className="emp-profile__edit-icon" />
               ) : (
                 <div className="emp-profile__action-icons">
                   <FaSave onClick={saveChanges} className="emp-profile__save-icon" />
                   <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
                 </div>
-              )}
+              )}*/}
             </div>
 
             <div className="emp-profile__section-content">
@@ -365,17 +372,29 @@ const EmployerProfile = () => {
                 </div>
               )}
 
-              <div className="emp-profile__badges">
-                <span className={`emp-profile__badge ${employer.businessVerified ? "emp-profile__badge--verified" : "emp-profile__badge--unverified"}`}>
+            <div className="emp-profile__badges">
+             <div className="emp-profile__badge-item">
+               <span className="emp-profile__badge-label">Business Status:</span>
+               <span className={`emp-profile__badge ${employer.businessVerified ? "emp-profile__badge--verified" : "emp-profile__badge--unverified"}`}>
                   {employer.businessVerified ? "Business Verified" : "Not Verified"}
                 </span>
+           </div>
+
+           <div className="emp-profile__badge-item">
+              <span className="emp-profile__badge-label">Account Status:</span>
                 <span className={`emp-profile__badge ${employer.isVerified ? "emp-profile__badge--verified" : "emp-profile__badge--unverified"}`}>
-                  {employer.isVerified ? "Account Verified" : "Account Not Verified"}
-                </span>
-                <span className={`emp-profile__badge ${employer.miniTaskEligible ? "emp-profile__badge--eligible" : "emp-profile__badge--not-eligible"}`}>
-                  {employer.miniTaskEligible ? "Eligible for Mini Tasks" : "Not Eligible"}
-                </span>
-              </div>
+               {employer.isVerified ? "Account Verified" : "Account Not Verified"}
+             </span>
+          </div>
+
+          <div className="emp-profile__badge-item">
+          <span className="emp-profile__badge-label">Mini Task Eligibility:</span>
+             <span className={`emp-profile__badge ${employer.miniTaskEligible ? "emp-profile__badge--eligible" : "emp-profile__badge--not-eligible"}`}>
+                {employer.miniTaskEligible ? "Eligible for Mini Tasks" : "Not Eligible"}
+            </span>
+       </div>
+        </div>
+
             </div>
           </div>
 

@@ -1,70 +1,227 @@
-import React,{useEffect} from "react";
-import { useParams,useLocation,useNavigate } from "react-router-dom";
-import "../Styles/ApplicantProfile.css";
-import EmployerNavbar from "../Components/EmployerDashboard/EmployerNavbar";
+import React from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import {
+  FaArrowLeft,
+  FaEnvelope,
+  FaPhone,
+  FaDownload,
+  FaLinkedin
+} from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ImageWithFallback, MatchScoreIndicator, formatDate } from "../EmployerPages/JobApplicantsPageComponents/Utils";
+import { modifyApplication } from "../APIS/API";
 
-const ApplicantProfile = () => {
-  // OR fetch using useParams + API if accessing via dynamic route
- // If loading dynamically via route
-  const location = useLocation()
-  const navigate = useNavigate()
-  const user = location.state?.user;
+const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const location = useLocation();
+  const applicant = location.state?.app;
+  
 
-  useEffect(() => {
-    if (!user) {
-      // Redirect if accessed directly without data
-      navigate("/employer/applicants");
-    }
-  }, [user, navigate]);
-  console.log(user)
 
-  if (!user) return null;
+  const handleAppStatusChange = async (id, status) => {
+      try {
+        const response = await modifyApplication(id, status);
+        
+        if (response.status === 200) {
+          toast.success(`Application ${status.status} successfully`);
+         
+        } else {
+          toast.error("Failed to update application status");
+        }
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || "An unexpected error occurred";
+        toast.error(errorMessage);
+      }
+    };
+
+  if (!applicant) return <div className="p-6 text-red-500">Applicant not found.</div>;
+
+  const statusOptions = ["Reviewing", "Shortlisted", "Interview", "Offered", "Rejected"];
+  const statusColors = {
+    reviewing: "border-blue-500 text-blue-700 hover:bg-blue-50",
+    shortlisted: "border-green-500 text-green-700 hover:bg-green-50",
+    interview: "border-purple-500 text-purple-700 hover:bg-purple-50",
+    offered: "border-yellow-500 text-yellow-700 hover:bg-yellow-50",
+    rejected: "border-red-500 text-red-700 hover:bg-red-50"
+  };
 
   return (
-    <div>
-        <EmployerNavbar/>
-    <div className="app-profile-container">
-      <div className="app-profile-header">
-        <img src={user.profileImage || "/default-user.png"} alt="Profile" />
-        <div>
-          <h2>{user.name}</h2>
-          <p>{user.email}</p>
-         {/*<a href={`https://your-cdn/${applicant.resume}`} target="_blank" rel="noreferrer">Download Resume</a>*/}
+    <div className="max-w-6xl mx-auto px-4 py-6">
+      <ToastContainer/>
+      <button
+        className="text-sm flex items-center gap-1 text-gray-600 hover:text-gray-800 mb-4"
+        onClick={() => navigate(-1)}
+      >
+        <FaArrowLeft /> Back
+      </button>
+
+      <div className="bg-white rounded-lg shadow-md p-6 space-y-8">
+        {/* Top Profile Section */}
+        <div className="flex flex-col md:flex-row gap-6 border-b pb-6 items-center md:items-start">
+          <div className="w-40 h-40 rounded-full overflow-hidden border border-gray-200 bg-gray-100">
+            <ImageWithFallback
+              src={applicant.user.profileImage}
+              alt={applicant.user.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-3xl font-bold text-gray-800">{applicant.user.name}</h2>
+            <p className="text-gray-600 mt-2">
+              {applicant.user.experience} • {applicant.user.location.region} • {applicant.user.location.city} • {applicant.user.location.street}
+            </p>
+
+            <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+              <a
+                href={`mailto:${applicant.user.email}`}
+                className="btn-secondary inline-flex items-center gap-2"
+              >
+                <FaEnvelope /> Email
+              </a>
+              <a
+                href={`tel:${applicant.user.phone}`}
+                className="btn-secondary inline-flex items-center gap-2"
+              >
+                <FaPhone /> Call
+              </a>
+              {applicant.linkedIn && (
+                <a
+                  href={applicant.user.linkedIn}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary inline-flex items-center gap-2"
+                >
+                  <FaLinkedin /> LinkedIn
+                </a>
+              )}
+            </div>
+          </div>
         </div>
+
+        {/* Application Info Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 border-b pb-6">
+          <DetailCard label="Applied" value={formatDate(applicant.dateApplied)} />
+          <DetailCard label="Last Activity" value={formatDate(applicant.lastActivity)} />
+          {applicant.resume && (
+            <DetailCard
+              label="Resume"
+              value={
+                <a
+                  href={applicant.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline flex items-center gap-1"
+                >
+                  <FaDownload /> Download
+                </a>
+              }
+            />
+          )}
+        </div>
+
+        {/* Skills Section */}
+        <Section title="Skills">
+          {applicant.user.skills?.length ? (
+            <div className="flex flex-wrap gap-2">
+              {applicant.user.skills.map((skill, i) => (
+                <span
+                  key={i}
+                  className="bg-gray-100 border border-gray-300 px-3 py-1 text-sm rounded-full"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500">No skills listed</p>
+          )}
+        </Section>
+
+        {/* Education Section */}
+        <Section title="Education">
+          {applicant.user.education?.length ? (
+            <div className="space-y-3">
+              {applicant.user.education.map((edu, i) => (
+                <div key={i} className="bg-gray-50 p-4 rounded shadow-sm">
+                  <p className="font-semibold">{edu.degree}</p>
+                  <p className="text-gray-600">{edu.institution}</p>
+                  <p className="text-sm text-gray-500">
+                    {formatDate(edu.startDate)} - {formatDate(edu.yearOfCompletion)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500">No education information</p>
+          )}
+        </Section>
+
+        {/* Experience Section */}
+        <Section title="Work Experience">
+          {applicant.user.workExperience?.length ? (
+            <div className="space-y-3">
+              {applicant.user.workExperience.map((exp, i) => (
+                <div key={i} className="bg-gray-50 p-4 rounded shadow-sm">
+                  <p className="font-semibold">{exp.jobTitle}</p>
+                  <p className="text-gray-600">{exp.company}</p>
+                  <p className="text-sm text-gray-500">
+                    {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500">No experience listed</p>
+          )}
+        </Section>
+
+        {/* Cover Letter Section */}
+        {applicant.coverLetter && (
+          <Section title="Cover Letter">
+            <div className="bg-gray-50 p-4 rounded text-sm text-gray-700 whitespace-pre-line shadow-sm">
+              {applicant.coverLetter}
+            </div>
+          </Section>
+        )}
+
+        {/* Status Update Section */}
+        <Section title="Click the Buttons to Update the Status of this Application.">
+          <div className="flex flex-wrap gap-2">
+            {statusOptions.map((status) => {
+              const isActive = applicant.status?.toLowerCase() === status.toLowerCase();
+              return (
+                <button
+                  key={status}
+                  onClick={() =>  handleAppStatusChange(applicant.id, { status })}
+                  className={`px-4 py-2 border rounded-md transition-colors text-sm ${
+                    statusColors[status.toLowerCase()] || ""
+                  } ${isActive ? "font-semibold shadow-sm" : ""}`}
+                >
+                  {status}
+                </button>
+              );
+            })}
+          </div>
+        </Section>
       </div>
-
-      <section className="app-profile-section ">
-        <h3>Skills</h3>
-        <div className="app-profile-skills-list">
-          {user.skills && user.skills.map((skill, i) => (
-            <span key={i} className="app-profile-skill-tag">{skill}</span>
-          ))}
-        </div>
-      </section>
-
-      <section className="app-profile-section">
-        <h3>Education</h3>
-        {user.education && user.education.map((edu, i) => (
-          <div key={i} className="app-profile-edu-item">
-            <strong>{edu.degree}</strong> - {edu.institution}
-            <p>{edu.startYear} - {edu.endYear}</p>
-          </div>
-        ))}
-      </section>
-
-      <section className="app-profile-section">
-        <h3>Work Experience</h3>
-        {user.workExperience.length>0 &&user.workExperience.map((exp, i) => (
-          <div key={i} className="app-profile-exp-item ">
-            <strong>{exp.jobTitle}</strong> @ {exp.company}
-            <p>{exp.description}</p>
-            <p>{new Date(exp.startDate).toDateString()} - {new Date(exp.endDate).toDateString()}</p>
-          </div>
-        ))}
-      </section>
-    </div>
     </div>
   );
 };
 
-export default ApplicantProfile;
+const Section = ({ title, children }) => (
+  <div>
+    <h3 className="text-lg font-semibold text-gray-800 mb-3">{title}</h3>
+    {children}
+  </div>
+);
+
+const DetailCard = ({ label, value }) => (
+  <div className="bg-gray-50 p-4 rounded shadow-sm">
+    <p className="text-xs text-gray-500 uppercase tracking-wide">{label}</p>
+    <p className="font-medium mt-1">{value}</p>
+  </div>
+);
+
+export default ApplicantProfilePage;

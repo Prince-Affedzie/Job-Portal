@@ -44,7 +44,7 @@ export const UserProvider =({children})=>{
       try{
         const response = await getRecentApplications()
         if(response.status ===200){
-          console.log(response.data)
+          
           setRecentApplications(response.data)
         }else{
           setRecentApplications([])
@@ -63,7 +63,7 @@ export const UserProvider =({children})=>{
 
         const response = await getYourAppliedMiniTasks()
         if(response.status===200){
-          console.log(response.data)
+          
           setMiniTasks(response.data)
         }else{
           setMiniTasks([])

@@ -124,7 +124,7 @@ export default function AdminDashboard() {
     }
     
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-white min-h-screen">
       {/* Navigation */}
        <AdminNavbar/>
       

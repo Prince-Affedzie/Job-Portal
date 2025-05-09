@@ -36,7 +36,7 @@ const Signup = () => {
       if (response.status === 200) {
         toast.success("You signed up successfully!");
         const {role} = response.data
-        console.log(role)
+       
         if(role === "employer"){
           login(role)
           navigate('/employer/onboarding')

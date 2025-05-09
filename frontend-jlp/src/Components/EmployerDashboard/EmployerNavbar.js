@@ -13,7 +13,9 @@ const EmployerNavbar = () => {
   return (
     <nav className="employer-navbar">
       <div className="employer-logo">
-        <Link to="/employer/dashboard">WorkaFlow</Link>
+      <Link to="/employer/dashboard" className="text-2xl font-serif font-extrabold text-blue-600 tracking-tight">
+              <span className="text-gray-100">Worka</span><span className="text-blue-300">Flow</span>
+      </Link>
       </div>
 
       {/* Desktop/Mobile Nav Links */}

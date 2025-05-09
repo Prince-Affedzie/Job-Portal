@@ -92,7 +92,7 @@ const MiniTaskPage = () => {
        const response = await applyToMiniTask(Id)
        if(response.status ===200){
        
-        toast.success("Application Successful")
+        toast.success("You’ve shown interest in this job! Stay Tuned — the client might reach out soon.")
        }else{
         
         toast.error("An Error Occured. Please try again Later")
@@ -140,7 +140,7 @@ const MiniTaskPage = () => {
   return (
     <div  className="mini-task-list-page">
         <Navbar />
-        <ProcessingOverlay show={isProcessing} message="Submitting your Application..." />
+        <ProcessingOverlay show={isProcessing} message="Submitting your Interest..." />
     <div className="mini-task-list-container">
     
       <ToastContainer/>
@@ -149,34 +149,34 @@ const MiniTaskPage = () => {
       <div className="mini-task-banner">
         <h1>Find Mini Tasks & Earn</h1>
         <p>Browse through short-term gigs and apply for tasks that match your skills.</p>
-        <button className="mini-task-browse-btn">Browse Tasks</button>
+        {/*<button className="mini-task-browse-btn">Browse Tasks</button>*/}
       </div>
 
       {/* Category Cards Section */}
     {/* Category Cards Section */}
- <div className="mini-task-category-cards">
-  <div
-    className={`mini-task-category-card ${selectedCategory === "" ? "active" : ""}`}
-    onClick={() => {
-      setSelectedCategory("");
-      setSelectedSubCategory("");
-    }}
-  >
-    All
-  </div>
-  {Object.keys(categoryOptions).map((category) => (
-    <div
-      key={category}
-      className={`mini-task-category-card ${selectedCategory === category ? "active" : ""}`}
-      onClick={() => {
-        setSelectedCategory(category);
-        setSelectedSubCategory("");
-      }}
-    >
-      {category}
-    </div>
-  ))}
-  </div>
+        <div className="mini-task-category-cards">
+          <div
+            className={`mini-task-category-card ${selectedCategory === "" ? "active" : ""}`}
+              onClick={() => {
+              setSelectedCategory("");
+              setSelectedSubCategory("");
+              }}
+            >
+          All
+          </div>
+            {Object.keys(categoryOptions).map((category) => (
+          <div
+           key={category}
+             className={`mini-task-category-card ${selectedCategory === category ? "active" : ""}`}
+                onClick={() => {
+             setSelectedCategory(category);
+              setSelectedSubCategory("");
+          }}
+         >
+          {category}
+          </div>
+           ))}
+        </div>
 
       {/* Header */}
       <header className="mini-task-header">
@@ -240,7 +240,7 @@ const MiniTaskPage = () => {
           ) : tasks.length > 0 ?(
             currentTasks.map((task) => (
               <div key={task.id} className="mini-task-card">
-                <div className="mini-task-details" onClick={() => setSelectedTask(task)}>
+                <div className="mini-task-details"  onClick={() => navigate(`/view/mini_task/info/${task._id}`)}>
                   <h3 className="mini-task-title">{task.title}</h3>
                   <p className="mini-task-description">{task.description.slice(0,120)+"..."}</p>
                   <div className="mini-task-meta">
@@ -249,16 +249,17 @@ const MiniTaskPage = () => {
                   </div>
                 </div>
 
-                <button
+                {/*<button
                     className="mini-task-view-btn"
                     onClick={() => navigate(`/view/mini_task/info/${task._id}`)}
                   >
                     View Details
-                  </button>
+                  </button>*/}
                
-                <button className="mini-task-apply-btn" onClick={()=> applyToTask(task._id)} disabled={isProcessing}>
-                  Apply Now
-                </button>
+               <button className="mini-task-apply-btn" onClick={() => applyToTask(task._id)} disabled={isProcessing}>
+                  I’m Interested
+                 </button>
+
                
                 
                 

@@ -1,79 +1,107 @@
-import React, { useState,useContext,useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes, FaUserCircle, FaBell } from "react-icons/fa";
 import "./Navbar.css";
 import { notificationContext } from '../../Context/NotificationContext';
 
-
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const {notifications,fetchNotifications} = useContext( notificationContext)
-  console.log(notifications)
+  const { notifications, fetchNotifications } = useContext(notificationContext);
+  
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
-  useEffect(()=>{
-    fetchNotifications()
-  },[])
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
-  //const [jobsDropdownOpen, setJobsDropdownOpen] = useState(false);
+  // Close menu when clicking a link
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
 
   return (
     <nav className="navbar">
       {/* Left: Logo */}
-      <Link to="/" className="logo">
-        WorkaFlow
+      <Link to="/job/listings" className="text-2xl font-serif font-extrabold text-blue-600 tracking-tight">
+        <span className="text-gray-100">Worka</span><span className="text-blue-300">Flow</span>
       </Link>
 
-      {/* Center: Nav Links */}
-      <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
-
-      <li>
+      {/* Desktop Nav Links */}
+      <ul className="desktop-nav-links">
+        <li>
           <Link to="/mini_task/listings">Mini Jobs</Link>
-          </li>
-          <li>
-          <Link to="/job/listings">Regular Jobs</Link>
-          </li>
-        <li >
         </li>
         <li>
-          <Link  to="/post/mini_task" onClick={() => setMenuOpen(false)}>
-            Post a Mini Task
+          <Link to="/job/listings">Regular Jobs</Link>
+        </li>
+        <li>
+          <Link to="/post/mini_task">
+            Post Mini Job
           </Link>
         </li>
       </ul>
 
-      {/* Right: Notifications, Profile & Menu Toggle */}
-      <div className="nav-icons">
-        {/* Notification Bell */}
-   <Link to="/view/all_notifications"  className="notification-container" >
-    <FaBell className="notification-icon" />
-    {notifications && notifications.filter(n => !n.read).length > 0 && (
-    <span className="notification-badge">
-      {notifications.filter(n => !n.read).length}
-    </span>
-  )}
-   {/* {showNotifications && (
-      <div className="notification-dropdown">
-        {notifications && notifications.length > 0 ? 
-          notifications.slice(0,5).map((note) => (
-            <p key={note._id} className="notification-item">{note.message}</p>
-          )) 
-          : 
-          <p className="notification-item">No new notifications</p>
-        }
-      </div>
-    )} */}
-    </Link> 
+      {/* Mobile Menu Toggle */}
+      <button className="j-menu-toggle" onClick={toggleMenu}>
+        {menuOpen ? <FaTimes /> : <FaBars />}
+      </button>
 
-        {/* User Profile */}
-        <Link to={"/h1/dashboard"}>
-          <FaUserCircle className="profile-icon" />
+      {/* Mobile Menu - Contains both nav links and icons */}
+      <div className={`mobile-menu-container ${menuOpen ? "open" : ""}`}>
+        {/* Nav Links */}
+        <ul className="j-nav-links">
+          <li>
+            <Link to="/mini_task/listings" onClick={closeMenu}>Mini Jobs</Link>
+          </li>
+          <li>
+            <Link to="/job/listings" onClick={closeMenu}>Regular Jobs</Link>
+          </li>
+          <li>
+            <Link to="/post/mini_task" onClick={closeMenu}>
+              Post a Mini Task
+            </Link>
+          </li>
+          
+          {/* Mobile-only nav items (moved from nav-icons) */}
+          <li className="mobile-only-nav-item">
+            <Link to="/view/all_notifications" onClick={closeMenu} className="mobile-nav-icon">
+              <FaBell className="icon" />
+              <span className="icon-text">Notifications</span>
+              {notifications && notifications.filter(n => !n.read).length > 0 && (
+                <span className="notification-badge mobile">
+                  {notifications.filter(n => !n.read).length}
+                </span>
+              )}
+            </Link>
+          </li>
+          <li className="mobile-only-nav-item">
+            <Link to="/h1/dashboard" onClick={closeMenu} className="mobile-nav-icon">
+              <FaUserCircle className="icon" />
+              <span className="icon-text">Profile</span>
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* Desktop-only: Right Icons */}
+      <div className="nav-icons desktop-only">
+        {/* Notification Bell */}
+        <Link to="/view/all_notifications" className="notification-container">
+          <FaBell className="notification-icon" />
+          {notifications && notifications.filter(n => !n.read).length > 0 && (
+            <span className="notification-badge">
+              {notifications.filter(n => !n.read).length}
+            </span>
+          )}
         </Link>
 
-        {/* Mobile Menu Toggle */}
-        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-          {menuOpen ? <FaTimes /> : <FaBars />}
-        </button>
+        {/* User Profile */}
+        <Link to="/h1/dashboard">
+          <FaUserCircle className="profile-icon" />
+        </Link>
       </div>
     </nav>
   );

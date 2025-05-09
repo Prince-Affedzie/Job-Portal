@@ -4,6 +4,7 @@ import moment from "moment";
 import "../Styles/ViewApplications.css";
 import Navbar from "../Components/MyComponents/Navbar";
 import { getRecentApplications } from "../APIS/API";
+import Pagination from "../Components/MyComponents/Pagination";
 
 const ViewApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -16,6 +17,7 @@ const ViewApplications = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [applicationsPerPage] = useState(6);
   const [isFilterExpanded, setIsFilterExpanded] = useState(false);
+ 
 
   useEffect(() => {
     fetchApplications();
@@ -82,9 +84,15 @@ const ViewApplications = () => {
       case "pending": return "status-badge status-pending";
       case "accepted": return "status-badge status-accepted";
       case "rejected": return "status-badge status-rejected";
+      case "completed": return "status-badge status-completed";
+      case "reviewing": return "status-badge status-reviewing";
+      case "shortlisted": return "status-badge status-shortlisted";
+      case "offered": return "status-badge status-offered";
+      case "interview": return "status-badge status-interview";
       default: return "status-badge";
     }
   };
+  
 
   // Pagination
   const indexOfLastApplication = currentPage * applicationsPerPage;
@@ -229,29 +237,11 @@ const ViewApplications = () => {
                 )}
               </div>
 
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button 
-                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    disabled={currentPage === 1}
-                    className="view-app-page-btn prev-btn"
-                  >
-                    &laquo; Prev
-                  </button>
-                  
-                  <div className="page-info">
-                    Page {currentPage} of {totalPages}
-                  </div>
-                  
-                  <button
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage === totalPages}
-                    className="view-app-page-btn next-btn"
-                  >
-                    Next &raquo;
-                  </button>
-                </div>
-              )}
+               <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={(page) => setCurrentPage(page)}
+                          />
             </>
           )}
         </div>
@@ -301,7 +291,7 @@ const ViewApplications = () => {
                 <h4>Job Description</h4>
                 <p className="job-description">
                   {selectedApplication.job?.description 
-                    ? `${selectedApplication.job.description.slice(0, 300)}${selectedApplication.job.description.length > 300 ? "..." : ""}`
+                    ? `${selectedApplication.job.description.slice(0, 100)}${selectedApplication.job.description.length > 300 ? "..." : ""}`
                     : "No description available."}
                 </p>
               </div>

@@ -51,7 +51,7 @@ const MyMiniTaskApplications = () => {
     <div>
       <Navbar />
       <div className="my-mini-applications-container">
-        <h1 className="page-title">Your MiniTask Applications</h1>
+        <h1 className="page-title">Mini Jobs You've Applied To</h1>
 
         <div className="mini-filter-container">
           <span>Filter by status:</span>

@@ -17,9 +17,11 @@ import EmployerNavbar from "../Components/EmployerDashboard/EmployerNavbar";
 import "../Styles/EmployerDashboard.css";
 import { jobsCreatedContext } from "../Context/EmployerContext1";
 import { notificationContext } from "../Context/NotificationContext";
+import { useEmployerProfileContext } from "../Context/EmployerProfileContext";
 
 const EmployerDashboard = () => {
   const { Jobs, loading } = useContext(jobsCreatedContext);
+ 
   const { notifications } = useContext(notificationContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredJobs, setFilteredJobs] = useState([]);

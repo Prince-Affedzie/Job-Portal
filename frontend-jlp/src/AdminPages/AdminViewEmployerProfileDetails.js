@@ -189,12 +189,12 @@ const AdminEmployerDetail = () => {
                   </Descriptions.Item>
                   <Descriptions.Item label="Business Docs">
                     <Space direction="vertical">
-                      {employer.businessDocs?.length > 0 ? (
-                        employer.businessDocs.map((doc, i) => (
-                          <a href={doc.fileUrl} key={i} target="_blank" rel="noreferrer">
-                            Document {i + 1}
+                      {employer.businessDocs?(
+                        
+                          <a href={employer.businessDocs} target="_blank" rel="noreferrer">
+                            View Docs
                           </a>
-                        ))
+                       
                       ) : (
                         <span>No Documents</span>
                       )}

@@ -301,6 +301,9 @@
 .responsibility-tag {
     background-color: #6c757d;
     color: white;
+    max-width: 100%;
+    word-wrap: break-word;
+    word-break: break-word;
     font-size: 14px;
     font-weight: 500;
     padding: 6px 12px;

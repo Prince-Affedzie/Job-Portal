@@ -1,10 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Eye, Edit, Trash2, Search } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useAdminContext } from "../Context/AdminContext";
+import { getSingleUser } from "../APIS/API";
 import AdminNavbar from "../Components/AdminComponents/AdminNavbar";
 import AdminSidebar from "../Components/AdminComponents/Adminsidebar";
-import { getSingleUser } from "../APIS/API";
 
 const AdminUserDetails = () => {
   const { Id } = useParams();
@@ -14,8 +13,8 @@ const AdminUserDetails = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
         const response = await getSingleUser(Id);
         if (response.status === 200) {
           setUser(response.data);
@@ -29,17 +28,22 @@ const AdminUserDetails = () => {
         setLoading(false);
       }
     };
-
     fetchUser();
   }, [Id]);
 
   return (
-    <div className="flex">
-      <AdminSidebar />
-      <div className="flex-1 bg-gray-50 min-h-screen">
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="hidden md:block w-64 bg-white shadow-md">
+        <AdminSidebar />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1">
         <AdminNavbar />
+
         <div className="p-6 max-w-5xl mx-auto">
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
             {loading ? (
               <div className="text-center py-10">
                 <div className="w-10 h-10 mx-auto border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
@@ -48,97 +52,116 @@ const AdminUserDetails = () => {
             ) : !user ? (
               <div className="text-center">
                 <p className="text-gray-500">User not found</p>
-                <button
-                  onClick={() => navigate(-1)}
-                  className="mt-4 text-blue-600 underline"
-                >
+                <button onClick={() => navigate(-1)} className="mt-4 text-blue-600 underline">
                   Go Back
                 </button>
               </div>
             ) : (
-                <div className="p-4 sm:p-6">
-                    <button onClick={()=>navigate(`/admin/edit/user/${user._id}`)} className="text-gray-400 hover:text-green-600" title="Edit">
-                         <Edit className="w-5 h-5" />
-                    </button>
-                {/* Contact & Profile Info Card */}
-                <div className="mt-6 bg-gray-100 p-5 rounded-xl shadow-sm">
-                  <h3 className="text-lg font-semibold mb-4">Contact & Profile Info</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                    <div><strong>Phone:</strong> {user.phone || "N/A"}</div>
-                    <div><strong>Email:</strong> {user.email || "N/A"}</div>
-                    <div><strong>Bio:</strong> {user.Bio || "No bio"}</div>
+              <>
+                {/* Header with Avatar and Basic Info */}
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={user.profileImage || "/images/default-avatar.png"}
+                      alt="Profile"
+                      className="w-20 h-20 rounded-full object-cover shadow-md"
+                    />
                     <div>
-                      <strong>Skills:</strong>{" "}
-                      {user.skills?.length > 0 ? user.skills.join(", ") : "None"}
-                    </div>
-                    <div>
-                      <strong>Location:</strong>{" "}
-                      {[user.location?.street, user.location?.town, user.location?.city, user.location?.region]
-                        .filter(Boolean)
-                        .join(", ") || "N/A"}
+                      <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
+                      <p className="text-gray-500 text-sm">{user.email}</p>
                     </div>
                   </div>
+
+                  <button
+                    onClick={() => navigate(`/admin/edit/user/${user._id}`)}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow"
+                  >
+                    <Edit className="w-4 h-4" />
+                    Edit User
+                  </button>
                 </div>
-              
-                {/* Status & Verification Card */}
-                <div className="mt-6 bg-gray-100 p-5 rounded-xl shadow-sm">
-                  <h3 className="text-lg font-semibold mb-4">Status & Verification</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                    <div><strong>Profile Completed:</strong> {user.profileCompleted ? "Yes" : "No"}</div>
-                    <div><strong>Mini Task Eligible:</strong> {user.miniTaskEligible ? "Yes" : "No"}</div>
-                    <div><strong>Verified:</strong> {user.isVerified ? "Yes" : "No"}</div>
-                    <div><strong>Status:</strong> {user.isActive ? "Active" : "Inactive"}</div>
+
+                {/* Sections */}
+                <div className="mt-10 grid grid-cols-1 gap-6">
+                  {/* Contact & Profile Info */}
+                  <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
+                    <h3 className="text-lg font-semibold mb-4">Contact & Profile Info</h3>
+                    <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
+                      <div><strong>Phone:</strong> {user.phone || "N/A"}</div>
+                      <div><strong>Email:</strong> {user.email}</div>
+                      <div><strong>Bio:</strong> {user.Bio || "No bio"}</div>
+                      <div>
+                        <strong>Skills:</strong>{" "}
+                        {user.skills?.length > 0 ? user.skills.join(", ") : "None"}
+                      </div>
+                      <div>
+                        <strong>Location:</strong>{" "}
+                        {[user.location?.street, user.location?.town, user.location?.city, user.location?.region]
+                          .filter(Boolean)
+                          .join(", ") || "N/A"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Status & Verification */}
+                  <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
+                    <h3 className="text-lg font-semibold mb-4">Status & Verification</h3>
+                    <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
+                      <div><strong>Profile Completed:</strong> {user.profileCompleted ? "Yes" : "No"}</div>
+                      <div><strong>Mini Task Eligible:</strong> {user.miniTaskEligible ? "Yes" : "No"}</div>
+                      <div><strong>Verified:</strong> {user.isVerified ? "Yes" : "No"}</div>
+                      <div><strong>Status:</strong> {user.isActive ? "Active" : "Inactive"}</div>
+                    </div>
+                  </div>
+
+                  {/* Education */}
+                  <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
+                    <h3 className="text-lg font-semibold mb-4">Education</h3>
+                    {user.education?.length > 0 ? (
+                      user.education.map((edu, idx) => (
+                        <div key={idx} className="text-sm mb-2">
+                          <p><strong>{edu.degree}</strong> - {edu.institution} ({edu.yearOfCompletion})</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm">No education records</p>
+                    )}
+                  </div>
+
+                  {/* Work Experience */}
+                  <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
+                    <h3 className="text-lg font-semibold mb-4">Work Experience</h3>
+                    {user.workExperience?.length > 0 ? (
+                      user.workExperience.map((exp, idx) => (
+                        <div key={idx} className="mb-4 text-sm">
+                          <p className="font-medium">{exp.jobTitle} @ {exp.company}</p>
+                          <p className="text-gray-600">
+                            {new Date(exp.startDate).toLocaleDateString()} -{" "}
+                            {exp.endDate ? new Date(exp.endDate).toLocaleDateString() : "Present"}
+                          </p>
+                          <p className="mt-1">{exp.description}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm">No work experience</p>
+                    )}
+                  </div>
+
+                  {/* Applied Jobs */}
+                  <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
+                    <h3 className="text-lg font-semibold mb-4">Applied Jobs</h3>
+                    {user.appliedJobs?.length > 0 ? (
+                      <ul className="list-disc pl-6 text-sm text-gray-700">
+                        {user.appliedJobs.map((jobId, idx) => (
+                          <li key={idx}>{jobId.title}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-500 text-sm">No jobs applied</p>
+                    )}
                   </div>
                 </div>
-              
-                {/* Education Card */}
-                <div className="mt-6 bg-gray-100 p-5 rounded-xl shadow-sm">
-                  <h3 className="text-lg font-semibold mb-4">Education</h3>
-                  {user.education?.length > 0 ? (
-                    user.education.map((edu, idx) => (
-                      <div key={idx} className="mb-2 text-sm">
-                        <p><strong>{edu.degree}</strong> - {edu.institution} ({edu.yearOfCompletion})</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500 text-sm">No education records</p>
-                  )}
-                </div>
-              
-                {/* Work Experience Card */}
-                <div className="mt-6 bg-gray-100 p-5 rounded-xl shadow-sm">
-                  <h3 className="text-lg font-semibold mb-4">Work Experience</h3>
-                  {user.workExperience?.length > 0 ? (
-                    user.workExperience.map((exp, idx) => (
-                      <div key={idx} className="mb-4 text-sm">
-                        <p className="font-medium">{exp.jobTitle} @ {exp.company}</p>
-                        <p className="text-gray-600">
-                          {new Date(exp.startDate).toLocaleDateString()} -{" "}
-                          {exp.endDate ? new Date(exp.endDate).toLocaleDateString() : "Present"}
-                        </p>
-                        <p className="mt-1">{exp.description}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500 text-sm">No work experience</p>
-                  )}
-                </div>
-              
-                {/* Applied Jobs Card */}
-                <div className="mt-6 bg-gray-100 p-5 rounded-xl shadow-sm">
-                  <h3 className="text-lg font-semibold mb-4">Applied Jobs</h3>
-                  {user.appliedJobs?.length > 0 ? (
-                    <ul className="list-disc ml-6 text-sm">
-                      {user.appliedJobs.map((jobId, idx) => (
-                        <li key={idx}>{jobId.title}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-500 text-sm">No jobs applied</p>
-                  )}
-                </div>
-              </div>
-              
+              </>
             )}
           </div>
         </div>

@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { completeProfile } from "../APIS/API";
 import Select from "react-select";
+import CreatableSelect from 'react-select/creatable';
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { IoCloseCircle } from "react-icons/io5";
 import { FaUser, FaPhoneAlt, FaMapMarkerAlt, FaLaptopCode, FaCamera } from "react-icons/fa";
@@ -12,23 +13,60 @@ import { motion, AnimatePresence } from "framer-motion";
 const ProfileCompletion = () => {
   const  location  = useLocation();
   const role =location.state?.role
-  console.log(role)
+  
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const skillSuggestions = [
-    { value: "JavaScript", label: "JavaScript" },
-    { value: "React", label: "React" },
-    { value: "Node.js", label: "Node.js" },
-    { value: "Python", label: "Python" },
-    { value: "Machine Learning", label: "Machine Learning" },
-    { value: "UI/UX Design", label: "UI/UX Design" },
-    { value: "Data Science", label: "Data Science" },
-    { value: "SEO", label: "SEO" },
-    { value: "Copywriting", label: "Copywriting" },
-    { value: "Cybersecurity", label: "Cybersecurity" },
+    
+    {
+      label: "Technology & Software",
+      options: [
+        { value: "Software Engineer", label: "Software Engineer" },
+        { value: "Frontend Developer", label: "Frontend Developer" },
+        { value: "Backend Developer", label: "Backend Developer" },
+        { value: "BlockChain Developer", label: "BlockChain Developer" },
+        { value: "DevOps Engineer", label: "DevOps Engineer" },
+        { value: "UI/UX Designer", label: "UI/UX Designer" },
+        { value: "Data Scientist", label: "Data Scientist" },
+        { value: "Cloud Architect", label: "Cloud Architect" },
+      ],
+    },
+    {
+      label: "Business & Operations",
+      options: [
+        { value: "Administrative Assistant", label: "Administrative Assistant" },
+        { value: "Business Analyst", label: "Business Analyst" },
+        { value: "Business Consultant", label: "Business Consultant" },
+        { value: "Product Manager", label: "Product Manager" },
+        { value: "Operations Manager", label: "Operations Manager" },
+        { value: "HR Specialist", label: "HR Specialist" },
+      ],
+    },
+    {
+      label: "Marketing & Sales",
+      options: [
+        { value: "Digital Marketer", label: "Digital Marketer" },
+        { value: "Content Strategist", label: "Content Strategist" },
+        { value: "Social Media Manager", label: "Social Media Manager" },
+        { value: "Sales Executive", label: "Sales Executive" },
+        { value: "SEO Specialist", label: "SEO Specialist" },
+      ],
+    },
+    {
+      label: "Creative & Design",
+      options: [
+        { value: "Graphic Designer", label: "Graphic Designer" },
+        { value: "Animator", label: "Animator" },
+        { value: "Illustrator", label: "Illustrator" },
+        { value: "Motion Designer", label: "Motion Designer" },
+        { value: "Video Editor", label: "Video Editor" },
+        { value: "3D Artist", label: "3D Artist" },
+        
+      ],
+    },
   ];
-
+  
   const regionSuggestions = [
     { value: "Greater Accra", label: "Greater Accra" },
     { value: "Ashanti", label: "Ashanti" },
@@ -60,6 +98,8 @@ const ProfileCompletion = () => {
       borderColor: "#e2e8f0",
       borderRadius: "0.5rem",
       padding: "0.25rem",
+      maxHeight: "250px",
+       overflowY: "auto",
       boxShadow: "none",
       "&:hover": {
         borderColor: "#3b82f6",
@@ -450,18 +490,19 @@ const ProfileCompletion = () => {
                   transition={pageTransition}
                   className="space-y-6"
                 >
-                  <div>
+                  <div className="relative z-50">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Your Skills</label>
                     <p className="text-sm text-gray-500 mb-3">Select skills that showcase your expertise</p>
                     
-                    <Select
+                    <CreatableSelect
                       isMulti
-                      options={skillSuggestions}
-                      styles={selectStyles}
-                      onChange={handleSkillChange}
-                      placeholder="Search and select skills..."
-                      className={errors.skills ? "border-red-500 rounded-lg" : ""}
-                    />
+                        options={skillSuggestions}
+                         styles={selectStyles}
+                         onChange={handleSkillChange}
+                         placeholder="Search or type your skills..."
+                         className={errors.skills ? "border-red-500 rounded-lg" : ""}
+                     />
+                    
                     {errors.skills && <p className="text-red-500 text-xs mt-1">{errors.skills}</p>}
                   </div>
                   
