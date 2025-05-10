@@ -238,6 +238,7 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-bottom: 1.5rem;
+  justify-content: center; /* center on all screen sizes */
 }
 
 .status-stat {
@@ -249,21 +250,43 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  transition: var(--transition);
+  transition: background 0.3s, color 0.3s;
+  font-size: 0.875rem;
+  white-space: nowrap; /* keep label and count on one line */
+  border: none;
 }
 
+/* Active State */
 .status-stat.active {
   background: var(--primary-color);
   color: white;
 }
 
+/* Count Badge */
 .status-count {
   background: white;
   color: var(--primary-color);
   padding: 0 0.5rem;
   border-radius: 1rem;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
 }
+
+/* Mobile-Specific Adjustments */
+@media (max-width: 480px) {
+  .status-stat {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .applicant-status-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+}
+
 
 /* Applicant Card */
 .applicants-list {
