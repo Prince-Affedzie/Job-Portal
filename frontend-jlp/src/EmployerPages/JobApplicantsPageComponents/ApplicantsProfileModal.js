@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   FaArrowLeft,
@@ -21,7 +21,10 @@ const ApplicantProfileModal = ({ applicants, onStatusChange }) => {
   const location = useLocation();
   const applicant = location.state?.applicant;
 
-
+useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   const handleAppStatusChange = async (id, status) => {
       try {
         const response = await modifyApplication(id, status);
@@ -48,6 +51,9 @@ const ApplicantProfileModal = ({ applicants, onStatusChange }) => {
     offered: "border-yellow-500 text-yellow-700 hover:bg-yellow-50",
     rejected: "border-red-500 text-red-700 hover:bg-red-50"
   };
+
+   
+
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   FaArrowLeft,
@@ -18,7 +18,9 @@ const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
   const location = useLocation();
   const applicant = location.state?.app;
   
-
+useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleAppStatusChange = async (id, status) => {
       try {

@@ -87,6 +87,10 @@ const useApplicantsManager = (jobId) => {
     }
   };
 
+  useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+
   // Status change handler
   const handleAppStatusChange = async (id, status) => {
     try {
