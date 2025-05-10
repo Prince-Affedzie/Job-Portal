@@ -15,6 +15,10 @@ const JobSeekerDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+
+  useEffect(() => {
     if (recentApplications !== null) {
       setLoading(false);
     }
