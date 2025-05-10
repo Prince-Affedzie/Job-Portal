@@ -203,7 +203,7 @@ export default function WorkaflowLanding() {
                     <span className="text-white-800">Build your portfolio and client network</span>
                   </li>
                 </ul>
-                <button onClick={() => navigate('/talent-signup')} className="flex items-center text-blue-600 font-medium group">
+                <button onClick={()=>navigate('/signup')} className="flex items-center text-blue-600 font-medium group">
                   <span>Find Work</span>
                   <ChevronRight size={18} className="ml-1 transform group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -248,7 +248,7 @@ export default function WorkaflowLanding() {
                     <span className="text-white-800">Scale your workforce up or down as needed</span>
                   </li>
                 </ul>
-                <button onClick={() => navigate('/business-signup')} className="flex items-center text-blue-600 font-medium group">
+                <button onClick={()=>navigate('/signup')} className="flex items-center text-blue-600 font-medium group">
                   <span>Post Opportunities</span>
                   <ChevronRight size={18} className="ml-1 transform group-hover:translate-x-1 transition-transform" />
                 </button>
