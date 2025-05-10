@@ -90,7 +90,7 @@ const JobSeekerDashboard = () => {
                 className="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg flex items-center gap-2 transition-all"
               >
                 <FaUserCircle />
-                Edit Profile
+                View Profile
               </button>
               <button
                 onClick={() => navigate('/manage/mini_tasks')}
