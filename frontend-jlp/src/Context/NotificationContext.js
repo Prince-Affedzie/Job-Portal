@@ -43,7 +43,7 @@ const [user,setUser] = useState()
   useEffect(()=>{
     fetchNotifications()
     
-     const socket  = io(process.env.REACT_APP_BACKEND_URL,{
+     const socket  = io('https://workaflow-backend-1f41ee5ec840.herokuapp.com/',{
       withCredentials:true
      
   })
