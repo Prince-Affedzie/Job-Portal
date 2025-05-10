@@ -22,6 +22,22 @@
   .footer-section h2, .footer-section h3 {
     margin-bottom: 10px;
   }
+
+  .footer-section.social {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* or center, depending on your layout */
+}
+
+.footer-section.social h3 {
+  margin-bottom: 10px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px; /* consistent spacing between icons */
+}
+
   
   .footer-section p {
     font-size: 14px;
