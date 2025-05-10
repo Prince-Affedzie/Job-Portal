@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, Briefcase, Users, MessageSquare, CheckCircle, ArrowRight, Menu, X, Calendar, Clock, Globe, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import '../Components/MyComponents/Navbar.css'
 
 export default function WorkaflowLanding() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,7 +34,7 @@ export default function WorkaflowLanding() {
             </div>
             
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex md:items-center md:space-x-8">
+            <nav className="custom-nav">
               <a href="#features" className={`${scrolled ? 'text-blue-100 hover:text-white' : 'text-blue-700 hover:text-blue-900'} font-medium transition-colors relative group`}>
                 Features
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-300 group-hover:w-full transition-all duration-300"></span>
