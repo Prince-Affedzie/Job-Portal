@@ -189,6 +189,21 @@
   .desktop-only {
     display: none;
   }
+
+  .mobile-logo {
+  text-align: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo-text {
+  color: #007bff;
+  font-weight: bold;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
   
   /* Mobile menu container */
   .mobile-menu-container {
