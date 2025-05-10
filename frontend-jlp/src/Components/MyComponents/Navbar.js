@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes, FaUserCircle, FaBell } from "react-icons/fa";
+import { TbLayoutDashboard } from "react-icons/tb";
 import "./Navbar.css";
 import { notificationContext } from '../../Context/NotificationContext';
 
@@ -79,8 +80,8 @@ const Navbar = () => {
           </li>
           <li className="mobile-only-nav-item">
             <Link to="/h1/dashboard" onClick={closeMenu} className="mobile-nav-icon">
-              <FaUserCircle className="icon" />
-              <span className="icon-text">Profile</span>
+              <TbLayoutDashboard className="icon" />
+              <span className="icon-text">Dashboard</span>
             </Link>
           </li>
         </ul>
@@ -100,7 +101,7 @@ const Navbar = () => {
 
         {/* User Profile */}
         <Link to="/h1/dashboard">
-          <FaUserCircle className="profile-icon" />
+          <TbLayoutDashboard className="profile-icon" />
         </Link>
       </div>
     </nav>
