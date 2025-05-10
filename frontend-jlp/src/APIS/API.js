@@ -1,6 +1,6 @@
 import axios from "axios"
-const BackendURL = process.env.REACT_APP_BACKEND_URL
-const API = axios.create({baseURL:BackendURL,withCredentials:true,timeout: 10000, })
+//const BackendURL = process.env.REACT_APP_BACKEND_URL
+const API = axios.create({baseURL:'https://workaflow-backend-1f41ee5ec840.herokuapp.com/',withCredentials:true,timeout: 10000, })
 export const signUp =(data)=>API.post("/api/user/signup",data)
 export const loginUser =(data)=>API.post("/api/user/login",data)
 export const logoutUser =()=>API.post('/api/user/logout')
