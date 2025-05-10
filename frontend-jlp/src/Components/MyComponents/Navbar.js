@@ -51,41 +51,46 @@ const Navbar = () => {
       </button>
 
       {/* Mobile Menu - Contains both nav links and icons */}
-      <div className={`mobile-menu-container ${menuOpen ? "open" : ""}`}>
-        {/* Nav Links */}
-        <ul className="j-nav-links">
-          <li>
-            <Link to="/mini_task/listings" onClick={closeMenu}>Mini Jobs</Link>
-          </li>
+     <div className={`mobile-menu-container ${menuOpen ? "open" : ""}`}>
+            {/* Company Logo */}
+            <div className="mobile-logo">
+              <Link to="/" onClick={closeMenu}>
+            <h2 className="logo-text">WorkaFlow</h2>
+              </Link>
+           </div>
+
+    {/* Nav Links */}
+            <ul className="j-nav-links">
+              <li>
+             <Link to="/mini_task/listings" onClick={closeMenu}>Mini Jobs</Link>
+            </li>
           <li>
             <Link to="/job/listings" onClick={closeMenu}>Regular Jobs</Link>
           </li>
-          <li>
-            <Link to="/post/mini_task" onClick={closeMenu}>
-              Post a Mini Task
-            </Link>
-          </li>
-          
-          {/* Mobile-only nav items (moved from nav-icons) */}
-          <li className="mobile-only-nav-item">
-            <Link to="/view/all_notifications" onClick={closeMenu} className="mobile-nav-icon">
-              <FaBell className="icon" />
-              <span className="icon-text">Notifications</span>
-              {notifications && notifications.filter(n => !n.read).length > 0 && (
-                <span className="notification-badge mobile">
-                  {notifications.filter(n => !n.read).length}
-                </span>
-              )}
-            </Link>
-          </li>
-          <li className="mobile-only-nav-item">
-            <Link to="/h1/dashboard" onClick={closeMenu} className="mobile-nav-icon">
-              <TbLayoutDashboard className="icon" />
-              <span className="icon-text">Dashboard</span>
-            </Link>
-          </li>
-        </ul>
-      </div>
+      <li>
+            <Link to="/post/mini_task" onClick={closeMenu}>Post a Mini Task</Link>
+             </li>
+      
+    {/* Mobile-only nav items */}
+    <li className="mobile-only-nav-item">
+      <Link to="/view/all_notifications" onClick={closeMenu} className="mobile-nav-icon">
+        <FaBell className="icon" />
+        <span className="icon-text">Notifications</span>
+        {notifications && notifications.filter(n => !n.read).length > 0 && (
+          <span className="notification-badge mobile">
+            {notifications.filter(n => !n.read).length}
+          </span>
+        )}
+      </Link>
+         </li>
+        <li className="mobile-only-nav-item">
+        <Link to="/h1/dashboard" onClick={closeMenu} className="mobile-nav-icon">
+        <TbLayoutDashboard className="icon" />
+        <span className="icon-text">Dashboard</span>
+      </Link>
+      </li>
+      </ul>
+    </div>
 
       {/* Desktop-only: Right Icons */}
       <div className="nav-icons desktop-only">
