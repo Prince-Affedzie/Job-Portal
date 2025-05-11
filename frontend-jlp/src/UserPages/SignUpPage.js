@@ -8,7 +8,8 @@ import { useAuth } from "../Context/AuthContext";
 
 const Signup = () => {
   const navigate = useNavigate();
-   const {login} = useAuth()
+  const { login } = useAuth();
+  const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -35,31 +36,54 @@ const Signup = () => {
       const response = await signUp(formData);
       if (response.status === 200) {
         toast.success("You signed up successfully!");
-        const {role} = response.data
-       
-        if(role === "employer"){
-          login(role)
-          navigate('/employer/onboarding')
-        }else{
-        navigate("/complete_profile",{state:{role}});
+        const { role } = response.data;
+
+        if (role === "employer") {
+          login(role);
+          navigate("/employer/onboarding");
+        } else {
+          navigate("/complete_profile", { state: { role } });
         }
       } else {
         toast.error(response.message || "Oops! Couldn't Sign Up");
       }
     } catch (error) {
+      const responseData = error.response?.data;
+
+      if (responseData?.errors) {
+        const errors = {};
+        responseData.errors.forEach((err) => {
+          errors[err.field] = err.message;
+        });
+        setFieldErrors(errors);
+      }
+
       const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
+        responseData?.message ||
+        responseData?.error ||
         "An unexpected error occurred. Please try again.";
-      console.log(errorMessage);
+
       toast.error(errorMessage);
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex flex-col lg:flex-row justify-center items-center min-h-screen bg-gray-100 px-4">
       <ToastContainer />
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+      {/* Info Box for Role Explanation */}
+      <div className="bg-white shadow-md rounded-lg p-6 mb-6 lg:mb-0 lg:mr-8 max-w-md w-full">
+        <h3 className="text-xl font-semibold mb-3 text-blue-600">Not sure which role to pick?</h3>
+        <p className="text-gray-700 text-sm leading-relaxed">
+          <strong>Job Seekers</strong> can also post quick gigs or tasks they need help with.
+          <br />
+          <span className="ml-4">E.g. "Looking for a graphic designer to make a logo today".</span>
+          <br />
+          Choose <strong>"I want to employ Talents"</strong> only if you're hiring for professional or company-level roles.
+        </p>
+      </div>
+
+      {/* Signup Form */}
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-semibold mb-4 text-center">Sign Up</h2>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -82,8 +106,8 @@ const Signup = () => {
             required
           />
 
-          {/* Password Field with Show/Hide Button */}
-          <div className="relative">
+          {/* Password Field */}
+          <div className="relative group">
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -104,9 +128,23 @@ const Signup = () => {
                 <AiFillEye className="h-5 w-5" />
               )}
             </button>
+            <div className="absolute bottom-full left-0 mb-2 w-72 bg-blue-50 text-blue-800 text-sm p-3 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-10 border border-blue-200">
+              <p className="font-medium mb-1">Password Requirements:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Minimum 6 characters</li>
+                <li>At least one uppercase letter (A-Z)</li>
+                <li>At least one number (0-9)</li>
+                <li>At least one special character (!@#$%^&*)</li>
+              </ul>
+            </div>
+            {fieldErrors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {fieldErrors.password}
+              </p>
+            )}
           </div>
 
-          {/* Confirm Password Field with Show/Hide Button */}
+          {/* Confirm Password */}
           <div className="relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
@@ -130,24 +168,40 @@ const Signup = () => {
             </button>
           </div>
 
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          >
-            <option value="" disabled>
+          {/* Role Field */}
+          <div className="flex flex-col">
+            <label htmlFor="role" className="mb-1 font-medium">
               Select Role
-            </option>
-            <option value="job_seeker">I'm Looking For Job</option>
-            <option value="employer">I want to employ Talents</option>
-          </select>
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+            </label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="border p-2 rounded"
+            >
+              <option value="" disabled>
+                -- Choose your role --
+              </option>
+              <option value="job_seeker">I'm Looking For Job</option>
+              <option value="employer">I want to employ Talents</option>
+            </select>
+            {fieldErrors.role && (
+              <p className="text-red-500 text-sm mt-1">{fieldErrors.role}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition"
+          >
             Sign Up
           </button>
         </form>
         <p className="text-center mt-4">
-          Already have an account? <a href="/login" className="text-blue-500">Login</a>
+          Already have an account?{" "}
+          <a href="/login" className="text-blue-500 hover:underline">
+            Login
+          </a>
         </p>
       </div>
     </div>
