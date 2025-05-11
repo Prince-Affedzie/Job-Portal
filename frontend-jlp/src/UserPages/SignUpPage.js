@@ -48,21 +48,14 @@ const Signup = () => {
         toast.error(response.message || "Oops! Couldn't Sign Up");
       }
     } catch (error) {
-      const responseData = error.response?.data;
-
-      if (responseData?.errors) {
-        const errors = {};
-        responseData.errors.forEach((err) => {
-          errors[err.field] = err.message;
-        });
-        setFieldErrors(errors);
-      }
-
+      // Set error state
+    
       const errorMessage =
-        responseData?.message ||
-        responseData?.error ||
+        error.response?.data?.message || 
+        error.response?.data?.error || 
         "An unexpected error occurred. Please try again.";
-
+      
+    
       toast.error(errorMessage);
     }
   };
