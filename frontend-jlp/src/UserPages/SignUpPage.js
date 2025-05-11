@@ -12,6 +12,7 @@ const Signup = () => {
   const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -100,42 +101,43 @@ const Signup = () => {
           />
 
           {/* Password Field */}
-          <div className="relative group">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-3 text-gray-600"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <AiFillEyeInvisible className="h-5 w-5" />
-              ) : (
-                <AiFillEye className="h-5 w-5" />
-              )}
-            </button>
-            <div className="absolute bottom-full left-0 mb-2 w-72 bg-blue-50 text-blue-800 text-sm p-3 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-10 border border-blue-200">
-              <p className="font-medium mb-1">Password Requirements:</p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li>Minimum 6 characters</li>
-                <li>At least one uppercase letter (A-Z)</li>
-                <li>At least one number (0-9)</li>
-                <li>At least one special character (!@#$%^&*)</li>
-              </ul>
-            </div>
-            {fieldErrors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {fieldErrors.password}
-              </p>
-            )}
-          </div>
+          <div className="relative">
+  <input
+    type={showPassword ? "text" : "password"}
+    name="password"
+    placeholder="Password"
+    value={formData.password}
+    onChange={handleChange}
+    onFocus={() => setPasswordFocused(true)}
+    onBlur={() => setPasswordFocused(false)}
+    className="border p-2 rounded w-full"
+    required
+  />
+  <button
+    type="button"
+    className="absolute right-3 top-3 text-gray-600"
+    onClick={() => setShowPassword(!showPassword)}
+  >
+    {showPassword ? (
+      <AiFillEyeInvisible className="h-5 w-5" />
+    ) : (
+      <AiFillEye className="h-5 w-5" />
+    )}
+  </button>
+
+  {/* Tooltip only on focus now */}
+  {passwordFocused && (
+    <div className="absolute bottom-full left-0 mb-2 w-72 bg-blue-50 text-blue-800 text-sm p-3 rounded-md shadow-md z-10 border border-blue-200">
+      <p className="font-medium mb-1">Password Requirements:</p>
+      <ul className="list-disc pl-5 space-y-1">
+        <li>Minimum 6 characters</li>
+        <li>At least one uppercase letter (A-Z)</li>
+        <li>At least one number (0-9)</li>
+        <li>At least one special character (!@#$%^&*)</li>
+      </ul>
+    </div>
+  )}
+</div>
 
           {/* Confirm Password */}
           <div className="relative">
