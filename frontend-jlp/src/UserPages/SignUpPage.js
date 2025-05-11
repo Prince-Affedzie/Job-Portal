@@ -170,6 +170,7 @@ const Signup = () => {
 
           {/* Role Field */}
           <div className="flex flex-col">
+           
             <label htmlFor="role" className="mb-1 font-medium">
               Select Role
             </label>
@@ -178,6 +179,7 @@ const Signup = () => {
               value={formData.role}
               onChange={handleChange}
               className="border p-2 rounded"
+               required
             >
               <option value="" disabled>
                 -- Choose your role --
