@@ -69,15 +69,22 @@ const ProfileCompletion = () => {
   
   const regionSuggestions = [
     { value: "Greater Accra", label: "Greater Accra" },
+    { value: "Ahafo", label: "Ahafo" },
     { value: "Ashanti", label: "Ashanti" },
-    { value: "Western", label: "Western" },
-    { value: "Northern", label: "Northern" },
-    { value: "Volta", label: "Volta" },
+    { value: "Bono East", label: "Bono East" },
+    { value: "Brong Ahafo", label: "Brong Ahafo" },
     { value: "Central", label: "Central" },
     { value: "Eastern", label: "Eastern" },
-    { value: "Bono", label: "Bono" },
+    { value: "Northern", label: "Northern" },
+    { value: "North East", label: "North East" },
+    { value: "Oti", label: "Oti" },
+    { value: "Savannah", label: "Savannah" },
     { value: "Upper East", label: "Upper East" },
     { value: "Upper West", label: "Upper West" },
+    { value: "Volta", label: "Volta" },
+    { value: "Western North", label: "Western North" },
+    { value: "Western", label: "Western" },
+    
   ];
 
   const [step, setStep] = useState(1);

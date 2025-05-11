@@ -242,7 +242,7 @@ const JobSeekerDashboard = () => {
                     <div>
                       <h3 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
                         <FaRegCalendarCheck className="text-green-500" />
-                       Your Job Recent Applications
+                       Your Recent Job  Applications
                       </h3>
                       
                       {loading ? (
