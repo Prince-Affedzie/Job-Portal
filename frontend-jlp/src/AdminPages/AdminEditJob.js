@@ -80,7 +80,7 @@ const AdminEditJob = () => {
       <ToastContainer/>
       <AdminNavbar />
       <div className="flex flex-1">
-        <div className="hidden lg:block w-64 bg-white shadow-lg">
+        <div  className="w-64 bg-white border-r">
           <AdminSidebar />
         </div>
         <main className="flex-1 p-6 bg-gray-100">

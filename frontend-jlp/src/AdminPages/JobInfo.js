@@ -177,7 +177,7 @@ const JobDetailsAdminView = () => {
       </div>
 
       <div className="flex flex-1">
-        <aside className="hidden lg:block w-64 bg-white shadow-lg">
+        <aside  className="w-64 bg-white border-r">
           <AdminSidebar />
         </aside>
 

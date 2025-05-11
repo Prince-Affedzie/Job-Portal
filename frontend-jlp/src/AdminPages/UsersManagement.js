@@ -114,7 +114,7 @@ const AdminUserManagement = () => {
     <div className="flex h-screen bg-white">
       <ToastContainer/>
       {/* Sidebar - Left Panel */}
-      <div className="hidden md:block w-64 bg-white border-r">
+      <div className="w-64 bg-white border-r">
         <AdminSidebar />
       </div>
 

@@ -123,7 +123,7 @@ const AdminEmployerDetail = () => {
       <ToastContainer/>
       <AdminNavbar />
       <div className="flex flex-1">
-        <div className="hidden lg:block w-64 bg-white shadow-md">
+        <div  className="w-64 bg-white border-r">
           <AdminSidebar />
         </div>
         <main className="flex-1 bg-gray-50 p-4 sm:p-6">

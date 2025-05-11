@@ -45,7 +45,7 @@ const AdminAddUserForm = () => {
     <div className="flex min-h-screen bg-gray-50">
       <ToastContainer />
       {/* Sidebar */}
-      <div className="hidden md:block w-64">
+      <div  className="w-64 bg-white border-r">
         <AdminSidebar />
       </div>
 

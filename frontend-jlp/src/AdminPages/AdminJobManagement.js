@@ -5,6 +5,7 @@ import { Table, Input, Select, Pagination, Button, Tag, Spin } from "antd";
 import { useAdminContext } from "../Context/AdminContext";
 import AdminNavbar from "../Components/AdminComponents/AdminNavbar";
 import AdminSidebar from "../Components/AdminComponents/Adminsidebar";
+import "../Styles/AdminLayout.css";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -87,7 +88,7 @@ const AdminJobManagementDashboard = () => {
       {/* Sidebar + Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div className="w-64 min-w-[16rem] hidden md:block bg-white border-r">
+        <div  className="w-64 bg-white border-r">
           <AdminSidebar />
         </div>
 

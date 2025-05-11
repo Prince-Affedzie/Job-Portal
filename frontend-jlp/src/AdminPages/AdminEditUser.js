@@ -91,7 +91,7 @@ const AdminEditUserPage = () => {
       
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div className="hidden md:block w-64 bg-white shadow-sm">
+        <div  className="w-64 bg-white border-r">
           <AdminSidebar />
         </div>
         
