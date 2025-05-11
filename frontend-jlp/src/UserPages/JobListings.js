@@ -33,6 +33,7 @@ const categories = ["Administration",'Banking','Development','Marketing','Softwa
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedJobType, setSelectedJobType] = useState("All Types");
+  const [selectedRegion, setSelectedRegion] = useState("All Regions");
   const [minSalary, setMinSalary] = useState(""); 
   const [maxSalary, setMaxSalary] = useState("");
 
@@ -44,8 +45,7 @@ const categories = ["Administration",'Banking','Development','Marketing','Softwa
         search: searchTerm,
         category: selectedCategory,
         type: selectedJobType,
-        minSalary,
-        maxSalary
+        location: selectedRegion !== "All Regions" ? selectedRegion : undefined,
       });
 
       if (response.status === 200) {
@@ -70,7 +70,7 @@ const categories = ["Administration",'Banking','Development','Marketing','Softwa
   useEffect(() => {
     debouncedFetchJobs();
     return () => debouncedFetchJobs.cancel(); // Cleanup function
-  }, [searchTerm, selectedCategory, selectedJobType, minSalary, maxSalary]);
+  }, [searchTerm, selectedCategory, selectedJobType, minSalary, maxSalary,selectedRegion]);
 
   return (
     <div>
@@ -107,7 +107,7 @@ const categories = ["Administration",'Banking','Development','Marketing','Softwa
                {categories.map((category) => (
               <button 
               key={category} 
-            className={selectedCategory === category ? "active" : ""}
+              className={selectedCategory === category ? "active" : ""}
                 onClick={() => setSelectedCategory(category)}
               >
          {category}
@@ -143,23 +143,30 @@ const categories = ["Administration",'Banking','Development','Marketing','Softwa
             <option>Full-Time</option>
             <option>Part-Time</option>
             <option>Contract</option>
+            <option>Freelance</option>
           </select>
+          
+          <label style={{ color: "#fff" }}>Region</label>
+          <select value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
+          <option>All Regions</option>
+           <option>Greater Accra</option>
+            <option>Ashanti</option>
+            <option>Central</option>
+            <option>Western</option>
+            <option>Northern</option>
+            <option>Eastern</option>
+            <option>Upper East</option>
+            <option>Upper West</option>
+            <option>Volta</option>
+            <option>Oti</option>
+            <option>North East</option>
+            <option>Bono</option>
+            <option>Bono East</option>
+            <option>Ahafo</option>
+            <option>Savannah</option>
+            <option>Western North</option>
+         </select>
 
-          <label style={{ color: "#fff" }}>Minimum Salary (₵)</label>
-          <input 
-            type="number" 
-            placeholder="Min salary" 
-            value={minSalary}
-            onChange={(e) => setMinSalary(e.target.value)}
-          />
-
-          <label style={{ color: "#fff" }}>Maximum Salary (₵)</label>
-          <input 
-            type="number" 
-            placeholder="Max salary" 
-            value={maxSalary}
-            onChange={(e) => setMaxSalary(e.target.value)}
-          />
         </aside>
 
        

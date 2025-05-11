@@ -28,6 +28,8 @@ const MiniTaskPage = () => {
   const [selectedTask,setSelectedTask] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("All Regions");
+  const [selectedmodeofDelivery,setModeOfDelivery] = useState('All Modes')
   const [isProcessing, setIsProcessing] = useState(false);
   const tasksPerPage = 30;
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,7 +62,9 @@ const MiniTaskPage = () => {
         const response = await getMiniTasks(
           {search:searchQuery,
            category :selectedCategory,
-           subcategory:selectedSubCategory
+           subcategory:selectedSubCategory,
+           location: selectedRegion !== "All Regions" ? selectedRegion : undefined,
+           modeofDelivery:selectedmodeofDelivery !== "All Modes" ? selectedmodeofDelivery : undefined,
           }
         );
         if (response.status === 200) {
@@ -130,7 +134,7 @@ const MiniTaskPage = () => {
     useEffect(() => {
       debouncedFetchJobs();
       return () => debouncedFetchJobs.cancel(); // Cleanup function
-    }, [selectedCategory,selectedSubCategory]);
+    }, [selectedCategory,selectedSubCategory,selectedRegion,selectedmodeofDelivery]);
 
   // Format time ago
    const timeAgo = (deadline) => {
@@ -168,9 +172,9 @@ const MiniTaskPage = () => {
           <div
            key={category}
              className={`mini-task-category-card ${selectedCategory === category ? "active" : ""}`}
-                onClick={() => {
+              onClick={() => {
              setSelectedCategory(category);
-              setSelectedSubCategory("");
+            setSelectedSubCategory("");
           }}
          >
           {category}
@@ -218,7 +222,7 @@ const MiniTaskPage = () => {
           </select>
           {selectedCategory && (
           <select
-               onChange={(e) => setSelectedSubCategory(e.target.value)}
+              onChange={(e) => setSelectedSubCategory(e.target.value)}
               value={selectedSubCategory}
             >
              <option value="">All Subcategories</option>
@@ -227,10 +231,32 @@ const MiniTaskPage = () => {
            ))}
        </select>
         )}
-          <select><option>All Types</option>
-          <option value= 'remote'>Remote</option>
+          <select value={selectedmodeofDelivery} onChange={(e) => setModeOfDelivery(e.target.value)}><option>All Modes</option>
+          <option value='remote'>Remote</option>
           <option value='on-site'>On-site</option>
           </select>
+
+          <label style={{ color: "#fff" }}>Region</label>
+          <select value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
+          <option>All Regions</option>
+           <option>Greater Accra</option>
+            <option>Ashanti</option>
+            <option>Central</option>
+            <option>Western</option>
+            <option>Northern</option>
+            <option>Eastern</option>
+            <option>Upper East</option>
+            <option>Upper West</option>
+            <option>Volta</option>
+            <option>Oti</option>
+            <option>North East</option>
+            <option>Bono</option>
+            <option>Bono East</option>
+            <option>Ahafo</option>
+            <option>Savannah</option>
+            <option>Western North</option>
+         </select>
+
         </aside>
 
         {/* Task Listings */}
