@@ -58,6 +58,8 @@ const AdminUserManagement = () => {
   const totalUser = users.length
   let totalRecruiters = users.filter((user)=>user.role ==='employer')
   let totalEmployers = users.filter((user)=>user.role === 'job_seeker')
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
 
   useEffect(() => {
     if (!users) fetchAllUsers();

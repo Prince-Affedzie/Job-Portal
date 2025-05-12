@@ -10,9 +10,11 @@ import { IoCloseCircle } from "react-icons/io5";
 import { FaUser, FaPhoneAlt, FaMapMarkerAlt, FaLaptopCode, FaCamera } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
+
 const ProfileCompletion = () => {
   const  location  = useLocation();
   const role =location.state?.role
+ 
   
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -92,6 +94,8 @@ const ProfileCompletion = () => {
     skills: [],
     profileImage: "",
     profileImage_preview: "",
+    idCardImage: "",
+    idCard_preview: "",
     bio: "",
     phone: "",
     location: { city: "", town: "", street: "", region: "" },
@@ -254,6 +258,24 @@ const ProfileCompletion = () => {
       }
     }
   };
+
+  const handleIdUpload = (e) => {
+  const file = e.target.files[0];
+  if (file && file.size <= 5 * 1024 * 1024) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfile(prev => ({
+        ...prev,
+        idCardImage: file,
+        idCard_preview: reader.result
+      }));
+    };
+    reader.readAsDataURL(file);
+  } else {
+    setErrors(prev => ({ ...prev, idCardImage: "File too large or invalid format" }));
+  }
+};
+
 
   const removeSkill = (skill) => {
     setProfile((prev) => ({
@@ -432,7 +454,10 @@ const ProfileCompletion = () => {
                         }`}
                       />
                       {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-                    </div>
+
+                      
+              
+                 </div>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -561,117 +586,156 @@ const ProfileCompletion = () => {
                 </motion.div>
               )}
 
-              {/* Step 3: Profile Image */}
               {step === 3 && (
-                <motion.div
-                  key="step3"
-                  initial="initial"
-                  animate="in"
-                  exit="out"
-                  variants={pageVariants}
-                  transition={pageTransition}
-                  className="space-y-6"
-                >
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Upload Profile Image</label>
-                    <p className="text-sm text-gray-500 mb-3">Add a professional photo (Max size: 5MB)</p>
-                    
-                    <div className="flex flex-col md:flex-row items-center gap-6">
-                      {/* Upload Area */}
-                      <div className={`flex-1 w-full border-2 border-dashed rounded-xl p-6 text-center flex flex-col items-center justify-center bg-gray-50 transition-all ${
-                        errors.profileImage ? "border-red-300" : profile.profileImage_preview ? "border-green-300 bg-green-50" : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
-                      }`}>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                          id="profile-image"
-                        />
-                        <label
-                          htmlFor="profile-image"
-                          className="w-full flex flex-col items-center cursor-pointer"
-                        >
-                          {profile.profileImage_preview ? (
-                            <div className="text-green-600 mb-2">
-                              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
-                            </div>
-                          ) : (
-                            <AiOutlineCloudUpload size={40} className="text-blue-500 mb-2" />
-                          )}
-                          <p className={`text-sm ${profile.profileImage_preview ? "text-green-600" : "text-gray-500"}`}>
-                            {profile.profileImage_preview ? "Image Selected" : "Drag & drop or click to browse"}
-                          </p>
-                          <p className="text-xs text-gray-400 mt-1">
-                            JPG, PNG or GIF format
-                          </p>
-                        </label>
-                      </div>
-                      
-                      {/* Preview Area */}
-                      <div className="flex flex-col items-center w-full md:w-1/3">
-                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 shadow-lg">
-                          {profile.profileImage_preview ? (
-                            <img
-                              src={profile.profileImage_preview}
-                              alt="Profile preview"
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                              <FaUser size={40} className="text-gray-400" />
-                            </div>
-                          )}
-                        </div>
-                        
-                        {profile.profile_image_preview && (
-                          <button
-                            type="button"
-                            onClick={() => setProfile(prev => ({ ...prev, profileImage: "", profileImage_preview: "" }))}
-                            className="mt-3 text-sm text-red-600 hover:text-red-800 focus:outline-none"
-                          >
-                            Remove Image
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    {errors.profileImage && <p className="text-red-500 text-xs mt-1">{errors.profileImage}</p>}
-                  </div>
-                  
-                  <div className="flex justify-between pt-6">
-                    <button
-                      type="button"
-                      onClick={prevStep}
-                      className="py-3 px-6 text-gray-600 bg-gray-100 rounded-lg shadow hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50 transition transform hover:-translate-y-0.5"
-                    >
-                      Back
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className={`py-3 px-8 text-white bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-md hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition transform hover:-translate-y-0.5 ${
-                        isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-                      }`}
-                    >
-                      {isSubmitting ? (
-                        <div className="flex items-center">
-                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Processing...
-                        </div>
-                      ) : (
-                        "Complete Profile"
-                      )}
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </form>
+          <motion.div
+    key="step3"
+    initial="initial"
+    animate="in"
+    exit="out"
+    variants={pageVariants}
+    transition={pageTransition}
+    className="space-y-10"
+  >
+    {/* Profile Image Upload */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">Upload Profile Image</label>
+      <p className="text-sm text-gray-500 mb-3">Add a professional photo (Max size: 5MB)</p>
+
+      <div className="flex flex-col md:flex-row items-center gap-6">
+        {/* Upload Area */}
+        <div className={`flex-1 w-full border-2 border-dashed rounded-xl p-6 text-center flex flex-col items-center justify-center bg-gray-50 transition-all ${
+          errors.profileImage ? "border-red-300" : profile.profileImage_preview ? "border-green-300 bg-green-50" : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+        }`}>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+            id="profile-image"
+            required
+
+          />
+          <label htmlFor="profile-image" className="cursor-pointer flex flex-col items-center">
+            {profile.profileImage_preview ? (
+              <div className="text-green-600 mb-2">
+                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            ) : (
+              <AiOutlineCloudUpload size={40} className="text-blue-500 mb-2" />
+            )}
+            <p className={`text-sm ${profile.profileImage_preview ? "text-green-600" : "text-gray-500"}`}>
+              {profile.profileImage_preview ? "Image Selected" : "Drag & drop or click to browse"}
+            </p>
+            <p className="text-xs text-gray-400 mt-1">JPG, PNG or GIF format</p>
+          </label>
+        </div>
+
+        {/* Preview */}
+        <div className="flex flex-col items-center w-full md:w-1/3">
+          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 shadow-lg">
+            {profile.profileImage_preview ? (
+              <img src={profile.profileImage_preview} alt="Preview" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <FaUser size={40} className="text-gray-400" />
+              </div>
+            )}
+          </div>
+          {profile.profileImage_preview && (
+            <button
+              type="button"
+              onClick={() =>
+                setProfile(prev => ({
+                  ...prev,
+                  profileImage: "",
+                  profileImage_preview: ""
+                }))
+              }
+              className="mt-3 text-sm text-red-600 hover:text-red-800"
+            >
+              Remove Image
+            </button>
+          )}
+        </div>
+      </div>
+      {errors.profileImage && <p className="text-red-500 text-xs mt-1">{errors.profileImage}</p>}
+    </div>
+
+    {/* ID Card Upload */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">Upload ID Card (ECOWAS/National)</label>
+      <p className="text-sm text-gray-500 mb-3">Accepted: ECOWAS Card or National ID (PNG/JPG, Max 5MB)</p>
+
+      <div className={`w-full border-2 border-dashed rounded-xl p-6 text-center flex flex-col items-center justify-center bg-gray-50 transition-all ${
+        errors.idCardImage ? "border-red-300" : profile.idCard_preview ? "border-green-300 bg-green-50" : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+      }`}>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleIdUpload}
+          className="hidden"
+          id="id-card-upload"
+          required
+        />
+        <label htmlFor="id-card-upload" className="cursor-pointer flex flex-col items-center">
+          {profile.idCard_preview ? (
+            <div className="text-green-600 mb-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          ) : (
+            <AiOutlineCloudUpload size={40} className="text-blue-500 mb-2" />
+          )}
+          <p className={`text-sm ${profile.idCard_preview ? "text-green-600" : "text-gray-500"}`}>
+            {profile.idCard_preview ? "ID Selected" : "Click to upload ID card"}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">JPG or PNG format</p>
+        </label>
+
+        {/* ID Preview + Remove */}
+        {profile.idCard_preview && (
+          <>
+            <img
+              src={profile.idCard_preview}
+              alt="ID Preview"
+              className="mt-4 w-full max-w-xs rounded shadow-md"
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setProfile(prev => ({
+                  ...prev,
+                  idCardImage: "",
+                  idCard_preview: ""
+                }))
+              }
+              className="mt-3 text-sm text-red-600 hover:text-red-800"
+            >
+              Remove ID
+            </button>
+          </>
+        )}
+      </div>
+      {errors.idCardImage && <p className="text-red-500 text-xs mt-1">{errors.idCardImage}</p>}
+    </div>
+
+    {/* Submit or Next Button */}
+    <div className="pt-6 flex justify-end">
+      <button
+        type="submit"
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition-all"
+      >
+        Submit Profile
+      </button>
+    </div>
+  </motion.div>
+  )}
+
+       </AnimatePresence>
+        </form>
         </div>
       </div>
       
@@ -692,6 +756,7 @@ const ProfileCompletion = () => {
               </p>
             </div>
           </div>
+          
         </div>
       </div>
     </div>

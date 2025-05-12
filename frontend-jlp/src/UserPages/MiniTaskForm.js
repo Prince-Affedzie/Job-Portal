@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,8 +7,11 @@ import { postMiniTask } from "../APIS/API";
 import Navbar from "../Components/MyComponents/Navbar";
 import Footer from "../Components/MyComponents/Footer";
 import ProcessingOverlay from "../Components/MyComponents/ProcessingOverLay";
+import VerifyTooltip from "../Components/MyComponents/VerifyToolTip";
+import { userContext } from "../Context/FetchUser";
 
 const PostMiniTask = () => {
+   const { user, fetchUserInfo, fetchRecentApplications, recentApplications, minitasks } = useContext(userContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
@@ -111,7 +114,11 @@ const PostMiniTask = () => {
     <div className="mtask-page-wrapper">
       <ToastContainer />
       <Navbar />
+      {
+              user && <VerifyTooltip isVerified ={user.isVerified}/>
+               }
       <div className="mtask-primary-container">
+         
         <div className="mtask-header-section">
           <h2 className="mtask-main-title">Post a Mini Task</h2>
           <p className="mtask-subtitle">Fill out the details below to post your task</p>

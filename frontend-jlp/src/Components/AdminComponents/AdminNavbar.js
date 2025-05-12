@@ -8,7 +8,7 @@ const AdminNavbar = ({ notifications = [] }) => {
     <nav className="bg-white shadow-sm px-6 py-3 flex items-center justify-between relative z-20">
       <div className="flex items-center space-x-2">
         <Briefcase className="text-blue-600 w-6 h-6" />
-        <h1 className="text-xl font-bold text-blue-600">JobPortal Admin</h1>
+        <h1 className="text-xl font-bold text-blue-600">WorkaFlow</h1>
       </div>
 
       <div className="flex items-center space-x-4">

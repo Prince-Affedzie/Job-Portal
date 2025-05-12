@@ -5,6 +5,7 @@ import { MdWorkOutline, MdNotifications, MdOutlineRecommend ,MdOutlineWarning} f
 import Navbar from "../Components/MyComponents/Navbar";
 import { userContext } from "../Context/FetchUser";
 import { notificationContext } from "../Context/NotificationContext";
+import VerifyTooltip from "../Components/MyComponents/VerifyToolTip";
 
 const JobSeekerDashboard = () => {
   const navigate = useNavigate();
@@ -62,8 +63,13 @@ const JobSeekerDashboard = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Navbar />
+
+      
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {
+      user && <VerifyTooltip isVerified ={user.isVerified}/>
+       }
         {/* Welcome Banner */}
         <div className="mb-8 bg-gradient-to-r from-indigo-600 to-blue-500 rounded-xl shadow-lg p-6 text-white">
           <div className="flex flex-wrap items-center justify-between">

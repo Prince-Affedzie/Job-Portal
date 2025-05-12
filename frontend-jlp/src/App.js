@@ -55,6 +55,9 @@ import AdminEditMiniTaskPage from './AdminPages/AdminEditMiniTaskPage'
 import AdminLogin from './AdminPages/AdminLogin';
 import AdminAddUserForm from './AdminPages/AdminAddNewUser'
 import {EmployerProfileProvider} from './Context/EmployerProfileContext'
+import PostEligibilityGate from './Utils/MiniJobPostEligiblityGate'
+import EmployerPostEligibilityGate from './Utils/EmployerJobPostEligibilityGate'
+
 
 function App() {
   return (
@@ -68,7 +71,15 @@ function App() {
       <Route path='/h1/dashboard' element={<UserProvider><RouteProtection><ChatProvider><NotificationProvider><JobSeekerDashboard/></NotificationProvider></ChatProvider></RouteProtection></UserProvider>}/>
       <Route path='/job/listings' element={<UserProvider><RouteProtection><NotificationProvider><JobListings/></NotificationProvider></RouteProtection></UserProvider>}/>
       <Route path='/job/details/:id' element={<UserProvider><NotificationProvider><JobDetails/></NotificationProvider></UserProvider>}/>
-      <Route path='/post/mini_task' element={<UserProvider><NotificationProvider><RouteProtection><PostMiniTask/></RouteProtection></NotificationProvider></UserProvider>}/>
+      <Route path='/post/mini_task' 
+      element={<UserProvider>
+        <PostEligibilityGate>
+        <NotificationProvider><RouteProtection>
+          <PostMiniTask/>
+      </RouteProtection></NotificationProvider>
+      </PostEligibilityGate>
+      </UserProvider>
+      }/>
       <Route path='/manage/mini_tasks' element={<NotificationProvider><ManageMiniTasks/></NotificationProvider>}/>
       <Route path='/mini_task/listings' element={<NotificationProvider><MiniTaskPage/></NotificationProvider>}/>
       <Route path='/view/applied/jobs'element={<UserProvider><NotificationProvider><ViewApplications/></NotificationProvider></UserProvider>}/>
@@ -89,7 +100,7 @@ function App() {
          path='/employer/dashboard' 
          element={
          <UserProvider>
-          <EmployerProfileProvider>
+         <EmployerProfileProvider>
          <JobsContextProvider>
          <PrivateRoutes>
           <NotificationProvider>
@@ -116,7 +127,13 @@ function App() {
       <Route path='/employer/job/applicantprofile' element={ <PrivateRoutes><NotificationProvider>< ApplicantProfileModal /></NotificationProvider></PrivateRoutes>}/>
       <Route path='/v1/post_job/form' element={
          <PrivateRoutes>
-         <PostJobForm/>
+          <UserProvider>
+          <EmployerProfileProvider>
+          <EmployerPostEligibilityGate >
+          <PostJobForm/>
+          </EmployerPostEligibilityGate>
+          </EmployerProfileProvider>
+          </UserProvider>
         </PrivateRoutes>
          }/>
 

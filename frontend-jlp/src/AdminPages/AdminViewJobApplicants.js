@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Tag, Space, Spin } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { useLocation,useNavigate } from "react-router-dom";
+
 //import { getJobApplicants } from "../APIS/API"; // Replace with actual API
 
 const ViewApplicantsAdmin = ({ jobId }) => {
