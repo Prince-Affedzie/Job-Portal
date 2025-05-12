@@ -193,6 +193,12 @@ const ProfileCompletion = () => {
         isValid = false;
       }
     }
+    if(currentStep===3){
+      if(!profile.idCardImage){
+         stepErrors.idCardImage = "National Id required";
+        isValid = false;
+      }
+    }
     
     setErrors(stepErrors);
     return isValid;

@@ -50,9 +50,8 @@ const Signup = () => {
         setStatusMessage('SignUp successful!');
         toast.success("You signed up successfully!");
         const { role } = response.data;
-
+        login(role);
         if (role === "employer") {
-          login(role);
           navigate("/employer/onboarding");
         } else {
           navigate("/complete_profile", { state: { role } });
