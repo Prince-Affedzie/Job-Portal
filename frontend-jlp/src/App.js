@@ -66,7 +66,7 @@ function App() {
 
       <Route path='/' element={<LandingPage/>}/>
       <Route path='/signup' element={<Signup/>}/>
-      <Route path='/complete_profile' element = {<RouteProtection><ProfileCompletion/></RouteProtection>}/>
+      <Route path='/complete_profile' element = {<ProfileCompletion/>}/>
       <Route path='/login' element={<NotificationProvider><Login/></NotificationProvider>}/>
       <Route path='/h1/dashboard' element={<UserProvider><RouteProtection><ChatProvider><NotificationProvider><JobSeekerDashboard/></NotificationProvider></ChatProvider></RouteProtection></UserProvider>}/>
       <Route path='/job/listings' element={<UserProvider><RouteProtection><NotificationProvider><JobListings/></NotificationProvider></RouteProtection></UserProvider>}/>

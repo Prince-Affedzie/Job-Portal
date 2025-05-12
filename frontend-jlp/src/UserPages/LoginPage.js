@@ -47,7 +47,7 @@ const Login = () => {
         // Navigate after a slight delay to allow users to see the success state
         setTimeout(() => {
           if(role === "job_seeker" || role === "admin"){
-            navigate("/job/listings");
+            navigate("/mini_task/listings");
           } else {
             navigate('/employer/dashboard');
           }
