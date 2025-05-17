@@ -12,6 +12,7 @@ export const NotificationProvider = ({children})=>{
 
 const [notifications,setNotifications] = useState([])
 const [user,setUser] = useState()
+const [socket, setSocket] = useState(null);
 
 
 
@@ -43,19 +44,20 @@ const [user,setUser] = useState()
   useEffect(()=>{
     fetchNotifications()
     
-     const socket  = io(process.env.REACT_APP_BACKEND_URL,{
+     const newSocket  = io(process.env.REACT_APP_BACKEND_URL,{
       withCredentials:true
      
   })
-  socket.on('connections',()=>{
+  setSocket(newSocket)
+  newSocket.on('connections',()=>{
     console.log('Socket connected',socket.id)
   })
 
-  socket.on("connect_error", (err) => {
+ newSocket.on("connect_error", (err) => {
     console.error("Socket connection error:", err.message);
   });
 
-  socket.on('notification',(notification)=>{
+  newSocket.on('notification',(notification)=>{
     setNotifications((prevNotifications)=>[
       notification,
       ...prevNotifications
@@ -63,7 +65,7 @@ const [user,setUser] = useState()
   })
 
   return ()=>{ 
-    socket.off('notification')
+   newSocket.off('notification')
 }
   
 
@@ -74,7 +76,7 @@ const [user,setUser] = useState()
 
   
   return(
-    <notificationContext.Provider value={{notifications,fetchNotifications,}}>
+    <notificationContext.Provider value={{notifications,fetchNotifications,socket}}>
        {children}
     </notificationContext.Provider>
   )

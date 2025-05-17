@@ -57,6 +57,10 @@ import AdminAddUserForm from './AdminPages/AdminAddNewUser'
 import {EmployerProfileProvider} from './Context/EmployerProfileContext'
 import PostEligibilityGate from './Utils/MiniJobPostEligiblityGate'
 import EmployerPostEligibilityGate from './Utils/EmployerJobPostEligibilityGate'
+import FreelancerSubmissions from  './UserPages/TaskSubmissions'
+import ClientViewSubmissions from './UserPages/ClientViewTaskSubmissions'
+import  ChatPage from './UserPages/ChatPage'
+
 
 
 function App() {
@@ -92,9 +96,11 @@ function App() {
         element={<ApplicantsPage />}
       />
       <Route path='/view/mini_task/info/:Id' element={<UserProvider><NotificationProvider><MiniTaskInfo/></NotificationProvider></UserProvider>}/>
-
-
-
+      <Route path='/freelancer/:taskId/view_task_submissions' element={<UserProvider><NotificationProvider><FreelancerSubmissions/></NotificationProvider></UserProvider>}/>
+      <Route  path='/client/:taskId/view_task_submissions' element={<UserProvider><NotificationProvider><ClientViewSubmissions/></NotificationProvider></UserProvider>}/>
+      <Route path='/messages/:roomId' element={<UserProvider><NotificationProvider>< ChatPage/></NotificationProvider></UserProvider>}/>
+      <Route path='/messages' element={<UserProvider><NotificationProvider>< ChatPage/></NotificationProvider></UserProvider>}/>
+      
 
       <Route 
          path='/employer/dashboard' 

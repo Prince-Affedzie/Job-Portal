@@ -8,14 +8,14 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.applicants-page-header {
+.mini-applicants-page-header{
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
 }
 
-.applicants-page-header h2 {
+.mini-applicants-page-header h2 {
   font-size: 24px;
   font-weight: 600;
   color: #1e293b;
@@ -188,3 +188,82 @@
   justify-content: flex-end;
   margin-top: 20px;
 }
+
+
+.app-assigned-info {
+  background-color: #f3f8ff;
+  padding: 12px 16px;
+  border-left: 4px solid #1976d2;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px;
+  flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+  gap: 10px; /* Space between wrapped elements */
+}
+
+.app-assigned-info p {
+  margin: 0; /* Remove default margin */
+  flex: 1; /* Allow text to take available space */
+  min-width: 200px; /* Prevent too narrow on small screens */
+}
+
+.app-reassign-btn {
+  background-color: #ffc107;
+  color: #000;
+  border: none;
+  padding: 6px 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap; /* Prevent breaking button text */
+}
+
+.app-reassign-btn:hover {
+  background-color: #ffb300;
+}
+
+@media (max-width: 600px) {
+   .mini-applicants-page-header {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+  .app-assigned-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .app-reassign-btn {
+    align-self: flex-end; /* Optional: keeps the button right-aligned if space allows */
+  }
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.chat-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chat-btn:hover {
+  background-color: #45a049;
+}
+
+
+

@@ -116,7 +116,9 @@
   .mini-task-status-badge.open { background-color: #28a745; } /* Green */
   .mini-task-status-badge.assigned { background-color: #17a2b8; } /* Teal */
   .mini-task-status-badge.closed { background-color: #dc3545; } /* Red */
-
+  .mini-task-status-badge.in-progress {
+    background-color: #ffc107; /* Yellow/Amber for “In Progress” */
+    color: #212529;}
 
   @media (min-width: 768px) {
     .task-summary { 

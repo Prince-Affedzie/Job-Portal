@@ -58,7 +58,24 @@ export const updateMiniTask =(Id,data) =>API.put(`/api/h1/v2/edit/mini_task/${Id
 export const assignApplicantToTask =(taskId,applicantId)=>API.put(`/api/h1/v2/assign/mini_task/${taskId}/${applicantId}`)
 export const getYourAppliedMiniTasks =()=>API.get("/api/h1/v2/get_your_apllied/mini_tasks")
 export const getMiniTaskInfo = (Id)=>API.get(`/api/h1/v2/get_min_task_info/${Id}`)
+export const acceptMiniTaskAssignment = (Id)=>API.put(`/api/h1/v2/accept_task_assignment/${Id}`)
+export const removeAppliedMiniTaskFromDashboard = (Ids)=>API.put('/api/h1/v2/remove_mini_task_from_dashboard',Ids)
+export const submitWorkForReview = (taskId,data)=>API.post(`/api/submit_task_work/${taskId}`,data)
+export const getMyWorkSubmissions = (taskId)=>API.get(`/api/get_mysubmissions/${taskId}`)
+export const deleteWorkSubmission = (submissionId)=>API.delete(`/api/delete/submission/${submissionId}`)
+export const clientgetTaskSubmissions = (taskId)=>API.get(`/api/view_task_submissions/${taskId}`)
+export const reviewSubmission = (submissionId,data)=>API.put(`/api/review_task_submission/${submissionId}`,data)
 
+//Chat Mesaging APIs
+export const startOrGetChatRoom = (data)=>API.post('/api/start/chat_room',data)
+export const getAllChatRooms = ()=>API.get('/api/get/messages/rooms')
+export const fetchRoomMessages =(roomId)=>API.get(`/api/get/chat_room_messages/${roomId}`)
+export const createMessage = (data)=>API.post('/api/send/message',data)
+export const handleChatFiles = (data)=>API.post('/api/handle/chat_files',data,{
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+
+export const fetchRoomInfo =(roomId)=>API.get(`/api/get_room_info/${roomId}`)
 
 // Employer APIs
 export const employerSignUp = (data)=>API.post('/api/h1/v1/employer_sign_up',data,

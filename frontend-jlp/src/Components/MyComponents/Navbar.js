@@ -38,6 +38,9 @@ const Navbar = () => {
         <li>
           <Link to="/job/listings">Regular Jobs</Link>
         </li>
+         <li>
+          <Link to="/messages">Chats</Link>
+        </li>
         <li>
           <Link to="/post/mini_task">
             Post Mini Job
@@ -67,7 +70,10 @@ const Navbar = () => {
           <li>
             <Link to="/job/listings" onClick={closeMenu}>Regular Jobs</Link>
           </li>
-      <li>
+           <li>
+          <Link to="/messages">Chats</Link>
+        </li>
+          <li>
             <Link to="/post/mini_task" onClick={closeMenu}>Post a Mini Task</Link>
              </li>
       

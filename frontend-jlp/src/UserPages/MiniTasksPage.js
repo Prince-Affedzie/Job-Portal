@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaSearch, FaClock, FaFilter, FaTimes } from "react-icons/fa";
+import { FaSearch, FaClock, FaFilter, FaTimes,FaCheckCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { getMiniTasks } from "../APIS/API";
 import "../Styles/MiniTaskPage.css";
@@ -268,10 +268,21 @@ const MiniTaskPage = () => {
               <div key={task.id} className="mini-task-card">
                 <div className="mini-task-details"  onClick={() => navigate(`/view/mini_task/info/${task._id}`)}>
                   <h3 className="mini-task-title">{task.title}</h3>
+                   {/* Employer + Verification */}
+                  <div className="flex items-center text-sm text-gray-500 mt-1 mb-1">
+                       <span>Posted by {task.employer?.name || "Anonymous"}</span>
+                      {task.employer?.isVerified && (
+                       <FaCheckCircle
+                         className="text-blue-500 ml-1"
+                         title="Verified Employer"
+                       />
+                         )}
+                      </div>
                   <p className="mini-task-description">{task.description.slice(0,120)+"..."}</p>
                   <div className="mini-task-meta">
                     <FaClock /> {timeAgo(task.deadline)} | 
                     <span className="mini-task-budget">₵{task.budget}</span>
+                  
                   </div>
                 </div>
 
