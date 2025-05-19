@@ -10,11 +10,23 @@ const StartChatButton = ({ userId2, jobId }) => {
   const handleStartChat = async () => {
     setLoading(true);
 
-    // Optimistically navigate to a temporary chat loader view
-    const tempRoomId = `loading-${Date.now()}`;
-    navigate(`/messages/${tempRoomId}`, { state: { loading: true } });
 
     try {
+     
+        navigate(`/messages`);
+      
+    }catch(err){
+          console.error('Chat initiation failed', err);
+    }finally {
+      setLoading(false);
+    }
+
+
+    // Optimistically navigate to a temporary chat loader view
+   // const tempRoomId = `loading-${Date.now()}`;
+    //navigate(`/messages/${tempRoomId}`, { state: { loading: true } });
+
+    /*try {
       const res = await startOrGetChatRoom({ userId2, jobId });
       if (res.status === 200) {
         navigate(`/messages/${res.data._id}`,{ replace: true });
@@ -26,7 +38,7 @@ const StartChatButton = ({ userId2, jobId }) => {
       navigate('/messages'); // fallback to messages page
     } finally {
       setLoading(false);
-    }
+    }*/
   };
 
   return (

@@ -133,7 +133,7 @@ const ApplicantsPage = () => {
               )}
              </div>
 
-                    <ProcessingOverlay show={isProcessing} message="Assigning Applicant..." />
+                   
                   </div>
                 </div>
               </div>
@@ -172,6 +172,7 @@ const ApplicantsPage = () => {
           />
         )}
       </div>
+       <ProcessingOverlay show={isProcessing} message="Assigning Applicant..." />
     </div>
   );
 };

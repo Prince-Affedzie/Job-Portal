@@ -349,7 +349,7 @@ const ChatWindow = ({ roomId, socket, currentUser,onlineUserIds, onBack }) => {
         socket.emit('leaveRoom', { roomId });
       }
     };
-  }, [roomId, finalUser._id, socket]);
+  }, [roomId, finalUser?._id, socket]);
 
 
   useEffect(()=>{
@@ -425,7 +425,7 @@ getRoomInfo()
       socket.off('userStopTyping');
       socket.off('messageDeleted');
     };
-  }, [roomId, socket,finalUser._id, messages, updateMessageInState]);
+  }, [roomId, socket,finalUser?._id, messages, updateMessageInState]);
 
   // Auto-scroll
   useEffect(() => {
@@ -545,9 +545,9 @@ const scrollToMessage = (messageId) => {
       <span>Back</span>
     </button>
   )}
-      <h3 className="text-lg md:text-xl font-semibold text-white tracking-wide">
+     {/* <h3 className="text-lg md:text-xl font-semibold text-white tracking-wide">
       {roomId ? 'Chat Room' : 'Select a conversation'}
-       </h3>
+       </h3> */}
 
     {otherParticipantId && (
       <div className="flex items-center gap-3 bg-white/10 rounded-lg px-3 py-2 shadow-inner">
