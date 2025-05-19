@@ -331,7 +331,7 @@ const ProfileCompletion = () => {
         toast.success("Profile completed successfully!");
         setTimeout(() => {
           if (role === "job_seeker") {
-            navigate('/mini_task/listings');
+            navigate('/h1/dashboard');
           } else {
             navigate("/employer/dashboard");
           }
