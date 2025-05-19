@@ -102,11 +102,11 @@ const RoomList = ({ loading,rooms, selectedRoomId, setSelectedRoomId, currentUse
                   <span className="text-sm font-semibold text-gray-900 truncate max-w-[150px]">
                    {highlightMatch(otherUser?.name || 'User', searchTerm)}
                   </span>
-                  {room.unreadCount > 0 && (
-                 <span className="text-xs bg-blue-600 text-white rounded-full px-2 py-0.5 ml-2 whitespace-nowrap">
-                 {room.unreadCount}
+                  {room.unreadCounts?.[currentUserId] > 0 && (
+                 <span className="text-xs bg-blue-600 text-white rounded-full px-2 py-0.5 ml-1.0 whitespace-nowrap">
+                 {room.unreadCounts[currentUserId]}
                </span>
-                 )}
+                )}
               </div>
                  <span className="text-xs font-medium text-indigo-600 truncate max-w-[160px]">
                     {room.job?.title || room.jobTitle || 'Untitled Job'}

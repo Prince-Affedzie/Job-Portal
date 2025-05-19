@@ -4,7 +4,7 @@ import '../Styles/UserMinitaskApp.css';
 import { userContext } from "../Context/FetchUser";
 import Navbar from '../Components/MyComponents/Navbar';
 import { useNavigate } from 'react-router-dom';
-import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard } from '../APIS/API';
+import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard,rejectMiniTaskAssignment } from '../APIS/API';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaTrash, FaFilter, FaCheck, FaArrowUp, FaArrowDown } from 'react-icons/fa';
@@ -112,6 +112,29 @@ const MyMiniTaskApplications = () => {
         fetchAppliedMiniTasks();
       } else {
         toast.error("Failed to accept task. Please try again later.");
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          "An unexpected error occurred. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsProcessing(false);
+      setActiveTaskId(null);
+    }
+  };
+
+  const handleTaskRejection = async(taskId) => {
+    setIsProcessing(true);
+    setActiveTaskId(taskId);
+    
+    try {
+      const res = await rejectMiniTaskAssignment(taskId);
+      if (res.status === 200) {
+        toast.success("Task Rejected successfully!.");
+        fetchAppliedMiniTasks();
+      } else {
+        toast.error("Failed to reject task. Please try again later.");
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 
@@ -408,6 +431,7 @@ const MyMiniTaskApplications = () => {
                       )}
                       
                       {(task.assignedTo === user?._id && !task.assignmentAccepted) && (
+                       <>
                         <button 
                           className={`accept-task-btn ${isTaskActive ? 'processing' : ''}`}
                           onClick={() => handleTaskAcceptance(task._id)}
@@ -415,6 +439,15 @@ const MyMiniTaskApplications = () => {
                         >
                           {isTaskActive && isProcessing ? 'Accepting...' : 'Accept Task'}
                         </button>
+
+                        <button 
+                          className={`accept-task-btn ${isTaskActive ? 'processing' : ''}`}
+                          onClick={() => handleTaskRejection(task._id)}
+                          disabled={isProcessing}
+                        >
+                          {isTaskActive && isProcessing ? 'Reject...' : 'Reject Task'}
+                        </button>
+                        </>
                       )}
                       
                       {(task.assignedTo === user?._id && task.assignmentAccepted) && (
@@ -430,13 +463,7 @@ const MyMiniTaskApplications = () => {
 
             {totalPages > 1 && (
               <div className="pagination">
-                <button
-                  onClick={() => handlePageChange(1)}
-                  disabled={currentPage === 1}
-                  className="pagination-first"
-                >
-                  First
-                </button>
+                
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -454,13 +481,7 @@ const MyMiniTaskApplications = () => {
                 >
                   Next
                 </button>
-                <button
-                  onClick={() => handlePageChange(totalPages)}
-                  disabled={currentPage === totalPages}
-                  className="pagination-last"
-                >
-                  Last
-                </button>
+                
               </div>
             )}
           </div>

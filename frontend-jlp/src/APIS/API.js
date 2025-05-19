@@ -59,6 +59,7 @@ export const assignApplicantToTask =(taskId,applicantId)=>API.put(`/api/h1/v2/as
 export const getYourAppliedMiniTasks =()=>API.get("/api/h1/v2/get_your_apllied/mini_tasks")
 export const getMiniTaskInfo = (Id)=>API.get(`/api/h1/v2/get_min_task_info/${Id}`)
 export const acceptMiniTaskAssignment = (Id)=>API.put(`/api/h1/v2/accept_task_assignment/${Id}`)
+export const rejectMiniTaskAssignment =(Id)=>API.put(`/api/h1/v2/reject_task_assignment/${Id}`)
 export const removeAppliedMiniTaskFromDashboard = (Ids)=>API.put('/api/h1/v2/remove_mini_task_from_dashboard',Ids)
 export const submitWorkForReview = (taskId,data)=>API.post(`/api/submit_task_work/${taskId}`,data)
 export const getMyWorkSubmissions = (taskId)=>API.get(`/api/get_mysubmissions/${taskId}`)

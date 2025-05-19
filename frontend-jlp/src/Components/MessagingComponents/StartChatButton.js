@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { startOrGetChatRoom } from '../../APIS/API';
 import { Loader2 } from 'lucide-react';
 
-const StartChatButton = ({ userId2, jobId }) => {
+const StartChatButton = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
