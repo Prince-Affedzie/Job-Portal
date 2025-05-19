@@ -71,7 +71,7 @@ const RoomList = ({ loading,rooms, selectedRoomId, setSelectedRoomId, currentUse
     ))}
   </div>
 ) :filteredRooms.length === 0 ? (
-        <div className="p-4 text-sm text-gray-500">No matching chats</div>
+        <div className="p-4 text-sm text-gray-500">No matching chats.You must have a Connection with Clients or Freelancers First. </div>
       ) : (
         filteredRooms.map((room) => {
           const otherUser = room.participants.find((p) => p._id !== currentUserId);
