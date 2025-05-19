@@ -382,7 +382,7 @@ const ClientViewSubmissions = () => {
 
       {/* File Preview Modal */}
       {previewUrl && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 mt-8">
           <div className="relative max-w-5xl w-full bg-white rounded-lg shadow-xl overflow-hidden">
             <div className="flex items-center justify-between p-4 border-b">
               <h3 className="font-medium">File Preview</h3>
@@ -431,4 +431,3 @@ const ClientViewSubmissions = () => {
 };
 
 export default ClientViewSubmissions;
-//Okay thanks , but looking at my current infrastructure of work submission from the freealncer to the client and how it's managed, comparing it to big platforms, what am i missing , or what improvements can i do to ensure standardization
