@@ -75,6 +75,39 @@ useEffect(() => {
   };
 }, [socket]);
 
+
+ useEffect(() => {
+
+  if (!socket) return;
+
+ 
+
+ const handleRoomUpdate = (updatedRoom) => {
+  setRooms(prev => {
+    const roomExists = prev.find(r => r._id.toString() === updatedRoom._id.toString());
+    if (roomExists) {
+      return prev.map(r => r._id === updatedRoom._id ? {
+        ...r,
+        ...updatedRoom, // This brings in lastMessage, lastMessageAt, unreadCounts
+      } : r);
+    } else {
+      return [updatedRoom, ...prev];
+    }
+  });
+};
+
+ socket.on("updatedRoom",(room)=>{
+    console.log(room)
+     handleRoomUpdate(room)
+  });
+  
+
+  return () => {
+   // socket.off("receiveMessage");
+    socket.off("updatedRoom");
+  };
+}, [socket,setRooms]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-blue-600 animate-fade-in">
@@ -100,15 +133,18 @@ useEffect(() => {
             backgroundColor: 'white',
             borderRight: '1px solid #e5e7eb',
             overflowY: 'auto',
+            
       }}>
         <RoomList
           rooms={rooms}
+          setRooms ={setRooms}
           selectedRoomId={selectedRoomId}
           setSelectedRoomId={(id) => {
-           setSelectedRoomId(id);
+          setSelectedRoomId(id);
          if (window.innerWidth < 768) setShowRoomList(false); // hide list on mobile
          }}currentUserId={user?._id}
          onlineUserIds ={onlineUserIds}
+         socket={socket}
          loading ={loading}
         />
       </div>
@@ -117,7 +153,8 @@ useEffect(() => {
       <div style={{
           flex: 1,
          backgroundColor: '#f9fafb',
-        display:
+        
+         display:
       showRoomList && !roomId && window.innerWidth < 768 ? 'none' : 'block',
      }}>
         {selectedRoomId ? (
