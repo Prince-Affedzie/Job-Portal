@@ -97,41 +97,51 @@ const SubmittedFileItem = ({ file, index, onPreviewClick }) => {
     >
       {/* Thumbnail Preview Area */}
       <div className="h-40 relative">
+        {isLoading ? (
+    // Show spinner or shimmer while loading
+       <div className="h-full w-full flex items-center justify-center bg-gray-100 animate-pulse">
+        <div className="w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin" />
+       </div>
+      ) : (
+       <>
         {fileType === 'image' && thumbnail ? (
-          <div className="h-full w-full bg-gray-50">
-            <img
-              src={thumbnail}
-              alt={`File ${index + 1}`}
-              className="w-full h-full object-cover"
-              onError={() => setThumbnail(null)}
-            />
-          </div>
-        ) :fileType === 'video' && thumbnail ? (
-          <div className="h-full w-full bg-gray-50">
-            <video
-              src={thumbnail}
-              alt={`File ${index + 1}`}
-              className="w-full h-full object-cover"
-              onError={() => setThumbnail(null)}
-            />
-          </div>
-        ) : (
-          <div className="h-full w-full bg-gray-50 flex flex-col items-center justify-center p-4">
-            <div className="mb-2">{getFileIcon()}</div>
-            <div className="text-sm font-medium text-center text-gray-600 mb-1 truncate w-full">
-              {getFileName(file.fileKey) || `File ${index + 1}`}
-            </div>
-            <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-              {fileType.toUpperCase()}
-            </div>
-          </div>
-        )}
-        
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <ExternalLink className="text-white" size={24} />
+        <div className="h-full w-full bg-gray-50">
+          <img
+            src={thumbnail}
+            alt={`File ${index + 1}`}
+            className="w-full h-full object-cover"
+            onError={() => setThumbnail(null)}
+          />
         </div>
-      </div>
+        ) : fileType === 'video' && thumbnail ? (
+        <div className="h-full w-full bg-gray-50">
+          <video
+            src={thumbnail}
+            className="w-full h-full object-cover"
+            onError={() => setThumbnail(null)}
+            muted
+          />
+        </div>
+         ) : (
+        <div className="h-full w-full bg-gray-50 flex flex-col items-center justify-center p-4">
+          <div className="mb-2">{getFileIcon()}</div>
+          <div className="text-sm font-medium text-center text-gray-600 mb-1 truncate w-full">
+            {getFileName(file.fileKey) || `File ${index + 1}`}
+          </div>
+          <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+            {fileType.toUpperCase()}
+          </div>
+        </div>
+      )}
+    </>
+    )}
+
+    {/* Hover overlay */}
+    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100">
+      <ExternalLink className="text-white" size={24} />
+    </div>
+    </div>
+
       
       {/* File Info Footer */}
       <div className="p-3 bg-white border-t border-gray-200">
