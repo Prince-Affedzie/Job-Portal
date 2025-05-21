@@ -498,7 +498,7 @@ const ClientViewSubmissions = () => {
 
       {/* File Preview Modal */}
       {localpreviewUrl && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 mt-8">
           <div className="relative bg-white rounded-lg overflow-hidden max-w-5xl w-full max-h-[90vh]">
             <div className="flex justify-between items-center p-4 border-b border-gray-200">
               <h3 className="font-medium text-gray-800">File Preview</h3>
