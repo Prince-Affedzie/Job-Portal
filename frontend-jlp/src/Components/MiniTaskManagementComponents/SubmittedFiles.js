@@ -59,9 +59,7 @@ const SubmittedFileItem = ({ file, index, onPreviewClick }) => {
 
    useEffect(() => {
     // For images, load a thumbnail directly from S3
-    console.log("I'm Executing")
-     console.log(file.fileKey)
-     console.log(fileType)
+    
      const fetchPreviewUrl = async(file)=>{
        setIsLoading(true);
       try{
