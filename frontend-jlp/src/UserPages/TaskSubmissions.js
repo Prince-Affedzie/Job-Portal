@@ -1,26 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import { Loader2, Trash2, X, RefreshCw, Clock, CheckCircle, XCircle, Download, FileText, Image, ExternalLink } from 'lucide-react';
-import { getMyWorkSubmissions, deleteWorkSubmission } from '../APIS/API';
-import { useParams, Link } from 'react-router-dom';
+import { 
+  Loader2, 
+  Trash2, 
+  RefreshCw, 
+  Clock, 
+  CheckCircle, 
+  XCircle, 
+  FileText, 
+  Image, 
+  ExternalLink,
+  MessageCircle,
+  Calendar,
+  Filter,
+  X,
+  Download
+} from 'lucide-react';
+import { getMyWorkSubmissions, deleteWorkSubmission, getPreviewUrl } from '../APIS/API';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from '../Components/MyComponents/Navbar';
+import SubmittedFiles from '../Components/MiniTaskManagementComponents/SubmittedFiles';
+
 
 const FreelancerSubmissions = () => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [localpreviewUrl, setLocalPreviewUrl] = useState(null);
   const [previewType, setPreviewType] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [filter, setFilter] = useState('all');
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
   const { taskId } = useParams();
+  const navigate = useNavigate();
+  const detailsRef = React.useRef(null);
 
   const fetchSubmissions = async () => {
     setLoading(true);
     try {
       const res = await getMyWorkSubmissions(taskId);
       if (res.status === 200) {
-        setSubmissions(res.data);
+        const sortedSubmissions = res.data.sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setSubmissions(sortedSubmissions);
+        
+        // Select the most recent submission by default
+        if (sortedSubmissions.length > 0 && !selectedSubmission) {
+          setSelectedSubmission(sortedSubmissions[0]);
+        }
       } else {
         setSubmissions([]);
       }
@@ -36,55 +64,85 @@ const FreelancerSubmissions = () => {
     fetchSubmissions();
   }, [taskId]);
 
+  const handlePreview = async (fileKey,previewURL) => {
+      try {
+       
+        if (previewURL) {
+          const previewURL1 = previewURL;
+          const fileType = getFileType(fileKey);
+  
+          setLocalPreviewUrl( previewURL1);
+          setPreviewType(fileType);
+        } else {
+          toast.error('Failed to get preview URL.');
+        }
+      } catch (error) {
+        toast.error('Error fetching preview URL.');
+        console.error(error);
+      }
+    };
+  
+ 
   const getStatusDetails = (status) => {
     switch (status) {
       case 'pending':
         return {
-          color: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+          color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
           icon: <Clock size={16} className="mr-1" />,
-          text: 'Awaiting Review'
+          text: 'Awaiting Review',
+          badge: 'bg-yellow-100 text-yellow-800'
         };
       case 'approved':
         return {
-          color: 'bg-green-100 text-green-700 border-green-300',
+          color: 'bg-green-50 text-green-700 border-green-200',
           icon: <CheckCircle size={16} className="mr-1" />,
-          text: 'Approved'
+          text: 'Approved',
+          badge: 'bg-green-100 text-green-800'
         };
       case 'rejected':
         return {
-          color: 'bg-red-100 text-red-700 border-red-300',
+          color: 'bg-red-50 text-red-700 border-red-200',
           icon: <XCircle size={16} className="mr-1" />,
-          text: 'Rejected'
+          text: 'Rejected',
+          badge: 'bg-red-100 text-red-800'
         };
       default:
         return {
-          color: 'bg-gray-100 text-gray-700 border-gray-300',
+          color: 'bg-gray-50 text-gray-700 border-gray-200',
           icon: <Clock size={16} className="mr-1" />,
-          text: status
+          text: status,
+          badge: 'bg-gray-100 text-gray-800'
         };
     }
   };
 
   const getFileIcon = (url) => {
     if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
-      return <Image size={16} className="mr-1" />;
+      return <Image size={18} className="mr-2" />;
     } else if (/\.(pdf)$/i.test(url)) {
-      return <FileText size={16} className="mr-1" />;
+      return <FileText size={18} className="mr-2" />;
     } else if (/\.(doc|docx)$/i.test(url)) {
-      return <FileText size={16} className="mr-1" />;
+      return <FileText size={18} className="mr-2" />;
     } else {
-      return <Download size={16} className="mr-1" />;
+      return <Download size={18} className="mr-2" />;
     }
   };
 
   const getFileType = (url) => {
     if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
       return 'image';
-    } else if (/\.(pdf)$/i.test(url)) {
+    }else if (/\.(mp4|webm|mov|avi|wmv)$/i.test(url)) {
+    return 'video';
+  } else if (/\.(pdf)$/i.test(url)) {
       return 'pdf';
     } else {
       return 'other';
     }
+  };
+
+  const getFileExtension = (url) => {
+    //const match = url.match(/\.([a-zA-Z0-9]+)$/);
+    //return match ? match[1].toUpperCase() : 'FILE';
   };
 
   const handleDelete = async (id) => {
@@ -94,7 +152,19 @@ const FreelancerSubmissions = () => {
       const res = await deleteWorkSubmission(id);
       if (res.status === 200) {
         toast.success('Submission Removed Successfully');
-        setSubmissions((prev) => prev.filter((s) => s._id !== id));
+        
+        // Update submissions list
+        const updatedSubmissions = submissions.filter((s) => s._id !== id);
+        setSubmissions(updatedSubmissions);
+        
+        // If we deleted the selected submission, select the next one
+        if (selectedSubmission && selectedSubmission._id === id) {
+          if (updatedSubmissions.length > 0) {
+            setSelectedSubmission(updatedSubmissions[0]);
+          } else {
+            setSelectedSubmission(null);
+          }
+        }
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 
@@ -105,11 +175,6 @@ const FreelancerSubmissions = () => {
     } finally {
       setDeleteLoading(null);
     }
-  };
-
-  const handlePreview = (url, type) => {
-    setPreviewUrl(url);
-    setPreviewType(type);
   };
 
   const getFilteredSubmissions = () => {
@@ -128,35 +193,55 @@ const FreelancerSubmissions = () => {
     }).format(date);
   };
 
+  const getSubmissionNumber = (submission) => {
+    // Find the index of this submission in the original array (chronological order)
+    const allSubmissions = [...submissions].sort((a, b) => 
+      new Date(a.createdAt) - new Date(b.createdAt)
+    );
+    const index = allSubmissions.findIndex(s => s._id === submission._id);
+    return index + 1;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <ToastContainer position="top-right" autoClose={3000} />
         
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Your Work Submissions</h1>
-            <p className="text-gray-500">View and manage all submissions for this task</p>
+            <div className="flex items-center mb-1">
+              <Link to="/h1/dashboard" className="text-blue-600 hover:text-blue-800 mr-2">
+                Dashboard
+              </Link>
+              <span className="text-gray-500 mx-1">›</span>
+              <h1 className="text-xl font-bold text-gray-800">Submissions</h1>
+            </div>
+            <p className="text-sm text-gray-500">Manage your work submissions for this project</p>
           </div>
           
-          <div className="mt-4 md:mt-0 flex items-center space-x-2">
+          <div className="mt-4 md:mt-0 flex items-center space-x-3">
             <button 
               onClick={fetchSubmissions}
-              className="flex items-center text-gray-600 hover:text-blue-600 px-3 py-1 border border-gray-300 rounded-md bg-white shadow-sm hover:shadow transition"
+              className="flex items-center text-gray-600 hover:text-blue-600 px-3 py-2 border border-gray-300 rounded-md bg-white shadow-sm hover:shadow transition"
             >
-              <RefreshCw size={16} className="mr-1" /> Refresh
+              <RefreshCw size={16} className="mr-2" /> Refresh
             </button>
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="bg-white border border-gray-300 text-gray-700 py-1 px-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="all">All Submissions</option>
-              <option value="pending">Awaiting Review</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
+            <div className="relative">
+              <div className="flex items-center bg-white border border-gray-300 rounded-md px-3 py-2 shadow-sm">
+                <Filter size={16} className="text-gray-500 mr-2" />
+                <select
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="bg-transparent text-gray-700 focus:outline-none"
+                >
+                  <option value="all">All Submissions</option>
+                  <option value="pending">Awaiting Review</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -180,152 +265,207 @@ const FreelancerSubmissions = () => {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-            {getFilteredSubmissions().map((submission) => {
-              const statusDetails = getStatusDetails(submission.status);
-              
-              return (
-                <div
-                  key={submission._id}
-                  className="border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow transition bg-white relative"
-                >
-                  {/* Status badge - moved to top right */}
-                  <div className="absolute top-3 right-3">
-                    <span className={`flex items-center px-3 py-1 text-xs rounded-full font-medium border ${statusDetails.color}`}>
-                      {statusDetails.icon} {statusDetails.text}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-semibold text-gray-800 mb-1 pr-24">
-                    {submission.taskId?.title || 'Untitled Task'}
-                  </h3>
-                  
-                  <p className="text-sm text-gray-500 mb-4">
-                    Submitted on: {formatDate(submission.createdAt)}
-                  </p>
-
-                  {submission.message && (
-                    <div className="mb-5 p-3 bg-gray-50 rounded-md border border-gray-100">
-                      <p className="text-sm text-gray-700">
-                        <span className="font-medium">Your message:</span>{' '}
-                        {submission.message}
-                      </p>
-                    </div>
-                  )}
-
-                  {submission.feedback && (
-                    <div className="mb-5 p-3 bg-blue-50 rounded-md border border-blue-100">
-                      <p className="text-sm text-gray-700">
-                        <span className="font-medium text-blue-700">Client feedback:</span>{' '}
-                        {submission.feedback}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="mb-4">
-                    <p className="font-medium text-gray-800 mb-2">Files:</p>
-                    {submission.files?.length > 0 ? (
-                      <div className="grid grid-cols-2 gap-2">
-                        {submission.files.map((url, idx) => {
-                          const fileType = getFileType(url);
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Sidebar - Submission List */}
+            <div className="lg:w-1/3 xl:w-1/4">
+              <div className="bg-white rounded-lg shadow">
+                <div className="p-4 border-b border-gray-100">
+                  <h3 className="font-medium text-gray-800">Submission History</h3>
+                </div>
+                <div className="divide-y divide-gray-100 max-h-[70vh] overflow-y-auto">
+                  {getFilteredSubmissions().map((submission) => {
+                    const statusDetails = getStatusDetails(submission.status);
+                    const isSelected = selectedSubmission && selectedSubmission._id === submission._id;
+                    
+                    return (
+                      <div
+                        key={submission._id}
+                        onClick={() => {
+                          setSelectedSubmission(submission)
+                          if (window.innerWidth < 1024) {
+                              setTimeout(() => {
+                              detailsRef.current?.scrollIntoView({ behavior: 'smooth' });
+                              }, 100); 
+                              }
                           
-                          return (
-                            <div key={idx} className="relative group">
-                              {fileType === 'image' ? (
-                                <div 
-                                  className="h-28 rounded-md border border-gray-200 overflow-hidden bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity"
-                                  onClick={() => handlePreview(url, 'image')}
-                                >
-                                  <img
-                                    src={url}
-                                    alt={`Submission ${idx + 1}`}
-                                    className="w-full h-full object-cover"
-                                  />
-                                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                    <ExternalLink className="text-white" size={20} />
-                                  </div>
-                                </div>
-                              ) : (
-                                <a
-                                  href={url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="flex items-center p-3 h-28 border border-gray-200 rounded-md hover:bg-gray-50 transition text-gray-700 hover:text-blue-600"
-                                >
-                                  {getFileIcon(url)}
-                                  <span className="text-sm truncate">File {idx + 1}</span>
-                                </a>
-                              )}
-                            </div>
-                          );
-                        })}
+                        }}
+                        className={`p-4 cursor-pointer transition hover:bg-gray-50 ${isSelected ? 'bg-blue-50 border-l-4 border-blue-500' : ''}`}
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex items-center">
+                            <span className="font-medium text-gray-900">
+                              Submission #{getSubmissionNumber(submission)}
+                            </span>
+                          </div>
+                          <span className={`px-2 py-1 text-xs rounded-full ${statusDetails.badge}`}>
+                            {statusDetails.text}
+                          </span>
+                        </div>
+                        <div className="flex items-center text-xs text-gray-500 mb-2">
+                          <Calendar size={14} className="mr-1" />
+                          {formatDate(submission.createdAt)}
+                        </div>
+                        <div className="flex items-center text-xs text-gray-500">
+                          <FileText size={14} className="mr-1" />
+                          {submission.files?.length || 0} file(s)
+                          {submission.message && (
+                            <span className="ml-3 flex items-center">
+                              <MessageCircle size={14} className="mr-1" />
+                              Message
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    ) : (
-                      <p className="text-sm text-gray-400 italic">No files attached.</p>
-                    )}
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content - Selected Submission */}
+            <div className="lg:w-2/3 xl:w-3/4" ref={detailsRef}>
+              {selectedSubmission ? (
+                <div className="bg-white rounded-lg shadow">
+                  {/* Header */}
+                  <div className="p-6 border-b border-gray-100">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between">
+                      <div>
+                        <div className="flex items-center">
+                          <h2 className="text-lg font-semibold text-gray-800">
+                            Submission #{getSubmissionNumber(selectedSubmission)}
+                          </h2>
+                          <span className="ml-3 px-3 py-1 text-xs rounded-full flex items-center font-medium border ${statusDetails.color}">
+                            {getStatusDetails(selectedSubmission.status).icon} {getStatusDetails(selectedSubmission.status).text}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Submitted on {formatDate(selectedSubmission.createdAt)}
+                        </p>
+                      </div>
+                      <div className="mt-4 md:mt-0">
+                        <button
+                          onClick={() => handleDelete(selectedSubmission._id)}
+                          disabled={deleteLoading === selectedSubmission._id}
+                          className="flex items-center text-sm text-red-600 hover:text-red-800 focus:outline-none px-3 py-1 border border-red-200 rounded hover:bg-red-50"
+                        >
+                          {deleteLoading === selectedSubmission._id ? (
+                            <Loader2 size={14} className="animate-spin mr-2" />
+                          ) : (
+                            <Trash2 size={14} className="mr-2" />
+                          )}
+                          Delete
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Action button */}
-                  <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
-                    <button
-                      onClick={() => handleDelete(submission._id)}
-                      disabled={deleteLoading === submission._id}
-                      className="flex items-center text-sm text-red-600 hover:text-red-800 focus:outline-none"
-                    >
-                      {deleteLoading === submission._id ? (
-                        <Loader2 size={14} className="animate-spin mr-1" />
-                      ) : (
-                        <Trash2 size={14} className="mr-1" />
-                      )}
-                      Delete Submission
-                    </button>
+                  {/* Task Information */}
+                  <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
+                    <h3 className="font-medium text-gray-800 mb-2">Task Information</h3>
+                    <p className="text-gray-700 text-sm font-medium">
+                      {selectedSubmission.taskId?.title || 'Untitled Task'}
+                    </p>
+                  </div>
+
+                  {/* Message & Feedback */}
+                  <div className="p-6">
+                    {selectedSubmission.message && (
+                      <div className="mb-6">
+                        <h3 className="font-medium text-gray-800 mb-3 flex items-center">
+                          <MessageCircle size={18} className="mr-2" /> Your Message
+                        </h3>
+                        <div className="p-4 bg-gray-50 rounded-md border border-gray-100">
+                          <p className="text-sm text-gray-700">
+                            {selectedSubmission.message}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {selectedSubmission.feedback && (
+                      <div className="mb-6">
+                        <h3 className="font-medium text-gray-800 mb-3 flex items-center text-blue-700">
+                          <MessageCircle size={18} className="mr-2" /> Client Feedback
+                        </h3>
+                        <div className="p-4 bg-blue-50 rounded-md border border-blue-100">
+                          <p className="text-sm text-gray-700">
+                            {selectedSubmission.feedback}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Files */}
+                    <div>
+                      <h3 className="font-medium text-gray-800 mb-3">Submitted Files</h3>
+                       <SubmittedFiles
+                          files={selectedSubmission.files || []} 
+                           onPreviewClick={handlePreview} 
+                          />
+                    </div>
                   </div>
                 </div>
-              );
-            })}
+              ) : (
+                <div className="bg-white rounded-lg shadow p-8 text-center">
+                  <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <FileText className="text-gray-400" size={32} />
+                  </div>
+                  <h2 className="text-xl font-semibold text-gray-700 mb-2">No Submission Selected</h2>
+                  <p className="text-gray-500 mb-6">Select a submission from the list to view its details.</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
 
       {/* Image/PDF Preview Modal */}
-      {previewUrl && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 mt-20">
-          <div className="relative max-w-5xl w-full bg-white rounded-lg shadow-xl overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="font-medium">File Preview</h3>
+      {localpreviewUrl && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+          <div className="relative bg-white rounded-lg overflow-hidden max-w-5xl w-full max-h-[90vh]">
+            <div className="flex justify-between items-center p-4 border-b border-gray-200">
+              <h3 className="font-medium text-gray-800">File Preview</h3>
               <button
-                className="text-gray-500 hover:text-gray-700"
                 onClick={() => {
-                  setPreviewUrl(null);
+                  setLocalPreviewUrl(null);
                   setPreviewType(null);
                 }}
+                className="text-gray-600 hover:text-gray-900 focus:outline-none"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
             
-            <div className="p-2 max-h-[80vh] overflow-auto">
-              {previewType === 'image' && (
-                <img src={previewUrl} alt="Preview" className="max-w-full mx-auto" />
-              )}
-              {previewType === 'pdf' && (
-                <iframe 
-                  src={previewUrl} 
-                  title="PDF Preview" 
-                  className="w-full h-[70vh]"
+            <div className="p-4">
+              {previewType === 'image' ? (
+                <img src={localpreviewUrl} 
+                alt="Preview" 
+                 onContextMenu={(e) => e.preventDefault()} 
+                className="max-h-[70vh] mx-auto" 
                 />
-              )}
-              {previewType === 'other' && (
-                <div className="text-center py-8">
-                  <FileText size={48} className="mx-auto text-gray-400 mb-4" />
-                  <p className="mb-4">This file type cannot be previewed</p>
+              ) : previewType === 'video' ? (
+                <video 
+                src={localpreviewUrl} 
+                controls 
+                className="max-h-[70vh] mx-auto"
+              />
+              ) : previewType === 'pdf' ? (
+                <iframe
+                  src={localpreviewUrl}
+                  title="PDF Preview"
+                  className="w-full h-[70vh]"
+                ></iframe>
+              ) : (
+                <div className="text-center text-gray-600 py-20">
+                  <FileText size={48} className="mx-auto mb-4 text-gray-400" />
+                  <p>Preview not available for this file type.</p>
                   <a 
-                    href={previewUrl}
-                    target="_blank"
-                    rel="noopener noreferrer" 
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-flex items-center"
+                    href={localpreviewUrl} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
                   >
-                    <Download size={16} className="mr-2" /> Download File
+                    Download File
                   </a>
                 </div>
               )}

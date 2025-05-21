@@ -1,7 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
-import { submitWorkForReview } from '../../APIS/API'; // adjust this path
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import {getSignedUrl,submitWorkForReview,sendFileToS3} from '../../APIS/API'
+
 
 const WorkSubmissionModal = ({ isOpen, onClose, taskId }) => {
   const [message, setMessage] = useState('');
@@ -15,18 +17,39 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    try {
-      const formData = new FormData();
-      formData.append('message', message);
-      files.forEach((file) => formData.append('files', file));
 
-      await submitWorkForReview( taskId, formData);
+    try {
+      const fileKeys = [];
+
+      for (const file of files) {
+        // Step 1: Get signed URL from your backend
+        const { data } = await getSignedUrl({
+          taskId,
+          filename: file.name,
+          contentType: file.type,
+        });
+
+        // Step 2: Upload file to S3 directly
+        console.log(data)
+        console.log(file)
+        await sendFileToS3(data.uploadURL,file)
+
+       fileKeys.push({
+          fileKey: data.fileKey,
+        });
+      }
+
+      // Step 3: Submit metadata (fileKeys and message) to your backend
+      await submitWorkForReview(taskId,{
+        message,
+        fileKeys: fileKeys,
+      });
 
       toast.success('Work submitted successfully!');
       onClose();
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to submit work.');
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.";
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
       setMessage('');

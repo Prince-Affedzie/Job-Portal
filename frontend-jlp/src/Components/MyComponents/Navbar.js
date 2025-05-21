@@ -8,12 +8,13 @@ import { notificationContext } from '../../Context/NotificationContext';
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const { notifications, fetchNotifications } = useContext(notificationContext);
+  const [messages,setMessages] = useState([])
+  const { notifications, fetchNotifications,socket } = useContext(notificationContext);
   
   useEffect(() => {
     fetchNotifications();
   }, []);
-
+ 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
