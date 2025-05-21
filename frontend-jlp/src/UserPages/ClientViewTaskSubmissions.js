@@ -405,7 +405,10 @@ const ClientViewSubmissions = () => {
                       <SubmittedFiles
                          files={selectedSubmission.files || []} 
                          onPreviewClick={handlePreview} 
+                         selectedSubmission ={selectedSubmission}
+            
                       />
+
                     </div>
 
                     {/* Review Section */}

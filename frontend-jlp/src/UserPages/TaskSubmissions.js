@@ -116,17 +116,6 @@ const FreelancerSubmissions = () => {
     }
   };
 
-  const getFileIcon = (url) => {
-    if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
-      return <Image size={18} className="mr-2" />;
-    } else if (/\.(pdf)$/i.test(url)) {
-      return <FileText size={18} className="mr-2" />;
-    } else if (/\.(doc|docx)$/i.test(url)) {
-      return <FileText size={18} className="mr-2" />;
-    } else {
-      return <Download size={18} className="mr-2" />;
-    }
-  };
 
   const getFileType = (url) => {
     if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
@@ -140,10 +129,7 @@ const FreelancerSubmissions = () => {
     }
   };
 
-  const getFileExtension = (url) => {
-    //const match = url.match(/\.([a-zA-Z0-9]+)$/);
-    //return match ? match[1].toUpperCase() : 'FILE';
-  };
+ 
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this submission?')) return;
@@ -400,12 +386,13 @@ const FreelancerSubmissions = () => {
                       <h3 className="font-medium text-gray-800 mb-3">Submitted Files</h3>
                        <SubmittedFiles
                           files={selectedSubmission.files || []} 
-                           onPreviewClick={handlePreview} 
+                           onPreviewClick={handlePreview}
+                           selectedSubmission={selectedSubmission} 
                           />
                     </div>
-                  </div>
-                </div>
-              ) : (
+                   </div>
+                 </div>
+                ) : (
                 <div className="bg-white rounded-lg shadow p-8 text-center">
                   <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                     <FileText className="text-gray-400" size={32} />
