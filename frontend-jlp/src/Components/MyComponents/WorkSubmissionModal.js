@@ -207,29 +207,23 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
     return task?.locationType === 'on-site' ? 'image/*,video/*' : '*';
   };
 
-  const getFileTypeHint = () => {
-    if (task?.locationType === 'on-site') {
-      return 'Only images and videos are accepted for on-site tasks';
-    }
-    return 'All file types accepted';
-  };
-
+  
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
+      <Dialog as="div" className="fixed inset-0 z-50" onClose={onClose}>
         <TransitionChild
           as={Fragment}
-          enter="ease-out duration-300"
+          enter="ease-out duration-200"
           enterFrom="opacity-0"
           enterTo="opacity-100"
           leave="ease-in duration-200"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm" />
+          <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-none" />
         </TransitionChild>
 
-        <div className="fixed inset-0 overflow-y-auto">
+        <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-start sm:items-center justify-center p-2 sm:p-4 pt-4 sm:pt-8">
             <TransitionChild
               as={Fragment}
@@ -240,7 +234,7 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <DialogPanel className="max-h-[80vh] mt-10 overflow-y-auto overflow-hidden rounded-2xl bg-white  transition-all">
+              <DialogPanel className="z-50 max-h-[80vh] mt-10 overflow-y-auto overflow-hidden rounded-2xl bg-white shadow-none border border-gray-200 transition-all">
                 <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
                   <DialogTitle className="text-xl font-semibold text-white flex items-center">
                     <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,7 +298,7 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
                       <input
                         type="file"
                         multiple
-                        accept={getAcceptedFileTypes()}
+                        
                         onChange={handleFileChange}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         onClick={(e) => (e.target.value = null)}
@@ -319,7 +313,7 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
                             <span className="font-medium text-blue-600 hover:text-blue-500">Click to upload</span> or drag and drop
                           </p>
                           <p className="text-xs text-gray-500 mt-1">
-                            {getFileTypeHint()} • Max {formatFileSize(MAX_FILE_SIZE)} per file
+                             Max {formatFileSize(MAX_FILE_SIZE)} per file
                           </p>
                         </div>
                       </div>
