@@ -1,9 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-import {getSignedUrl,submitWorkForReview,sendFileToS3} from '../../APIS/API'
-
+import {
+  getSignedUrl,
+  submitWorkForReview,
+  sendFileToS3,
+} from '../../APIS/API';
 
 const WorkSubmissionModal = ({ isOpen, onClose, taskId }) => {
   const [message, setMessage] = useState('');
@@ -11,44 +13,55 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleFileChange = (e) => {
-    setFiles([...e.target.files]);
-  };
+  const newFiles = Array.from(e.target.files);
+
+  // Avoid duplicate files by name (optional)
+  const uniqueFiles = [
+    ...files,
+    ...newFiles.filter((newFile) => !files.some((f) => f.name === newFile.name))
+  ];
+
+  setFiles(uniqueFiles);
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    if (files.length === 0) {
+      toast.error('Please select at least one file.');
+      return;
+    }
 
+    setSubmitting(true);
     try {
       const fileKeys = [];
 
       for (const file of files) {
-        // Step 1: Get signed URL from your backend
         const { data } = await getSignedUrl({
           taskId,
           filename: file.name,
           contentType: file.type,
         });
 
-        // Step 2: Upload file to S3 directly
-        console.log(data)
-        console.log(file)
-        await sendFileToS3(data.uploadURL,file)
+        await sendFileToS3(data.uploadURL, file);
 
-       fileKeys.push({
+        fileKeys.push({
           fileKey: data.fileKey,
         });
       }
 
-      // Step 3: Submit metadata (fileKeys and message) to your backend
-      await submitWorkForReview(taskId,{
+      await submitWorkForReview(taskId, {
         message,
-        fileKeys: fileKeys,
+        fileKeys,
       });
 
       toast.success('Work submitted successfully!');
       onClose();
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.";
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        'An unexpected error occurred.';
       toast.error(errorMessage);
     } finally {
       setSubmitting(false);
@@ -97,12 +110,44 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId }) => {
                     rows={4}
                     required
                   />
+
                   <input
                     type="file"
                     multiple
                     onChange={handleFileChange}
                     className="block w-full"
+                    onClick={(e) => (e.target.value = null)}
                   />
+
+                  {/* Display selected files */}
+                  {files.length > 0 && (
+                   <ul className="text-sm text-gray-700 mt-2 space-y-1">
+                    {files.map((file, index) => (
+                      <li
+                    key={index}
+                   className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded"
+                    >
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 truncate">
+                  <span className="truncate">📎 {file.name}</span>
+                   <span className="text-xs text-gray-500">
+                 ({(file.size / 1024).toFixed(1)} KB)
+               </span>
+               </div>
+               <button
+              type="button"
+              onClick={() =>
+              setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index))
+             }
+             className="ml-2 text-red-500 hover:text-red-700"
+            title="Remove"
+             >
+            ✕
+           </button>
+            </li>
+          ))}
+           </ul>
+            )}
+
 
                   <div className="mt-4 flex justify-end gap-2">
                     <button
