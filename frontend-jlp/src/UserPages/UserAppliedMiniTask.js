@@ -411,12 +411,12 @@ const MyMiniTaskApplications = () => {
                       
                       {isAssigned && (task.status === "In-progress"  || task.status === "Completed") && (
                         <>
-                          <button
-                            className="submit-proof-btn"
-                            onClick={() => openSubmitModal(task._id)}
-                          >
-                            Submit Work
-                          </button>
+                         <button
+                          className="submit-proof-btn"
+                          onClick={() => openSubmitModal(task._id)}
+                         >
+                        {task.locationType === 'on-site' ? 'Submit Proof of Work' : 'Submit Work'}
+                         </button>
                           <button
                             className="view-submissions-btn"
                             onClick={() => navigate(`/freelancer/${task._id}/view_task_submissions`)}
@@ -456,10 +456,22 @@ const MyMiniTaskApplications = () => {
                         </p>
                       )}
                     </div>
-                  </div>
+                      {/* Modal for submitting work */}
+                      {modalOpen && (
+                       <WorkSubmissionModal
+                         isOpen={modalOpen}
+                        onClose={() => {
+                         setModalOpen(false);
+                          setActiveTaskId(null);
+                          }}
+                            taskId={activeTaskId}
+                            task ={task}
+                          />
+                          )}
+                     </div>
                 );
-              })}
-            </div>
+                })}
+                </div>
 
             {totalPages > 1 && (
               <div className="pagination">
@@ -488,17 +500,7 @@ const MyMiniTaskApplications = () => {
         )}
       </div>
       
-      {/* Modal for submitting work */}
-      {modalOpen && (
-        <WorkSubmissionModal
-          isOpen={modalOpen}
-          onClose={() => {
-            setModalOpen(false);
-            setActiveTaskId(null);
-          }}
-          taskId={activeTaskId}
-        />
-      )}
+      
       
       {/* Confirmation dialog for deleting tasks */}
       {showConfirmation && (
