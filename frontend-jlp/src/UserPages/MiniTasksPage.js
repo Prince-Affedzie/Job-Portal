@@ -42,7 +42,9 @@ const MiniTaskPage = () => {
   const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
 
   
-  
+  useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   
   const categoryOptions = {
     "Creative Tasks":["Graphic Design","Video Editing","Flyer Design","Poster Design","Logo Design","Voice Over"],

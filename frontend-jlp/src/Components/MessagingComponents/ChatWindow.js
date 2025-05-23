@@ -44,12 +44,12 @@ const MessageBubble = ({ message, isMyMessage, onReply, currentUser, socket, mes
           <div
             className={`relative px-4 py-2 rounded-xl shadow-sm ${
               isMyMessage
-                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+                ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white'
                 : 'bg-white text-gray-800 border border-gray-100'
             } ${!isMyMessage ? 'rounded-tl-none' : 'rounded-tr-none'}`}
           >
             {deleted ? (
-              <p className="italic text-gray-400 text-sm">This message was deleted</p>
+              <p className="italic text-gray-600 text-sm">This message was deleted</p>
             ) : (
               <>
                 {replyTo && (
@@ -87,7 +87,7 @@ const MessageBubble = ({ message, isMyMessage, onReply, currentUser, socket, mes
                       </div>
                     ) : (
                       <a
-                        href={mediaUrl}
+                        href={`https://docs.google.com/gview?url=${encodeURIComponent(mediaUrl)}&embedded=true`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`flex items-center text-sm ${isMyMessage ? 'text-blue-100' : 'text-blue-600'} hover:underline`}
@@ -103,7 +103,7 @@ const MessageBubble = ({ message, isMyMessage, onReply, currentUser, socket, mes
                   <button
                   className={`flex items-center gap-1 px-2 py-1 rounded-full text-sm shadow-sm transition 
                      ${isMyMessage 
-                    ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                    ? 'bg-blue-400 text-white hover:bg-blue-700' 
                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
                     onClick={() => onReply(message)}
                  title="Reply"
@@ -223,13 +223,13 @@ const MessageInput = ({
   return (
     <div className="p-3 bg-white border-t border-gray-200 flex gap-2 items-end">
       {/* Attachment Button */}
-      <button
+      {/*<button
         type="button"
         onClick={triggerFileInput}
         className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
       >
         <Paperclip size={20} />
-      </button>
+      </button> */}
 
       {/* Text Input */}
       <div className="flex-1 relative">

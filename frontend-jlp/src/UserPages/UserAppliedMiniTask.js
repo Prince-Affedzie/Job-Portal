@@ -1,18 +1,16 @@
 // MyMiniTaskApplications.jsx
+// MyMiniTaskApplications.jsx
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import '../Styles/UserMinitaskApp.css';
 import { userContext } from "../Context/FetchUser";
 import Navbar from '../Components/MyComponents/Navbar';
 import { useNavigate } from 'react-router-dom';
-import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard,rejectMiniTaskAssignment } from '../APIS/API';
+import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard, rejectMiniTaskAssignment } from '../APIS/API';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaTrash, FaFilter, FaCheck, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaTrash, FaFilter, FaCheck, FaArrowUp, FaArrowDown, FaClock, FaMapMarkerAlt, FaDollarSign, FaUser, FaPhone, FaEye, FaUpload, FaComments, FaTimes, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import WorkSubmissionModal from '../Components/MyComponents/WorkSubmissionModal';
-import StartChatButton from '../Components/MessagingComponents/StartChatButton'
-import  MiniTaskActions from '../Components/MyComponents/MiniTaskActionButtons'
-
-
+import StartChatButton from '../Components/MessagingComponents/StartChatButton';
+import MiniTaskActions from '../Components/MyComponents/MiniTaskActionButtons';
 
 const MyMiniTaskApplications = () => {
   const navigate = useNavigate();
@@ -209,19 +207,19 @@ const MyMiniTaskApplications = () => {
     const isAssigned = task.assignedTo && task.assignedTo === user?._id;
     
     if (task.status === "Completed" && isAssigned) 
-      return { text: "Completed(You completed this Task)", className: "status-completed" };
+      return { text: "Completed", subtext: "You completed this task", className: "bg-green-100 text-green-800 border-green-200", icon: <FaCheckCircle className="w-4 h-4" /> };
     if (task.status === "In-progress" && isAssigned) 
-      return { text: "In Progress (You are assigned)", className: "status-in-progress" };
+      return { text: "In Progress", subtext: "You are assigned", className: "bg-blue-100 text-blue-800 border-blue-200", icon: <FaClock className="w-4 h-4" /> };
     if (task.status === "Open" && !task.assignedTo) 
-      return { text: "Applied (Awaiting decision)", className: "status-applied" };
+      return { text: "Applied", subtext: "Awaiting decision", className: "bg-yellow-100 text-yellow-800 border-yellow-200", icon: <FaClock className="w-4 h-4" /> };
     if (task.status === "Open" && !isAssigned && task.assignedTo) 
-      return { text: "Not Selected", className: "status-not-selected" };
+      return { text: "Not Selected", subtext: "", className: "bg-red-100 text-red-800 border-red-200", icon: <FaTimes className="w-4 h-4" /> };
     if (task.status === "Open" && isAssigned && task.assignedTo) 
-      return { text: "Selected (You are assigned)", className: "status-selected" };
+      return { text: "Selected", subtext: "You are assigned", className: "bg-emerald-100 text-emerald-800 border-emerald-200", icon: <FaCheck className="w-4 h-4" /> };
     if (task.status === "Closed" && !isAssigned) 
-      return { text: "Closed (Not selected)", className: "status-closed" };
+      return { text: "Closed", subtext: "Not selected", className: "bg-gray-100 text-gray-800 border-gray-200", icon: <FaTimes className="w-4 h-4" /> };
     
-    return { text: task.status, className: `status-${task.status.toLowerCase()}` };
+    return { text: task.status, subtext: "", className: "bg-gray-100 text-gray-800 border-gray-200", icon: <FaClock className="w-4 h-4" /> };
   };
 
   const canRemoveTask = (task) => {
@@ -239,267 +237,375 @@ const MyMiniTaskApplications = () => {
     setModalOpen(true);
   };
 
+  const getDeadlineStatus = (deadline) => {
+    if (!deadline) return null;
+    const now = new Date();
+    const deadlineDate = new Date(deadline);
+    const timeDiff = deadlineDate - now;
+    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    if (daysDiff < 0) return { text: 'Overdue', className: 'bg-red-100 text-red-700 border-red-200' };
+    if (daysDiff === 0) return { text: 'Due Today', className: 'bg-orange-100 text-orange-700 border-orange-200' };
+    if (daysDiff <= 3) return { text: `${daysDiff} days left`, className: 'bg-yellow-100 text-yellow-700 border-yellow-200' };
+    return null;
+  };
+
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden ">
       <Navbar />
-      <ToastContainer position="top-right" autoClose={4000} hideProgressBar={false} />
+      <ToastContainer 
+        position="top-right" 
+        autoClose={4000} 
+        hideProgressBar={false}
+        className="mt-16"
+      />
       
-      <div className="my-mini-applications-container">
-        <div className="header-with-actions">
-          <h1 className="page-title">Mini Jobs You've Applied To</h1>
-          
-        </div>
-
-        <div className="mini-filter-container">
-          <div className="filter-section">
-            <span>Filter:</span>
-            <div className="mini-filter-buttons">
-              {['all', 'open', 'in-progress', 'completed', 'closed'].map(status => (
-                <button
-                  key={status}
-                  className={filter === status ? 'active' : ''}
-                  onClick={() => { setFilter(status); setCurrentPage(1); }}
-                >
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          <div className="sort-section">
-            <span>Sort by:</span>
-            <div className="sort-buttons">
-              <button 
-                className={sortField === 'deadline' ? 'active' : ''} 
-                onClick={() => handleSort('deadline')}
-              >
-                Deadline {sortField === 'deadline' && 
-                          (sortDirection === 'asc' ? <FaArrowUp /> : <FaArrowDown />)}
-              </button>
-              <button 
-                className={sortField === 'budget' ? 'active' : ''} 
-                onClick={() => handleSort('budget')}
-              >
-                Budget {sortField === 'budget' && 
-                        (sortDirection === 'asc' ? <FaArrowUp /> : <FaArrowDown />)}
-              </button>
-              <button 
-                className={sortField === 'title' ? 'active' : ''} 
-                onClick={() => handleSort('title')}
-              >
-                Title {sortField === 'title' && 
-                      (sortDirection === 'asc' ? <FaArrowUp /> : <FaArrowDown />)}
-              </button>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">My Mini Task Applications</h1>
+            <p className="text-gray-600">Manage and track your applied mini tasks</p>
           </div>
         </div>
 
-        {showDeleteButton && (
-          <div className="action-buttons-container">
-            <button
-              className="select-all-btn"
-              onClick={handleSelectAll}
-            >
-              <FaCheck /> {Object.keys(selectedTasks).filter(id => selectedTasks[id]).length === 
-                        sortedAndFilteredApplications.filter(task => canRemoveTask(task)).length ? 
-                        "Deselect All" : "Select All"}
-            </button>
+        {/* Filters and Sort Section */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            {/* Filter Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex items-center gap-2 text-gray-700 font-medium">
+               
+                <span>Filter:</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {['all', 'open', 'in-progress', 'completed', 'closed'].map(status => (
+                  <button
+                    key={status}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      filter === status 
+                        ? 'bg-blue-600 text-white shadow-md' 
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                    onClick={() => { setFilter(status); setCurrentPage(1); }}
+                  >
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
             
-            <button
-              className="delete-selected-btn"
-              onClick={confirmRemoveSelectedTasks}
-              disabled={isProcessing}
-            >
-              <span className="delete-icon"><FaTrash/></span>
-              {isProcessing ? "Removing..." : `Delete Selected (${Object.values(selectedTasks).filter(Boolean).length})`}
-            </button>
+            {/* Sort Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <span className="text-gray-700 font-medium">Sort by:</span>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { field: 'deadline', label: 'Deadline' },
+                  { field: 'budget', label: 'Budget' },
+                  { field: 'title', label: 'Title' }
+                ].map(({ field, label }) => (
+                  <button 
+                    key={field}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      sortField === field 
+                        ? 'bg-indigo-600 text-white shadow-md' 
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                    onClick={() => handleSort(field)}
+                  >
+                    {label}
+                    {sortField === field && (
+                      sortDirection === 'asc' ? <FaArrowUp className="w-3 h-3" /> : <FaArrowDown className="w-3 h-3" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-        )}
 
+          {/* Bulk Actions */}
+          {showDeleteButton && (
+            <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-gray-200">
+              <button
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium"
+                onClick={handleSelectAll}
+              >
+                <FaCheck className="w-4 h-4" />
+                {Object.keys(selectedTasks).filter(id => selectedTasks[id]).length === 
+                  sortedAndFilteredApplications.filter(task => canRemoveTask(task)).length ? 
+                  "Deselect All" : "Select All"}
+              </button>
+              
+              <button
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium disabled:opacity-50"
+                onClick={confirmRemoveSelectedTasks}
+                disabled={isProcessing}
+              >
+                <FaTrash className="w-4 h-4" />
+                {isProcessing ? "Removing..." : `Delete Selected (${Object.values(selectedTasks).filter(Boolean).length})`}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Main Content */}
         {loading ? (
-            <div className="flex flex-col items-center justify-center py-10 space-y-4 text-center">
-              <div className="w-10 h-10 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-                   <p className="text-sm text-gray-600 font-medium">
-                Loading your applications...
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12">
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-gray-600 font-medium">Loading your applications...</p>
+            </div>
+          </div>
+        ) : sortedAndFilteredApplications.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                <FaExclamationTriangle className="w-8 h-8 text-gray-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Applications Found</h3>
+                <p className="text-gray-600 mb-6">
+                  {filter === 'all'
+                    ? "You haven't applied to any minitasks yet."
+                    : `No ${filter} applications found.`}
                 </p>
-           </div>
-          ) : sortedAndFilteredApplications.length === 0 ? (
-         <div className="flex flex-col items-center justify-center py-10 space-y-3 text-center">
-         <p className="text-gray-600 text-sm">
-          {filter === 'all'
-            ? "You haven't applied to any minitasks yet."
-           : `No ${filter} applications found.`}
-         </p>
-       <button
-        onClick={() => navigate('/mini_task/listings')}
-         className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
-      >
-          Find Mini Tasks
-        </button>
-       </div>
-       ): (
-          <div>
-            <div className="mini-list">
-              {currentApplications.map((task) => {
+                <button
+                  onClick={() => navigate('/mini_task/listings')}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                >
+                  Find Mini Tasks
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {/* Task Cards */}
+            <div className="space-y-4">
+              {currentApplications.map((task, index) => {
                 const statusInfo = getApplicationStatus(task);
                 const isRemovable = canRemoveTask(task);
                 const isAssigned = task.assignedTo && task.assignedTo === user?._id;
                 const isTaskActive = activeTaskId === task._id;
+                const deadlineStatus = getDeadlineStatus(task.deadline);
 
                 return (
-                  <div key={task._id} className="mini-list-item">
-                    <div className="mini-list-top">
-                      <div className="task-header-with-checkbox">
-                        {isRemovable && (
-                          <div className="task-checkbox">
-                            <input
-                              type="checkbox"
-                              id={`task-select-${task._id}`}
-                              checked={!!selectedTasks[task._id]}
-                              onChange={() => handleTaskSelection(task._id)}
-                            />
-                            <label htmlFor={`task-select-${task._id}`}></label>
+                  <div key={task._id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                    {/* Card Header */}
+                    <div className="p-6 border-b border-gray-100">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-4 flex-1">
+                          {isRemovable && (
+                            <div className="mt-1">
+                              <input
+                                type="checkbox"
+                                id={`task-select-${task._id}`}
+                                checked={!!selectedTasks[task._id]}
+                                onChange={() => handleTaskSelection(task._id)}
+                                className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                              />
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">{task.title}</h3>
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                              <span className="inline-flex items-center gap-1">
+                                <FaDollarSign className="w-4 h-4" />
+                                Budget: ₵{task.budget}
+                              </span>
+                              <span className="text-gray-400">•</span>
+                              <span>{task.category}</span>
+                              {task.employer?.name && (
+                                <>
+                                  <span className="text-gray-400">•</span>
+                                  <span className="inline-flex items-center gap-1">
+                                    <FaUser className="w-3 h-3" />
+                                    {task.employer.name}
+                                  </span>
+                                </>
+                              )}
+                              {task.employer?.phone && (
+                                <>
+                                  <span className="text-gray-400">•</span>
+                                  <span className="inline-flex items-center gap-1">
+                                    <FaPhone className="w-3 h-3" />
+                                    {task.employer.phone}
+                                  </span>
+                                </>
+                              )}
+                            </div>
                           </div>
-                        )}
-                        <div>
-                          <h2>{task.title}</h2>
-                          <p className="mini-list-category">
-                            {task.category} • Budget: ₵{task.budget}
-                            {task.employer?.phone && ` • Employer Contact: ${task.employer.phone}`}
-                          </p>
+                        </div>
+                        
+                        <div className="flex flex-col items-end gap-2">
+                          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border ${statusInfo.className}`}>
+                            {statusInfo.icon}
+                            <span>{statusInfo.text}</span>
+                          </div>
+                          {statusInfo.subtext && (
+                            <span className="text-xs text-gray-500">{statusInfo.subtext}</span>
+                          )}
+                          {deadlineStatus && (
+                            <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${deadlineStatus.className}`}>
+                              <FaClock className="w-3 h-3" />
+                              {deadlineStatus.text}
+                            </div>
+                          )}
                         </div>
                       </div>
-                      <div className="flex flex-col items-end">
-                        <span className={`mini-status ${statusInfo.className}`}>
-                          {statusInfo.text}
-                        </span>
-                        {task.deadline && (
-                          <span className={`deadline-indicator ${
-                            new Date(task.deadline) < new Date() ? 'deadline-passed' : 
-                            new Date(task.deadline) - new Date() < 86400000 ? 'deadline-soon' : ''
-                          }`}>
-                            {new Date(task.deadline) < new Date() ? 'Deadline passed' : 
-                             new Date(task.deadline) - new Date() < 86400000 ? 'Due soon' : ''}
+                    </div>
+
+                    {/* Card Body */}
+                    <div className="p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <FaMapMarkerAlt className="w-4 h-4 text-gray-400" />
+                          <span className="font-medium">Location:</span>
+                          <span>
+                            {task.locationType === "remote" ? "Remote" : 
+                              (task.address ? `${task.address.suburb || ''}, ${task.address.city || ''}`.replace(/, $/, '') : "On-site")}
                           </span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <FaClock className="w-4 h-4 text-gray-400" />
+                          <span className="font-medium">Deadline:</span>
+                          <span>
+                            {task.deadline ? new Date(task.deadline).toLocaleDateString('en-US', 
+                              {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'}) : 'Not specified'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {task.skillsRequired && task.skillsRequired.length > 0 && (
+                        <div className="mb-6">
+                          <span className="text-sm font-medium text-gray-700 mb-2 block">Skills Required:</span>
+                          <div className="flex flex-wrap gap-2">
+                            {task.skillsRequired.map((skill, skillIndex) => (
+                              <span key={skillIndex} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Card Actions */}
+                    <div className="px-6 pb-6">
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
+                          onClick={() => navigate(`/view/mini_task/info/${task._id}`)}
+                        >
+                          <FaEye className="w-4 h-4" />
+                          View Details
+                        </button>
+                        
+                        {isAssigned && (task.status === "In-progress" || task.status === "Completed") && (
+                          <>
+                            <button
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium"
+                              onClick={() => openSubmitModal(task._id)}
+                            >
+                              <FaUpload className="w-4 h-4" />
+                              {task.locationType === 'on-site' ? 'Submit Proof of Work' : 'Submit Work'}
+                            </button>
+                            
+                            <button
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                              onClick={() => navigate(`/freelancer/${task._id}/view_task_submissions`)}
+                            >
+                              <FaEye className="w-4 h-4" />
+                              View Submissions
+                            </button>
+                            
+                            <div className="flex items-center">
+                              <StartChatButton
+                                userId2={task.employer._id}
+                                jobId={task._id}
+                              />
+                            </div>
+                          </>
+                        )}
+                        
+                        {(task.assignedTo === user?._id && !task.assignmentAccepted) && (
+                          <>
+                            <button 
+                              className={`inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200 font-medium disabled:opacity-50 ${isTaskActive ? 'animate-pulse' : ''}`}
+                              onClick={() => handleTaskAcceptance(task._id)}
+                              disabled={isProcessing}
+                            >
+                              <FaCheck className="w-4 h-4" />
+                              {isTaskActive && isProcessing ? 'Accepting...' : 'Accept Task'}
+                            </button>
+
+                            <button 
+                              className={`inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium disabled:opacity-50 ${isTaskActive ? 'animate-pulse' : ''}`}
+                              onClick={() => handleTaskRejection(task._id)}
+                              disabled={isProcessing}
+                            >
+                              <FaTimes className="w-4 h-4" />
+                              {isTaskActive && isProcessing ? 'Rejecting...' : 'Reject Task'}
+                            </button>
+                          </>
+                        )}
+                        
+                        {(task.assignedTo === user?._id && task.assignmentAccepted) && (
+                          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg border border-green-200">
+                            <FaCheckCircle className="w-4 h-4" />
+                            <span className="font-medium">Task Accepted</span>
+                          </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="mini-list-bottom">
-                      <div>
-                        <strong>Location:</strong> {task.locationType === "remote" ? "Remote" : 
-                          (task.address ? `${task.address.suburb || ''}, ${task.address.city || ''}`.replace(/, $/, '') : "On-site")}
-                      </div>
-                      <div>
-                        <strong>Deadline:</strong> {task.deadline ? new Date(task.deadline).toLocaleDateString('en-US', 
-                          {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'}) : 'Not specified'}
-                      </div>
-                      <div className="mini-skills-container">
-                        {task.skillsRequired && task.skillsRequired.map((skill, index) => (
-                          <span key={index} className="mini-skill-tag">{skill}</span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="mini-list-actions">
-                      <button
-                        className="view-details-btn"
-                        onClick={() => navigate(`/view/mini_task/info/${task._id}`)}
-                      >
-                        View Details
-                      </button>
-                      
-                      {isAssigned && (task.status === "In-progress"  || task.status === "Completed") && (
-                        <>
-                         <button
-                          className="submit-proof-btn"
-                          onClick={() => openSubmitModal(task._id)}
-                         >
-                        {task.locationType === 'on-site' ? 'Submit Proof of Work' : 'Submit Work'}
-                         </button>
-                          <button
-                            className="view-submissions-btn"
-                            onClick={() => navigate(`/freelancer/${task._id}/view_task_submissions`)}
-                          >
-                            View Submissions
-                          </button>
-                          <StartChatButton
-                           userId2={task.employer._id}
-                            jobId={task._id}
-                           />
-                        </>
-                      )}
-                      
-                      {(task.assignedTo === user?._id && !task.assignmentAccepted) && (
-                       <>
-                        <button 
-                          className={`accept-task-btn ${isTaskActive ? 'processing' : ''}`}
-                          onClick={() => handleTaskAcceptance(task._id)}
-                          disabled={isProcessing}
-                        >
-                          {isTaskActive && isProcessing ? 'Accepting...' : 'Accept Task'}
-                        </button>
-
-                        <button 
-                          className={`accept-task-btn ${isTaskActive ? 'processing' : ''}`}
-                          onClick={() => handleTaskRejection(task._id)}
-                          disabled={isProcessing}
-                        >
-                          {isTaskActive && isProcessing ? 'Reject...' : 'Reject Task'}
-                        </button>
-                        </>
-                      )}
-                      
-                      {(task.assignedTo === user?._id && task.assignmentAccepted) && (
-                        <p className="acceptance-indicator">
-                          <FaCheck /> Task accepted
-                        </p>
-                      )}
-                    </div>
-                      {/* Modal for submitting work */}
-                      {modalOpen && (
-                       <WorkSubmissionModal
-                         isOpen={modalOpen}
+                    {/* Modal for submitting work */}
+                    {modalOpen && activeTaskId === task._id && (
+                      <WorkSubmissionModal
+                        isOpen={modalOpen}
                         onClose={() => {
-                         setModalOpen(false);
+                          setModalOpen(false);
                           setActiveTaskId(null);
-                          }}
-                            taskId={activeTaskId}
-                            task ={task}
-                          />
-                          )}
-                     </div>
+                        }}
+                        taskId={activeTaskId}
+                        task={task}
+                      />
+                    )}
+                  </div>
                 );
-                })}
-                </div>
+              })}
+            </div>
 
+            {/* Pagination */}
             {totalPages > 1 && (
-              <div className="pagination">
-                
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </button>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
 
-                <span className="page-indicator">
-                  Page {currentPage} of {totalPages}
-                </span>
+                  <span className="text-sm text-gray-700 font-medium">
+                    Page {currentPage} of {totalPages}
+                  </span>
 
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </button>
-                
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             )}
           </div>
         )}
       </div>
-      
       
       
       {/* Confirmation dialog for deleting tasks */}
