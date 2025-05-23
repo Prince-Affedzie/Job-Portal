@@ -50,6 +50,57 @@ const RoomList = ({ loading, rooms, setRooms, socket, selectedRoomId, setSelecte
     }
   };
 
+
+  
+   useEffect(() => {
+      if (!socket) return;
+  
+      const handleRoomUpdate = (updatedRoom) => {
+        setRooms(prev => {
+          const roomExists = prev.find(r => r._id.toString() === updatedRoom._id.toString());
+          if (roomExists) {
+            return prev.map(r => r._id === updatedRoom._id ? {
+              ...r,
+              ...updatedRoom, // This brings in lastMessage, lastMessageAt, unreadCounts
+            } : r);
+          } else {
+            return [updatedRoom, ...prev];
+          }
+        });
+      };
+
+       const handleMessageSeen = ({ messageId, userId, roomId }) => {
+      // Only update if the current user marked the message as seen
+      if (userId === currentUserId) {
+        setRooms(prev => 
+          prev.map(room => {
+            if (room._id === roomId) {
+              return {
+                ...room,
+                unreadCounts: {
+                  ...room.unreadCounts,
+                  [currentUserId]: 0 // Reset unread count for the current user
+                }
+              };
+            }
+            return room;
+          })
+        );
+      }
+    };
+  
+      socket.on("updatedRoom", (room) => {
+        handleRoomUpdate(room);
+      });
+
+     socket.on("messageSeen", handleMessageSeen);
+  
+      return () => {
+        socket.off("updatedRoom");
+       socket.off('messageSeen');
+      };
+    }, [socket, setRooms,currentUserId]);
+
   return (
     <div className="w-full md:w-50 bg-white border-r h-full overflow-y-auto">
       <h2 className="text-lg font-semibold p-4 border-b">Chats</h2>

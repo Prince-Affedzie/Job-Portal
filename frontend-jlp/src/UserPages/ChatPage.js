@@ -126,12 +126,14 @@ const ChatPage = () => {
     };
 
     socket.on("updatedRoom", (room) => {
-      console.log(room);
       handleRoomUpdate(room);
     });
+    
+    
 
     return () => {
       socket.off("updatedRoom");
+      
     };
   }, [socket, setRooms]);
 
