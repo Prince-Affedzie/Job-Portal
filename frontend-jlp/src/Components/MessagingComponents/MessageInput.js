@@ -238,6 +238,7 @@ export const MessageInput = ({
                 handleSend();
               }
             }}
+             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             className="w-full border border-gray-300 rounded-2xl px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
             placeholder="Type a message..."
             rows={1}
