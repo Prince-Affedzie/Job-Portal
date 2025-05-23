@@ -62,7 +62,9 @@ const categories = ["Administration",'Banking','Development','Marketing','Softwa
   };
 
 
-
+useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   // Debounced function to optimize API calls
   const debouncedFetchJobs = debounce(fetchJobs, 500);
 
