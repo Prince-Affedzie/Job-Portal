@@ -203,9 +203,7 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
     }
   };
 
-  const getAcceptedFileTypes = () => {
-    return task?.locationType === 'on-site' ? 'image/*,video/*' : '*';
-  };
+ 
 
   
   return (
