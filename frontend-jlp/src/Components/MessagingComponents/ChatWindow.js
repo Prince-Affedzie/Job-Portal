@@ -186,13 +186,10 @@ getRoomInfo()
     let fileName = '';
 
     if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-
       try {
-        const res = await handleChatFiles(formData);
+        const res = await handleChatFiles({filename: file.name,contentType:file.type});
         if(res.status ===200){
-          
+        
             const {fileUrl,fileKey, publicUrl} = res.data
             console.log(res.data)
 
