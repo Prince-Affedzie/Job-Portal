@@ -161,7 +161,7 @@ const ChatPage = () => {
     <div>
       <ToastContainer />
       <Navbar />
-      <div className="flex h-screen overflow-hidden">
+      <div className="flex h-screen overflow-x-hidden  overflow-hidden">
         {/* Room List */}
         <div style={{
           width: window.innerWidth >= 1024 ? '20%' : window.innerWidth >= 768 ? '25%' : '100%',
