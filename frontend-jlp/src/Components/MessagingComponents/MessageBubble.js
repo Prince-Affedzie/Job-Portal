@@ -114,56 +114,57 @@ export const MessageBubble = ({ message, isMyMessage, onReply, currentUser, sock
                 
                 {/* Media Content */}
                 {mediaUrl && (
-                  <div className={`${text ? 'mt-2' : ''} w-full`}>
-                    <div className="relative group border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all duration-200 bg-white">
-                      {/* Media Preview */}
-                      <div className="relative">
-                        {fileType === 'image' ? (
-                          <div className="bg-gray-50">
-                            <img 
-                              src={mediaUrl} 
-                              alt="shared content" 
-                              className="w-full h-auto max-h-64 sm:max-h-80 object-contain" 
-                              loading="lazy" 
-                            />
-                          </div>
-                        ) : fileType === 'video' ? (
-                          <div className="bg-gray-50">
-                            <video
-                              src={mediaUrl}
-                              controls
-                              className="w-full h-auto max-h-64 sm:max-h-80 object-contain"
-                              preload="metadata"
-                            />
-                          </div>
-                        ) : (
-                          <div className="h-20 sm:h-24 w-full bg-gray-50 flex items-center p-3">
-                            <div className="flex items-center space-x-3 w-full">
-                              <div className="flex-shrink-0">{getFileIcon(fileType)}</div>
-                              <div className="flex-1 min-w-0">
-                               <div className="text-sm font-medium text-gray-700 truncate break-words overflow-wrap break-word max-w-[200px] sm:max-w-[200px] break-all">
-                                  {getFileName(fileName)}
-                                </div>
-                                <div className="text-xs text-gray-500 mt-1">
-                                  {fileType.toUpperCase()} FILE
-                                </div>
-                              </div>
-                              <a
-                                href={`https://docs.google.com/gview?url=${encodeURIComponent(mediaUrl)}&embedded=true`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-shrink-0 p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <ExternalLink size={16} />
-                              </a>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
+  <div className={`${text ? 'mt-2' : ''} w-full max-w-full overflow-hidden`}>
+    <div className="relative group border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all duration-200 bg-white">
+      {/* Media Preview */}
+      <div className="relative">
+        {fileType === 'image' ? (
+          <div className="bg-gray-50">
+            <img 
+              src={mediaUrl} 
+              alt="shared content" 
+              className="w-full h-auto max-h-64 sm:max-h-80 object-contain" 
+              loading="lazy" 
+            />
+          </div>
+        ) : fileType === 'video' ? (
+          <div className="bg-gray-50">
+            <video
+              src={mediaUrl}
+              controls
+              className="w-full h-auto max-h-64 sm:max-h-80 object-contain"
+              preload="metadata"
+            />
+          </div>
+        ) : (
+          <div className="h-auto w-full max-w-full bg-gray-50 flex flex-wrap sm:flex-nowrap items-center gap-2 p-3 overflow-hidden">
+            <div className="flex-shrink-0">{getFileIcon(fileType)}</div>
+            <div className="flex-1 min-w-0 break-words overflow-hidden">
+              <div className="text-sm font-medium text-gray-700 truncate break-all max-w-[160px] sm:max-w-[220px]">
+                {getFileName(fileName)}
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                {fileType.toUpperCase()} FILE
+              </div>
+            </div>
+            <div className="flex-shrink-0 ml-auto">
+              <a
+                href={`https://docs.google.com/gview?url=${encodeURIComponent(mediaUrl)}&embedded=true`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full  text-blue-600 hover:bg-blue-200 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ExternalLink size={16} />
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)
+}
 
                 {/* Action Buttons - Only show on hover/touch */}
                 <div className={`absolute -top-8 ${isMyMessage ? 'right-0' : 'left-0'} opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-1 z-10`}>
