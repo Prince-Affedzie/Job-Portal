@@ -102,7 +102,7 @@ const RoomList = ({ loading, rooms, setRooms, socket, selectedRoomId, setSelecte
     }, [socket, setRooms,currentUserId]);
 
   return (
-    <div className="w-full md:w-50 bg-white border-r h-full overflow-y-auto">
+    <div className="w-full md:w-75 bg-white  h-full overflow-y-auto">
       <h2 className="text-lg font-semibold p-4 border-b">Chats</h2>
 
       {/* Search */}

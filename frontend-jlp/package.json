@@ -17,6 +17,7 @@
     "antd": "^5.24.9",
     "axios": "^1.8.4",
     "debounce": "^2.2.0",
+    "emoji-picker-react": "^4.12.2",
     "firebase": "^11.7.1",
     "framer-motion": "^12.6.2",
     "lucide-react": "^0.501.0",
