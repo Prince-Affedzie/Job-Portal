@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Search } from 'lucide-react';
+import { Search, MessageCircle, Users, Clock, CheckCheck, Circle, User, Briefcase } from 'lucide-react';
 import debounce from 'lodash.debounce';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -11,7 +11,7 @@ const highlightMatch = (text, search) => {
   const parts = text.split(regex);
   return parts.map((part, index) =>
     part.toLowerCase() === search.toLowerCase() ? (
-      <mark key={index} className="bg-yellow-200 rounded">
+      <mark key={index} className="bg-blue-100 text-blue-800 px-1 rounded-sm font-medium">
         {part}
       </mark>
     ) : (
@@ -50,26 +50,24 @@ const RoomList = ({ loading, rooms, setRooms, socket, selectedRoomId, setSelecte
     }
   };
 
+  useEffect(() => {
+    if (!socket) return;
 
-  
-   useEffect(() => {
-      if (!socket) return;
-  
-      const handleRoomUpdate = (updatedRoom) => {
-        setRooms(prev => {
-          const roomExists = prev.find(r => r._id.toString() === updatedRoom._id.toString());
-          if (roomExists) {
-            return prev.map(r => r._id === updatedRoom._id ? {
-              ...r,
-              ...updatedRoom, // This brings in lastMessage, lastMessageAt, unreadCounts
-            } : r);
-          } else {
-            return [updatedRoom, ...prev];
-          }
-        });
-      };
+    const handleRoomUpdate = (updatedRoom) => {
+      setRooms(prev => {
+        const roomExists = prev.find(r => r._id.toString() === updatedRoom._id.toString());
+        if (roomExists) {
+          return prev.map(r => r._id === updatedRoom._id ? {
+            ...r,
+            ...updatedRoom, // This brings in lastMessage, lastMessageAt, unreadCounts
+          } : r);
+        } else {
+          return [updatedRoom, ...prev];
+        }
+      });
+    };
 
-       const handleMessageSeen = ({ messageId, userId, roomId }) => {
+    const handleMessageSeen = ({ messageId, userId, roomId }) => {
       // Only update if the current user marked the message as seen
       if (userId === currentUserId) {
         setRooms(prev => 
@@ -88,113 +86,204 @@ const RoomList = ({ loading, rooms, setRooms, socket, selectedRoomId, setSelecte
         );
       }
     };
-  
-      socket.on("updatedRoom", (room) => {
-        handleRoomUpdate(room);
-      });
 
-     socket.on("messageSeen", handleMessageSeen);
-  
-      return () => {
-        socket.off("updatedRoom");
-       socket.off('messageSeen');
-      };
-    }, [socket, setRooms,currentUserId]);
+    socket.on("updatedRoom", (room) => {
+      handleRoomUpdate(room);
+    });
+
+    socket.on("messageSeen", handleMessageSeen);
+
+    return () => {
+      socket.off("updatedRoom");
+      socket.off('messageSeen');
+    };
+  }, [socket, setRooms, currentUserId]);
+
+  const getInitials = (name) => {
+    if (!name) return '?';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
+
+  const getAvatarGradient = (name) => {
+    if (!name) return 'from-gray-400 to-gray-600';
+    const gradients = [
+      'from-blue-400 to-blue-600',
+      'from-purple-400 to-purple-600',
+      'from-green-400 to-green-600',
+      'from-red-400 to-red-600',
+      'from-yellow-400 to-yellow-600',
+      'from-pink-400 to-pink-600',
+      'from-indigo-400 to-indigo-600',
+      'from-teal-400 to-teal-600',
+      'from-orange-400 to-orange-600',
+      'from-cyan-400 to-cyan-600'
+    ];
+    const index = name.charCodeAt(0) % gradients.length;
+    return gradients[index];
+  };
 
   return (
-    <div className="w-full md:w-75 bg-white  h-full overflow-y-auto">
-      <h2 className="text-lg font-semibold p-4 border-b">Chats</h2>
+    <div className="w-full md:w-75 bg-gradient-to-b from-gray-50 to-white h-full flex flex-col shadow-lg">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="p-4 pb-3">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+              <MessageCircle size={20} className="text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">Messages</h2>
+              <p className="text-sm text-gray-500">{filteredRooms.length} conversations</p>
+            </div>
+          </div>
 
-      {/* Search */}
-      <div className="relative px-4 pb-3">
-        <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-        <input
-          type="text"
-          placeholder="Search by name or Job Title..."
-          className="w-full pl-8 pr-3 py-2 text-sm border rounded-md focus:outline-none focus:ring focus:border-blue-400"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
+          {/* Enhanced Search */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search by name or job title..."
+              className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 transition-all duration-200 hover:bg-white"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Room List */}
-      {loading ? (
-        <div className="space-y-4 px-4 py-3">
-          {[...Array(5)].map((_, index) => (
-            <div key={index} className="flex items-center space-x-3 animate-pulse">
-              <div className="w-10 h-10 bg-gray-200 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <div className="h-3 bg-gray-200 rounded w-3/4" />
-                <div className="h-2 bg-gray-200 rounded w-2/4" />
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : filteredRooms.length === 0 ? (
-        <div className="p-4 text-sm text-gray-500">
-          No matching chats. You must have a connection with clients or freelancers first.
-        </div>
-      ) : (
-        filteredRooms.map((room) => {
-          const otherUser = room.participants.find((p) => p._id !== currentUserId);
-          const isOnline = onlineUserIds.includes(otherUser?._id);
-          const unreadCount = room.unreadCounts?.[currentUserId] || 0;
-
-          return (
-            <div
-              key={room._id}
-              onClick={() => setSelectedRoomId(room._id)}
-              className={`p-3 cursor-pointer border-b hover:bg-gray-100 transition ${
-                selectedRoomId === room._id ? 'bg-gray-100 font-medium' : ''
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                {/* Avatar */}
-                <div className="relative w-10 h-10 shrink-0">
-                  <img
-                    src={otherUser?.profileImage || '/default-avatar.png'}
-                    alt={otherUser?.name || 'User'}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  {isOnline && (
-                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
-                  )}
+      <div className="flex-1 overflow-y-auto">
+        {loading ? (
+          <div className="p-4">
+            {[...Array(6)].map((_, index) => (
+              <div key={index} className="flex items-center space-x-4 p-3 animate-pulse">
+                <div className="w-14 h-14 bg-gray-200 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded-lg w-3/4" />
+                  <div className="h-3 bg-gray-200 rounded-lg w-1/2" />
+                  <div className="h-3 bg-gray-200 rounded-lg w-2/3" />
                 </div>
+                <div className="w-12 h-3 bg-gray-200 rounded" />
+              </div>
+            ))}
+          </div>
+        ) : filteredRooms.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-64 p-8 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <Search size={24} className="text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No conversations found</h3>
+            <p className="text-sm text-gray-500 max-w-sm">
+              {searchTerm ? 
+                "Try searching with different keywords or check your spelling." :
+                "You must have a connection with clients or freelancers first."
+              }
+            </p>
+          </div>
+        ) : (
+          <div className="p-2">
+            {filteredRooms.map((room, index) => {
+              const otherUser = room.participants.find((p) => p._id !== currentUserId);
+              const isOnline = onlineUserIds.includes(otherUser?._id);
+              const unreadCount = room.unreadCounts?.[currentUserId] || 0;
+              const isSelected = selectedRoomId === room._id;
 
-                {/* Metadata */}
-                <div className="flex flex-col flex-1 min-w-0">
-                  {/* Top Row: Name and Time */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-gray-900 truncate max-w-[140px]">
-                      {highlightMatch(otherUser?.name || 'User', searchTerm)}
-                    </span>
-                    <span className="text-xs text-gray-400 ml-2 whitespace-nowrap">
-                      {formatTime(room.lastMessageAt)}
-                    </span>
+              return (
+                <div
+                  key={room._id}
+                  onClick={() => setSelectedRoomId(room._id)}
+                  className={`group relative p-3 m-2 cursor-pointer rounded-xl transition-all duration-200 transform hover:scale-[1.02] hover:shadow-md ${
+                    isSelected 
+                      ? 'bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 shadow-lg' 
+                      : 'bg-white hover:bg-gray-50 border border-gray-100 hover:border-gray-200'
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+                    {/* Enhanced Avatar */}
+                    <div className="relative flex-shrink-0">
+                      {otherUser?.profileImage ? (
+                        <img
+                          src={otherUser.profileImage}
+                          alt={otherUser?.name || 'User'}
+                          className="w-14 h-14 rounded-full object-cover ring-2 ring-white shadow-lg"
+                        />
+                      ) : (
+                        <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${getAvatarGradient(otherUser?.name)} flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-white`}>
+                          {getInitials(otherUser?.name)}
+                        </div>
+                      )}
+                      
+                      {/* Online Status Indicator */}
+                      {isOnline && (
+                        <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-3 border-white rounded-full shadow-lg flex items-center justify-center">
+                          <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      {/* Top Row: Name and Time */}
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className={`font-semibold truncate max-w-[180px] ${
+                          unreadCount > 0 ? 'text-gray-900' : 'text-gray-800'
+                        } ${isSelected ? 'text-blue-900' : ''}`}>
+                          {highlightMatch(otherUser?.name || 'User', searchTerm)}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          {room.lastMessageAt && (
+                            <span className={`text-xs font-medium ${
+                              unreadCount > 0 ? 'text-blue-600' : 'text-gray-500'
+                            }`}>
+                              {formatTime(room.lastMessageAt)}
+                            </span>
+                          )}
+                          {unreadCount > 0 && (
+                            <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg animate-pulse">
+                              {unreadCount > 99 ? '99+' : unreadCount}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Job Title with Icon */}
+                      <div className="flex items-center gap-2 mb-2">
+                        <Briefcase size={12} className="text-indigo-500 flex-shrink-0" />
+                        <span className="text-xs font-medium text-indigo-600 truncate">
+                          {highlightMatch(room.job?.title || room.jobTitle || 'Untitled Job', searchTerm)}
+                        </span>
+                      </div>
+
+                      {/* Last Message */}
+                      <div className="flex items-center gap-2">
+                        <p className={`text-sm truncate max-w-[200px] ${
+                          room.lastMessage 
+                            ? unreadCount > 0 
+                              ? 'text-gray-700 font-medium' 
+                              : 'text-gray-600'
+                            : 'text-gray-400 italic'
+                        }`}>
+                          {room.lastMessage || 'No messages yet'}
+                        </p>
+                        {room.lastMessage && unreadCount === 0 && (
+                          <CheckCheck size={14} className="text-green-500 flex-shrink-0" />
+                        )}
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Job Title */}
-                  <span className="text-xs text-indigo-600 font-medium truncate">
-                    {highlightMatch(room.job?.title || room.jobTitle || 'Untitled Job', searchTerm)}
-                  </span>
-
-                  {/* Last Message + Unread Badge */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-600 truncate max-w-[160px]">
-                      {room.lastMessage || 'No messages yet'}
-                    </span>
-                    {unreadCount > 0 && (
-                      <span className="text-xs bg-blue-600 text-white rounded-full px-2 py-0.5 ml-2">
-                        {unreadCount}
-                      </span>
-                    )}
-                  </div>
+                  {/* Hover Effect Accent */}
+                  <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-400 to-purple-500 rounded-r-full transition-all duration-200 ${
+                    isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'
+                  }`} />
                 </div>
-              </div>
-            </div>
-          );
-        })
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -87,9 +87,9 @@ export const MessageBubble = ({ message, isMyMessage, onReply, currentUser, sock
             )}
             
             <div
-              className={`relative px-3 py-2 sm:px-4 sm:py-3 rounded-xl shadow-sm ${
+              className={`relative px-3 py-2 sm:px-4 sm:py-3 rounded-xl shadow-lg ${
                 isMyMessage
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-md'
+                  ? 'bg-gradient-to-r from-purple-500 via-purple-500 to-indigo-600 text-white rounded-br-md shadow-pink-200/50'
                   : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md'
               }`}
             >
@@ -102,7 +102,7 @@ export const MessageBubble = ({ message, isMyMessage, onReply, currentUser, sock
                     <div 
                       className={`mb-2 text-xs rounded-lg px-3 py-2 cursor-pointer transition-all duration-200 ${
                         isMyMessage 
-                          ? 'bg-white/20 border-l-2 border-white/50 hover:bg-white/30' 
+                          ? 'bg-white/20 border-l-2 border-white/50 hover:bg-white/30 backdrop-blur-sm' 
                           : 'bg-gray-50 border-l-2 border-gray-300 hover:bg-gray-100'
                       }`}
                       onClick={() => scrollToMessage && scrollToMessage(replyTo._id)}
@@ -130,11 +130,13 @@ export const MessageBubble = ({ message, isMyMessage, onReply, currentUser, sock
                   {/* Media Content */}
                   {mediaUrl && (
                  <div className={`${text ? 'mt-2' : ''} w-full max-w-full overflow-hidden`}>
-                 <div className="relative group border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all duration-200 bg-white">
+                 <div className={`relative group border rounded-lg overflow-hidden hover:shadow-md transition-all duration-200 ${
+                   isMyMessage ? 'border-white/30 bg-white/10 backdrop-blur-sm' : 'border-gray-200 bg-white'
+                 }`}>
                {/* Media Preview */}
                   <div className="relative">
                     {fileType === 'image' ? (
-                    <div className="bg-gray-50 cursor-pointer" onClick={handleImageClick}>
+                    <div className={`cursor-pointer ${isMyMessage ? 'bg-white/10' : 'bg-gray-50'}`} onClick={handleImageClick}>
                    <img 
                   src={mediaUrl} 
                   alt="shared content" 
@@ -149,7 +151,7 @@ export const MessageBubble = ({ message, isMyMessage, onReply, currentUser, sock
                 </div>
                </div>
              ) : fileType === 'video' ? (
-              <div className="bg-gray-50">
+              <div className={`${isMyMessage ? 'bg-white/10' : 'bg-gray-50'}`}>
                <video
                 src={mediaUrl}
                 controls
@@ -158,13 +160,19 @@ export const MessageBubble = ({ message, isMyMessage, onReply, currentUser, sock
               />
             </div>
           ) : (
-            <div className="h-auto w-full max-w-full bg-gray-50 flex flex-wrap sm:flex-nowrap items-center gap-2 p-3 overflow-hidden">
+            <div className={`h-auto w-full max-w-full flex flex-wrap sm:flex-nowrap items-center gap-2 p-3 overflow-hidden ${
+              isMyMessage ? 'bg-white/10' : 'bg-gray-50'
+            }`}>
               <div className="flex-shrink-0">{getFileIcon(fileType)}</div>
               <div className="flex-1 min-w-0 break-words overflow-hidden">
-                <div className="text-sm font-medium text-gray-700 truncate break-all max-w-[160px] sm:max-w-[220px]">
+                <div className={`text-sm font-medium truncate break-all max-w-[160px] sm:max-w-[220px] ${
+                  isMyMessage ? 'text-white/90' : 'text-gray-700'
+                }`}>
                   {getFileName(fileName)}
                 </div>
-                <div className="text-xs text-gray-500 mt-1">
+                <div className={`text-xs mt-1 ${
+                  isMyMessage ? 'text-white/70' : 'text-gray-500'
+                }`}>
                   {fileType.toUpperCase()} FILE
                 </div>
               </div>
@@ -173,7 +181,11 @@ export const MessageBubble = ({ message, isMyMessage, onReply, currentUser, sock
                   href={`https://docs.google.com/gview?url=${encodeURIComponent(mediaUrl)}&embedded=true`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-full  text-blue-600 hover:bg-blue-200 transition-colors"
+                  className={`p-2 rounded-full transition-colors ${
+                    isMyMessage 
+                      ? 'text-white/80 hover:bg-white/20' 
+                      : 'text-blue-600 hover:bg-blue-200'
+                  }`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <ExternalLink size={16} />
@@ -218,38 +230,56 @@ export const MessageBubble = ({ message, isMyMessage, onReply, currentUser, sock
             }`}>
               <span>{formatTime(createdAt)}</span>
               {isMyMessage && seenBy && seenBy.length > 1 && (
-                <CheckCheck size={12} className="text-blue-500 ml-1" />
+                <CheckCheck size={12} className="text-pink-400 ml-1" />
               )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Image Modal */}
+      {/* Enhanced Image Modal with Scrolling */}
       {showImageModal && fileType === 'image' && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black bg-opacity-95 flex items-start justify-center z-50 overflow-auto"
           onClick={closeImageModal}
         >
-          <div className="relative max-w-full  max-h-[70%]">
-            {/* Close Button */}
-            <button
-              onClick={closeImageModal}
-              className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
-              title="Close"
-            >
-              <X size={32} />
-            </button>
-            
-            {/* Full Size Image */}
-            <img
-              src={mediaUrl}
-              alt="Full size view"
-              className="max-w-full max-h-full md:max-h-full object-contain rounded-lg shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            />
-            {/* Image Info */}
+          {/* Scrollable container */}
+          <div className="w-full h-full overflow-auto flex items-start justify-center py-4 px-4">
+            <div className="relative min-h-full flex items-center justify-center">
+              {/* Close Button - Fixed position */}
+              <button
+                onClick={closeImageModal}
+                className="fixed top-4 right-4 z-10 bg-black bg-opacity-50 rounded-full p-3 text-white hover:bg-opacity-70 transition-all duration-200 backdrop-blur-sm"
+                title="Close"
+              >
+                <X size={24} />
+              </button>
+              
+              {/* Full Size Image Container */}
+              <div className="relative max-w-full">
+                <img
+                  src={mediaUrl}
+                  alt="Full size view"
+                  className="max-w-full h-auto object-contain rounded-lg shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    maxHeight: 'none', // Allow full height
+                    minHeight: 'auto'
+                  }}
+                />
+                
+                {/* Optional: Image info overlay */}
+                {fileName && (
+                  <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-3 py-2 rounded-lg text-sm backdrop-blur-sm">
+                    {fileName}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
+          
+          {/* Scroll hint for mobile */}
+        
         </div>
       )}
     </>
