@@ -475,21 +475,7 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
     if (textarea) textarea.focus();
   };
 
-  const scrollToMessage = (messageId) => {
-    const target = messageRefs.current[messageId];
-    if (target) {
-      setIsUserScrolling(true); // Prevent auto-scroll conflicts
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      target.classList.add('bg-indigo-100');
-      target.classList.add('shadow-md', 'scale-[1.02]', 'transition-all', 'duration-300');
-
-      setTimeout(() => {
-        target.classList.remove('bg-indigo-100', 'shadow-md', 'scale-[1.02]');
-        setIsUserScrolling(false);
-      }, 2000);
-    }
-  };
-
+  
   // Function to scroll to latest messages (for unread message indicator)
   const scrollToLatestMessages = () => {
     setPendingScroll('bottom');
@@ -642,6 +628,7 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
           handleTyping={handleTyping}
           triggerFileInput={triggerFileInput}
           disabled={isSending || (!text.trim() && !file)}
+          hasFile={!!file}
         />
       </div>
 

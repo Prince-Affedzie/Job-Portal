@@ -9,6 +9,7 @@ export const MessageInput = ({
   handleTyping,
   triggerFileInput,
   disabled = false,
+  hasFile = false, // New prop to track if a file is selected
 }) => {
   const textareaRef = useRef(null);
   const emojiPickerRef = useRef(null);
@@ -81,7 +82,7 @@ export const MessageInput = ({
   };
 
   const handleSendMessage = () => {
-    if (text.trim()) {
+    if (text.trim() || hasFile) {
       handleSend();
       setShowEmojiPicker(false);
     }
@@ -93,6 +94,9 @@ export const MessageInput = ({
       handleSendMessage();
     }
   };
+
+  // Check if send button should be enabled
+  const canSend = (text.trim() || hasFile) && !disabled;
 
   return (
     <div className="relative w-full max-w-4xl mx-auto">
@@ -158,10 +162,10 @@ export const MessageInput = ({
           <button
             type="button"
             onClick={handleSendMessage}
-            disabled={disabled || !text.trim()}
+            disabled={!canSend}
             aria-label="Send message"
             className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 ${
-              text.trim() && !disabled
+              canSend
                 ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-md hover:shadow-lg transform hover:scale-105'
                 : 'text-gray-400 cursor-not-allowed'
             }`}
@@ -173,4 +177,3 @@ export const MessageInput = ({
     </div>
   );
 };
-
