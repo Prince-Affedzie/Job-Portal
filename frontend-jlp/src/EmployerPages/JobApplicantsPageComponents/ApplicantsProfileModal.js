@@ -6,7 +6,18 @@ import {
   FaPhone,
   FaDownload,
   FaUserCircle,
-  FaLinkedin
+  FaLinkedin,
+  FaMapMarkerAlt,
+  FaBriefcase,
+  FaGraduationCap,
+  FaFileAlt,
+  FaClock,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaExclamationCircle,
+  FaEye,
+  FaAward
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,219 +32,408 @@ const ApplicantProfileModal = ({ applicants, onStatusChange }) => {
   const location = useLocation();
   const applicant = location.state?.applicant;
 
-useEffect(() => {
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   
   const handleAppStatusChange = async (id, status) => {
-      try {
-        const response = await modifyApplication(id, status);
-        
-        if (response.status === 200) {
-          toast.success(`Application ${status.status} successfully`);
-         
-        } else {
-          toast.error("Failed to update application status");
-        }
-      } catch (error) {
-        const errorMessage = error.response?.data?.message || "An unexpected error occurred";
-        toast.error(errorMessage);
+    try {
+      const response = await modifyApplication(id, status);
+      
+      if (response.status === 200) {
+        toast.success(`Application ${status.status} successfully`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+       
+      } else {
+        toast.error("Failed to update application status");
       }
-    };
-
-  if (!applicant) return <div className="p-6 text-red-500">Applicant not found.</div>;
-
-  const statusOptions = ["Reviewing", "Shortlisted", "Interview", "Offered", "Rejected"];
-  const statusColors = {
-    reviewing: "border-blue-500 text-blue-700 hover:bg-blue-50",
-    shortlisted: "border-green-500 text-green-700 hover:bg-green-50",
-    interview: "border-purple-500 text-purple-700 hover:bg-purple-50",
-    offered: "border-yellow-500 text-yellow-700 hover:bg-yellow-50",
-    rejected: "border-red-500 text-red-700 hover:bg-red-50"
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "An unexpected error occurred";
+      toast.error(errorMessage);
+    }
   };
 
-   
+  if (!applicant) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-xl p-8 text-center max-w-md mx-4">
+          <FaExclamationCircle className="text-red-500 text-6xl mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Applicant Not Found</h2>
+          <p className="text-gray-600 mb-6">The requested applicant profile could not be loaded.</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
+  const statusOptions = ["Reviewing", "Shortlisted", "Interview", "Offered", "Rejected"];
+  const statusConfig = {
+    reviewing: { 
+      color: "border-blue-500 text-blue-700 hover:bg-blue-50 bg-blue-50/30", 
+      icon: FaEye,
+      bgGradient: "from-blue-500 to-blue-600"
+    },
+    shortlisted: { 
+      color: "border-green-500 text-green-700 hover:bg-green-50 bg-green-50/30", 
+      icon: FaCheckCircle,
+      bgGradient: "from-green-500 to-green-600"
+    },
+    interview: { 
+      color: "border-purple-500 text-purple-700 hover:bg-purple-50 bg-purple-50/30", 
+      icon: FaClock,
+      bgGradient: "from-purple-500 to-purple-600"
+    },
+    offered: { 
+      color: "border-yellow-500 text-yellow-700 hover:bg-yellow-50 bg-yellow-50/30", 
+      icon: FaAward,
+      bgGradient: "from-yellow-500 to-yellow-600"
+    },
+    rejected: { 
+      color: "border-red-500 text-red-700 hover:bg-red-50 bg-red-50/30", 
+      icon: FaTimesCircle,
+      bgGradient: "from-red-500 to-red-600"
+    }
+  };
+
+  const currentStatus = applicant.status?.toLowerCase() || 'reviewing';
+  const StatusIcon = statusConfig[currentStatus]?.icon || FaEye;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
-      <ToastContainer/>
-      <button
-        className="text-sm flex items-center gap-1 text-gray-600 hover:text-gray-800 mb-4"
-        onClick={() => navigate(-1)}
-      >
-        <FaArrowLeft /> Back
-      </button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        className="mt-16"
+      />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <button
+            className="group flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 mb-6"
+            onClick={() => navigate(-1)}
+          >
+            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform duration-200" />
+            <span className="font-medium">Back to Applications</span>
+          </button>
+        </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6 space-y-8">
-        {/* Top Profile Section */}
-        <div className="flex flex-col md:flex-row gap-6 border-b pb-6 items-center md:items-start">
-          <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-lg border-4 border-white bg-gray-100">
-                       {applicant?.profileImage ? (
-                        <img
+        {/* Main Content */}
+        <div className="space-y-8">
+          {/* Profile Header Card */}
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+            {/* Status Banner */}
+            <div className={`h-2 bg-gradient-to-r ${statusConfig[currentStatus]?.bgGradient || 'from-gray-400 to-gray-500'}`}></div>
+            
+            <div className="p-8">
+              <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start">
+                {/* Profile Image */}
+                <div className="relative group">
+                  <div className="w-32 h-32 rounded-2xl overflow-hidden shadow-lg border-4 border-white bg-gradient-to-br from-gray-100 to-gray-200">
+                    {applicant?.profileImage ? (
+                      <img
                         src={applicant.profileImage}
                         alt="Profile"
-                      className="w-full h-full object-cover"
-                         />
-                         ) : (
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
                       <FaUserCircle className="w-full h-full text-gray-400" />
-                         )}
-                        </div>
-          <div className="flex-1 text-center md:text-left">
-            <h2 className="text-3xl font-bold text-gray-800">{applicant.name}</h2>
-            <p className="text-gray-600 mt-2">
-              {applicant.experience} • {applicant.location}
-            </p>
+                    )}
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-lg">
+                    <StatusIcon className={`text-xl ${statusConfig[currentStatus]?.color.split(' ')[1] || 'text-gray-500'}`} />
+                  </div>
+                </div>
 
-            <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
-              <a
-                href={`mailto:${applicant.email}`}
-                className="btn-secondary inline-flex items-center gap-2"
-              >
-                <FaEnvelope /> Email
-              </a>
-              <a
-                href={`tel:${applicant.phone}`}
-                className="btn-secondary inline-flex items-center gap-2"
-              >
-                <FaPhone /> Call
-              </a>
-              {applicant.linkedIn && (
-                <a
-                  href={applicant.linkedIn}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary inline-flex items-center gap-2"
-                >
-                  <FaLinkedin /> LinkedIn
-                </a>
+                {/* Profile Info */}
+                <div className="flex-1 text-center lg:text-left">
+                  <div className="mb-4">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2">{applicant.name}</h1>
+                    <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <FaBriefcase className="text-blue-500" />
+                        <span className="font-medium">{applicant.experience}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <FaMapMarkerAlt className="text-red-500" />
+                        <span>{applicant.location}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Status Badge */}
+                  <div className="mb-6">
+                    <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border-2 ${statusConfig[currentStatus]?.color || 'border-gray-300 text-gray-600'}`}>
+                      <StatusIcon />
+                      {applicant.status || 'Reviewing'}
+                    </span>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+                    <ActionButton
+                      href={`mailto:${applicant.email}`}
+                      icon={FaEnvelope}
+                      text="Send Email"
+                      variant="primary"
+                    />
+                    <ActionButton
+                      href={`tel:${applicant.phone}`}
+                      icon={FaPhone}
+                      text="Call Now"
+                      variant="secondary"
+                    />
+                    {applicant.linkedIn && (
+                      <ActionButton
+                        href={applicant.linkedIn}
+                        icon={FaLinkedin}
+                        text="LinkedIn"
+                        variant="linkedin"
+                        external
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Info Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <InfoCard
+              icon={FaCalendarAlt}
+              label="Applied Date"
+              value={formatDate(applicant.dateApplied)}
+              iconColor="text-blue-500"
+              bgColor="bg-blue-50"
+            />
+            <InfoCard
+              icon={FaClock}
+              label="Last Activity"
+              value={formatDate(applicant.lastActivity)}
+              iconColor="text-green-500"
+              bgColor="bg-green-50"
+            />
+            {applicant.resume && (
+              <InfoCard
+                icon={FaDownload}
+                label="Resume"
+                value={
+                  <a
+                    href={applicant.resume}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-purple-600 hover:text-purple-700 font-semibold hover:underline transition-colors duration-200"
+                  >
+                    Download PDF
+                  </a>
+                }
+                iconColor="text-purple-500"
+                bgColor="bg-purple-50"
+              />
+            )}
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            {/* Left Column */}
+            <div className="xl:col-span-2 space-y-8">
+              {/* Skills Section */}
+              <ContentCard title="Skills & Expertise" icon={FaAward}>
+                {applicant.skills?.length ? (
+                  <div className="flex flex-wrap gap-3">
+                    {applicant.skills.map((skill, i) => (
+                      <span
+                        key={i}
+                        className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 px-4 py-2 text-sm font-medium rounded-full text-blue-800 hover:shadow-md transition-shadow duration-200"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState text="No skills listed" />
+                )}
+              </ContentCard>
+
+              {/* Work Experience Section */}
+              <ContentCard title="Work Experience" icon={FaBriefcase}>
+                {applicant.workExperience?.length ? (
+                  <div className="space-y-6">
+                    {applicant.workExperience.map((exp, i) => (
+                      <ExperienceCard
+                        key={i}
+                        title={exp.jobTitle}
+                        company={exp.company}
+                        startDate={exp.startDate}
+                        endDate={exp.endDate}
+                        type="work"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState text="No work experience listed" />
+                )}
+              </ContentCard>
+
+              {/* Cover Letter Section */}
+              {applicant.coverLetter && (
+                <ContentCard title="Cover Letter" icon={FaFileAlt}>
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border-l-4 border-blue-500 shadow-inner">
+                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+                      {applicant.coverLetter}
+                    </div>
+                  </div>
+                </ContentCard>
               )}
             </div>
+
+            {/* Right Column */}
+            <div className="space-y-8">
+              {/* Education Section */}
+              <ContentCard title="Education" icon={FaGraduationCap}>
+                {applicant.educationList?.length ? (
+                  <div className="space-y-4">
+                    {applicant.educationList.map((edu, i) => (
+                      <ExperienceCard
+                        key={i}
+                        title={edu.degree}
+                        company={edu.institution}
+                        startDate={edu.startDate}
+                        endDate={edu.yearOfCompletion}
+                        type="education"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState text="No education information" />
+                )}
+              </ContentCard>
+
+              {/* Status Update Section */}
+              <ContentCard title="Application Status" icon={FaClock}>
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-600 mb-4">
+                    Update the status of this application by clicking one of the buttons below:
+                  </p>
+                  <div className="grid grid-cols-1 gap-3">
+                    {statusOptions.map((status) => {
+                      const isActive = applicant.status?.toLowerCase() === status.toLowerCase();
+                      const config = statusConfig[status.toLowerCase()];
+                      const StatusButtonIcon = config?.icon || FaEye;
+                      
+                      return (
+                        <button
+                          key={status}
+                          onClick={() => handleAppStatusChange(applicant.id, { status })}
+                          className={`flex items-center gap-3 px-4 py-3 border-2 rounded-xl transition-all duration-200 text-left hover:shadow-md transform hover:-translate-y-0.5 ${
+                            config?.color || "border-gray-300 text-gray-600"
+                          } ${isActive ? "font-semibold shadow-lg ring-2 ring-opacity-50" : ""}`}
+                        >
+                          <StatusButtonIcon className="text-lg" />
+                          <span>{status}</span>
+                          {isActive && (
+                            <span className="ml-auto text-xs bg-white bg-opacity-50 px-2 py-1 rounded-full">
+                              Current
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </ContentCard>
+            </div>
           </div>
         </div>
-
-        {/* Application Info Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 border-b pb-6">
-          <DetailCard label="Applied" value={formatDate(applicant.dateApplied)} />
-          <DetailCard label="Last Activity" value={formatDate(applicant.lastActivity)} />
-          {applicant.resume && (
-            <DetailCard
-              label="Resume"
-              value={
-                <a
-                  href={applicant.resume}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline flex items-center gap-1"
-                >
-                  <FaDownload /> Download
-                </a>
-              }
-            />
-          )}
-        </div>
-
-        {/* Skills Section */}
-        <Section title="Skills">
-          {applicant.skills?.length ? (
-            <div className="flex flex-wrap gap-2">
-              {applicant.skills.map((skill, i) => (
-                <span
-                  key={i}
-                  className="bg-gray-100 border border-gray-300 px-3 py-1 text-sm rounded-full"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500">No skills listed</p>
-          )}
-        </Section>
-
-        {/* Education Section */}
-        <Section title="Education">
-          {applicant.educationList?.length ? (
-            <div className="space-y-3">
-              {applicant.educationList.map((edu, i) => (
-                <div key={i} className="bg-gray-50 p-4 rounded shadow-sm">
-                  <p className="font-semibold">{edu.degree}</p>
-                  <p className="text-gray-600">{edu.institution}</p>
-                  <p className="text-sm text-gray-500">
-                    {formatDate(edu.startDate)} - {formatDate(edu.yearOfCompletion)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500">No education information</p>
-          )}
-        </Section>
-
-        {/* Experience Section */}
-        <Section title="Work Experience">
-          {applicant.workExperience?.length ? (
-            <div className="space-y-3">
-              {applicant.workExperience.map((exp, i) => (
-                <div key={i} className="bg-gray-50 p-4 rounded shadow-sm">
-                  <p className="font-semibold">{exp.jobTitle}</p>
-                  <p className="text-gray-600">{exp.company}</p>
-                  <p className="text-sm text-gray-500">
-                    {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500">No experience listed</p>
-          )}
-        </Section>
-
-        {/* Cover Letter Section */}
-        {applicant.coverLetter && (
-          <Section title="Cover Letter">
-            <div className="bg-gray-50 p-4 rounded text-sm text-gray-700 whitespace-pre-line shadow-sm">
-              {applicant.coverLetter}
-            </div>
-          </Section>
-        )}
-
-        {/* Status Update Section */}
-        <Section title="Click the Buttons to Update the Status of this Application.">
-          <div className="flex flex-wrap gap-2">
-            {statusOptions.map((status) => {
-              const isActive = applicant.status?.toLowerCase() === status.toLowerCase();
-              return (
-                <button
-                  key={status}
-                  onClick={() =>  handleAppStatusChange(applicant.id, { status })}
-                  className={`px-4 py-2 border rounded-md transition-colors text-sm ${
-                    statusColors[status.toLowerCase()] || ""
-                  } ${isActive ? "font-semibold shadow-sm" : ""}`}
-                >
-                  {status}
-                </button>
-              );
-            })}
-          </div>
-        </Section>
       </div>
     </div>
   );
 };
 
-const Section = ({ title, children }) => (
-  <div>
-    <h3 className="text-lg font-semibold text-gray-800 mb-3">{title}</h3>
+// Helper Components
+const ActionButton = ({ href, icon: Icon, text, variant, external = false }) => {
+  const variants = {
+    primary: "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg",
+    secondary: "bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-200 hover:border-gray-300",
+    linkedin: "bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-blue-900 text-white shadow-lg"
+  };
+
+  return (
+    <a
+      href={href}
+      {...(external && { target: "_blank", rel: "noopener noreferrer" })}
+      className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 ${variants[variant]}`}
+    >
+      <Icon className="text-lg" />
+      {text}
+    </a>
+  );
+};
+
+const InfoCard = ({ icon: Icon, label, value, iconColor, bgColor }) => (
+  <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+    <div className="flex items-center gap-4">
+      <div className={`${bgColor} p-3 rounded-xl`}>
+        <Icon className={`text-xl ${iconColor}`} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">{label}</p>
+        <div className="font-semibold text-gray-900 truncate">{value}</div>
+      </div>
+    </div>
+  </div>
+);
+
+const ContentCard = ({ title, icon: Icon, children }) => (
+  <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300">
+    <div className="flex items-center gap-3 mb-6">
+      <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-3 rounded-xl">
+        <Icon className="text-xl text-blue-600" />
+      </div>
+      <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+    </div>
     {children}
   </div>
 );
 
-const DetailCard = ({ label, value }) => (
-  <div className="bg-gray-50 p-4 rounded shadow-sm">
-    <p className="text-xs text-gray-500 uppercase tracking-wide">{label}</p>
-    <p className="font-medium mt-1">{value}</p>
+const ExperienceCard = ({ title, company, startDate, endDate, type }) => (
+  <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border-l-4 border-blue-500 hover:shadow-md transition-shadow duration-200">
+    <h4 className="font-bold text-lg text-gray-900 mb-1">{title}</h4>
+    <p className="text-blue-600 font-semibold mb-2">{company}</p>
+    <div className="flex items-center gap-2 text-sm text-gray-600">
+      <FaCalendarAlt className="text-xs" />
+      <span>{formatDate(startDate)} - {formatDate(endDate)}</span>
+    </div>
   </div>
 );
 
-export default  ApplicantProfileModal;
+const EmptyState = ({ text }) => (
+  <div className="text-center py-12">
+    <div className="text-gray-400 mb-3">
+      <FaExclamationCircle className="text-4xl mx-auto" />
+    </div>
+    <p className="text-gray-500 font-medium">{text}</p>
+  </div>
+);
+
+export default ApplicantProfileModal;

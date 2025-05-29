@@ -16,7 +16,7 @@ import {
   FaUser
 } from "react-icons/fa";
 import Navbar from "../Components/MyComponents/Navbar";
-import { getJobDetails, applyToJob } from "../APIS/API";
+import { getJobDetails, applyToJob,sendFileToS3  } from "../APIS/API";
 import ProcessingOverlay from "../Components/MyComponents/ProcessingOverLay";
 import CoverLetterField from "../Components/MyComponents/coverLetter";
 import '../Styles/coverLetter.css'
@@ -120,9 +120,11 @@ const JobDetails = () => {
             toast.info("Submitting your application...");
             const response = await applyToJob(formData, id);
             if (response.status === 200) {
-                toast.success("Application submitted successfully!");
-                setShowForm(false);
-                setHasApplied(true);
+                const {uploadUrl} = response.data
+                 await sendFileToS3(uploadUrl, applicationData.resume);
+                 toast.success("Application submitted successfully!");
+                 setShowForm(false);
+                 setHasApplied(true);
             } else {
                 toast.error("An error occurred. Please try again later.");
             }
