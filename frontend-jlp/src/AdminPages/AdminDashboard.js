@@ -242,7 +242,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           
-          {/* Recent Jobs */}
+          {/* Recent Jobs 
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
         <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold">Recent Job Posts</h2>
