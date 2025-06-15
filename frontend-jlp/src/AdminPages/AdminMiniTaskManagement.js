@@ -142,7 +142,7 @@ const AdminManageMiniTasks = () => {
     <div className="admin-layout">
       <AdminSidebar />
       <div className="main-content">
-        <AdminNavbar />
+        
         <div className="content-area">
           <h2 className="text-xl font-semibold mb-4">Manage MiniTasks</h2>
 

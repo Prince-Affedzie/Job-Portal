@@ -53,7 +53,7 @@ const EmployerSidebar = () => {
           shadow-2xl border-r border-slate-700/50 backdrop-blur-sm z-40
           transition-all duration-300 ease-in-out
           ${desktopCollapsed ? 'w-16' : 'w-64'}
-          hidden lg:block
+          sm:hidden lg:block
         `}
       >
         {/* Header */}

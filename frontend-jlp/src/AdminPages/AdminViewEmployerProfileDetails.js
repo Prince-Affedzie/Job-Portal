@@ -1,26 +1,127 @@
 import React, { useEffect, useState } from "react";
-import {
-  Descriptions,
-  Tag,
-  Button,
-  message,
-  Spin,
-  Typography,
-  Switch,
-  Card,
-  Space,
-  Select,
-  Popconfirm ,
-} from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
-import { useParams,useNavigate } from "react-router-dom";
+import { 
+  Trash2, 
+  Eye, 
+  ExternalLink, 
+  FileText, 
+  Building2, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Globe, 
+  Calendar,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Loader2,
+  ArrowLeft
+} from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
 import AdminNavbar from "../Components/AdminComponents/AdminNavbar";
 import AdminSidebar from "../Components/AdminComponents/Adminsidebar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {getSingleEmployerProfile, updateEmployerStatus,removeEmployerProfile } from "../APIS/API";
+import { getSingleEmployerProfile, updateEmployerStatus, removeEmployerProfile } from "../APIS/API";
 
-const { Title } = Typography;
+// Custom Toggle Switch Component
+const ToggleSwitch = ({ checked, onChange, loading }) => (
+  <button
+    onClick={onChange}
+    disabled={loading}
+    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+      checked ? 'bg-blue-600' : 'bg-gray-200'
+    } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+  >
+    <span
+      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+        checked ? 'translate-x-6' : 'translate-x-1'
+      }`}
+    />
+    {loading && (
+      <Loader2 className="absolute inset-0 m-auto h-3 w-3 animate-spin text-gray-600" />
+    )}
+  </button>
+);
+
+// Custom Select Component
+const CustomSelect = ({ value, onChange, options, loading }) => (
+  <select
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    disabled={loading}
+    className="mt-2 w-40 px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    {options.map((option) => (
+      <option key={option} value={option}>
+        {option.toUpperCase()}
+      </option>
+    ))}
+  </select>
+);
+
+// Status Tag Component
+const StatusTag = ({ status, type = "verification" }) => {
+  const getStatusConfig = () => {
+    if (type === "verified") {
+      return status
+        ? { color: "bg-green-100 text-green-800 border-green-200", icon: CheckCircle, text: "Yes" }
+        : { color: "bg-red-100 text-red-800 border-red-200", icon: XCircle, text: "No" };
+    }
+    
+    switch (status) {
+      case "approved":
+        return { color: "bg-green-100 text-green-800 border-green-200", icon: CheckCircle, text: "APPROVED" };
+      case "rejected":
+        return { color: "bg-red-100 text-red-800 border-red-200", icon: XCircle, text: "REJECTED" };
+      default:
+        return { color: "bg-yellow-100 text-yellow-800 border-yellow-200", icon: AlertCircle, text: "PENDING" };
+    }
+  };
+
+  const config = getStatusConfig();
+  const Icon = config.icon;
+
+  return (
+    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${config.color}`}>
+      <Icon className="w-4 h-4 mr-1" />
+      {config.text}
+    </span>
+  );
+};
+
+// Confirmation Modal Component
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, loading }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+        <div className="flex items-center mb-4">
+          <AlertCircle className="w-6 h-6 text-red-500 mr-3" />
+          <h3 className="text-lg font-semibold text-gray-900">Delete Employer</h3>
+        </div>
+        <p className="text-gray-600 mb-6">Are you sure you want to delete this employer?</p>
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            disabled={loading}
+            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+          >
+            No
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={loading}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center"
+          >
+            {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            Yes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AdminEmployerDetail = () => {
   const { employerId } = useParams();
@@ -28,22 +129,23 @@ const AdminEmployerDetail = () => {
   const [loading, setLoading] = useState(true);
   const [verifying, setVerifying] = useState(false);
   const [changingStatus, setChangingStatus] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const statusOptions = ["pending", "approved", "rejected"];
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
 
+  // Your original fetchEmployer function - unchanged
   const fetchEmployer = async () => {
     try {
       setLoading(true);
       const res = await getSingleEmployerProfile(employerId);
       if (res.status === 200) {
         setEmployer(res.data);
-        console.log(res.data)
+        console.log(res.data);
       } else {
-        message.error("Failed to fetch employer details");
+        toast.error("Failed to fetch employer details");
       }
     } catch (err) {
-      message.error("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -53,205 +155,303 @@ const AdminEmployerDetail = () => {
     fetchEmployer();
   }, [employerId]);
 
+  // Your original handleToggleStatus function - unchanged
   const handleToggleStatus = async (value) => {
     try {
-        setChangingStatus(true);
-         const res = await updateEmployerStatus(employerId, {
-          verificationStatus: value,
-        });
-       if (res.status === 200) {
-       message.success("Status updated");
-          fetchEmployer();
-                } else {
-         message.error("Failed to update status");
-               }
-             } catch (err) {
-           message.error("Error updating status");
-              } finally {
-          setChangingStatus(false);
-        }
+      setChangingStatus(true);
+      const res = await updateEmployerStatus(employerId, {
+        verificationStatus: value,
+      });
+      if (res.status === 200) {
+        toast.success("Status updated");
+        fetchEmployer();
+      } else {
+        toast.error("Failed to update status");
+      }
+    } catch (err) {
+      toast.error("Error updating status");
+    } finally {
+      setChangingStatus(false);
+    }
   };
 
+  // Your original handleToggleVerified function - unchanged
   const handleToggleVerified = async () => {
-    const newVerified = !employer.isVerified; // Calculate new value
-    setEmployer((prev) => ({ ...prev, isVerified: newVerified })); // Optimistically update UI
-  
+    const newVerified = !employer.isVerified;
+    setEmployer((prev) => ({ ...prev, isVerified: newVerified }));
+
     try {
       setVerifying(true);
       const res = await updateEmployerStatus(employerId, {
         isVerified: newVerified,
       });
       if (res.status === 200) {
-        message.success("Verification updated");
+        toast.success("Verification updated");
       } else {
-        message.error("Failed to update verification");
-        fetchEmployer(); // Rollback
+        toast.error("Failed to update verification");
+        fetchEmployer();
       }
     } catch (err) {
-      message.error("Error updating verification");
-      fetchEmployer(); // Rollback
+      toast.error("Error updating verification");
+      fetchEmployer();
     } finally {
       setVerifying(false);
     }
   };
-  
 
-  const handleDeleteEmployer =async()=>{
-    try{ 
-        setLoading(true);
-        const response = await removeEmployerProfile(employerId)
-        if(response.status ===200){
-          toast.success('Employer Profile deletion Succesful')
-          navigate('/admin/get_employers/list')
-        }else{
-            toast.error(response.message || "An Unknown error occured. Please try again.")
-        }
-
-    }catch(error){
-        const errorMessage =
-                     error.response?.data?.message ||
-                     error.response?.data?.error ||
-                     "An unexpected error occurred";
-                   toast.error(errorMessage);
-    }finally{
-        setLoading(false);
+  // Your original handleDeleteEmployer function - unchanged
+  const handleDeleteEmployer = async () => {
+    try {
+      setLoading(true);
+      const response = await removeEmployerProfile(employerId);
+      if (response.status === 200) {
+        toast.success('Employer Profile deletion Succesful');
+        navigate('/admin/get_employers/list');
+      } else {
+        toast.error(response.message || "An Unknown error occured. Please try again.");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "An unexpected error occurred";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+      setShowDeleteModal(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
-      <ToastContainer/>
-      <AdminNavbar />
+      <ToastContainer />
+     
       <div className="flex flex-1">
-        <div  className="w-64 bg-white border-r">
+       
           <AdminSidebar />
-        </div>
-        <main className="flex-1 bg-gray-50 p-4 sm:p-6">
-          <div className="bg-white p-6 rounded-xl shadow-md">
-           
-       <div className="flex justify-between items-center mb-4">
-        <Title level={3}>Employer Profile Details</Title>
-        <div className="flex items-center gap-2">
-         <Button
-         type="primary"
-         size="small"
-         onClick={() =>
-           navigate(`/admin/get/user_info/${employer?.userId._id}`)
-              }
-          disabled={!employer?.userId._id}
-           >
-             View Creator
-          </Button>
+        
+        <main className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+              
+              {/* Header */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <h1 className="text-2xl font-bold text-white">Employer Profile Details</h1>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <button
+                      onClick={() => navigate(`/admin/get/user_info/${employer?.userId._id}`)}
+                      disabled={!employer?.userId._id}
+                      className="inline-flex items-center px-4 py-2 bg-white bg-opacity-20 text-white rounded-lg hover:bg-opacity-30 transition-all disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      View Creator
+                    </button>
+                    
+                    <button
+                      onClick={() => setShowDeleteModal(true)}
+                      className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-        <Popconfirm
-         title="Are you sure you want to delete this employer?"
-         onConfirm={handleDeleteEmployer}
-         okText="Yes"
-         cancelText="No"
-          >
-       <Button danger icon={<DeleteOutlined />} size="small">
-          Delete
-        </Button>
-       </Popconfirm>
-         </div>
-        </div>
-
-            {loading ? (
-              <Spin size="large" />
-            ) : (
-              employer && (
-                <Descriptions
-                  bordered
-                  column={{ xs: 1, sm: 1, md: 2 }}
-                  layout="vertical"
-                  size="middle"
-                >
-                  <Descriptions.Item label="Company Name">
-                    {employer.companyName}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Email">
-                    {employer.companyEmail}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Phone">
-                    {employer.companyLine || "N/A"}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Location">
-                    {employer.companyLocation || "N/A"}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Website">
-                    {employer.companyWebsite ? (
-                      <a href={employer.companyWebsite} target="_blank" rel="noreferrer">
-                        Visit
-                      </a>
-                    ) : (
-                      "N/A"
-                    )}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Business Docs">
-                    <Space direction="vertical">
-                      {employer.businessDocs?(
+              <div className="p-6">
+                {loading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-blue-600 mr-3" />
+                    <span className="text-gray-600 text-lg">Loading employer details...</span>
+                  </div>
+                ) : (
+                  employer && (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                      
+                      {/* Main Content */}
+                      <div className="lg:col-span-2 space-y-6">
                         
-                          <a href={employer.businessDocs} target="_blank" rel="noreferrer">
-                            View Docs
-                          </a>
-                       
-                      ) : (
-                        <span>No Documents</span>
-                      )}
-                    </Space>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Verified">
-                    <Tag color={employer.isVerified ? "green" : "red"}>
-                      {employer.isVerified ? "Yes" : "No"}
-                    </Tag>
-                    <Switch
-                      checked={employer.isVerified}
-                      onChange={handleToggleVerified}
-                      loading={verifying}
-                      style={{ marginLeft: "10px" }}
-                    />
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Verification Status">
-                       <Tag
-                  color={
-                  employer.verificationStatus === "approved"
-                  ? "green"
-                  : employer.verificationStatus === "rejected"
-                  ? "red"
-                 : "orange"
-                 }
-                 >
-                 {employer.verificationStatus.toUpperCase()}
-                 </Tag>
+                        {/* Company Information */}
+                        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 p-6">
+                          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                            <Building2 className="w-5 h-5 mr-2 text-blue-600" />
+                            Company Information
+                          </h2>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                              <div className="group">
+                                <label className="text-sm font-medium text-gray-500 mb-1 block">Company Name</label>
+                                <p className="text-gray-900 font-semibold text-lg group-hover:text-blue-600 transition-colors">
+                                  {employer.companyName}
+                                </p>
+                              </div>
+                              
+                              <div className="group">
+                                <label className="text-sm font-medium text-gray-500 mb-1 block flex items-center">
+                                  <Mail className="w-4 h-4 mr-1" />
+                                  Email
+                                </label>
+                                <p className="text-gray-900 group-hover:text-blue-600 transition-colors">
+                                  {employer.companyEmail}
+                                </p>
+                              </div>
+                              
+                              <div className="group">
+                                <label className="text-sm font-medium text-gray-500 mb-1 block flex items-center">
+                                  <Phone className="w-4 h-4 mr-1" />
+                                  Phone
+                                </label>
+                                <p className="text-gray-900 group-hover:text-blue-600 transition-colors">
+                                  {employer.companyLine || "N/A"}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-4">
+                              <div className="group">
+                                <label className="text-sm font-medium text-gray-500 mb-1 block flex items-center">
+                                  <MapPin className="w-4 h-4 mr-1" />
+                                  Location
+                                </label>
+                                <p className="text-gray-900 group-hover:text-blue-600 transition-colors">
+                                  {employer.companyLocation || "N/A"}
+                                </p>
+                              </div>
+                              
+                              <div className="group">
+                                <label className="text-sm font-medium text-gray-500 mb-1 block flex items-center">
+                                  <Globe className="w-4 h-4 mr-1" />
+                                  Website
+                                </label>
+                                {employer.companyWebsite ? (
+                                  <a
+                                    href={employer.companyWebsite}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-blue-600 hover:text-blue-800 inline-flex items-center font-medium"
+                                  >
+                                    Visit Website
+                                    <ExternalLink className="w-4 h-4 ml-1" />
+                                  </a>
+                                ) : (
+                                  <p className="text-gray-900">N/A</p>
+                                )}
+                              </div>
+                              
+                              <div className="group">
+                                <label className="text-sm font-medium text-gray-500 mb-1 block flex items-center">
+                                  <FileText className="w-4 h-4 mr-1" />
+                                  Business Documents
+                                </label>
+                                {employer.businessDocs ? (
+                                  <a
+                                    href={employer.businessDocs}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-blue-600 hover:text-blue-800 inline-flex items-center font-medium"
+                                  >
+                                    View Docs
+                                    <ExternalLink className="w-4 h-4 ml-1" />
+                                  </a>
+                                ) : (
+                                  <p className="text-gray-900">No Documents</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
-               <Select
-                value={employer.verificationStatus}
-                onChange={(value)=>handleToggleStatus(value)}
-                      style={{ marginTop: 8, width: 160 }}
-                          loading={changingStatus}
-                      >
-                      {statusOptions.map((status) => (
-                  <Select.Option key={status} value={status}>
-                   {status.toUpperCase()}
-                   </Select.Option>
-                   ))}
-                  </Select>
-                     </Descriptions.Item> 
-                  <Descriptions.Item label="Verification Notes">
-                    {employer.verificationNotes || "None"}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Created At">
-                    {new Date(employer.createdAt).toLocaleDateString()}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Updated At">
-                    {new Date(employer.updatedAt).toLocaleDateString()}
-                  </Descriptions.Item>
-                </Descriptions>
-              )
-            )}
+                        {/* Verification Notes */}
+                        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4">Verification Notes</h3>
+                          <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
+                            <p className="text-gray-700 leading-relaxed">
+                              {employer.verificationNotes || "None"}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Timestamps */}
+                        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <Calendar className="w-5 h-5 mr-2 text-blue-600" />
+                            Timeline
+                          </h3>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="bg-blue-50 rounded-lg p-4">
+                              <label className="text-sm font-medium text-blue-700 mb-1 block">Created At</label>
+                              <p className="text-blue-900 font-medium">
+                                {new Date(employer.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                            
+                            <div className="bg-green-50 rounded-lg p-4">
+                              <label className="text-sm font-medium text-green-700 mb-1 block">Updated At</label>
+                              <p className="text-green-900 font-medium">
+                                {new Date(employer.updatedAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Status Panel */}
+                      <div className="space-y-6">
+                        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 p-6 sticky top-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-6">Status Management</h3>
+                          
+                          <div className="space-y-6">
+                            {/* Verified Status */}
+                            <div className="border-b border-gray-200 pb-6">
+                              <label className="text-sm font-medium text-gray-700 mb-3 block">Verified Status</label>
+                              <div className="space-y-3">
+                                <StatusTag status={employer.isVerified} type="verified" />
+                                <div className="flex items-center space-x-3">
+                                  <span className="text-sm text-gray-600">Toggle Verification:</span>
+                                  <ToggleSwitch
+                                    checked={employer.isVerified}
+                                    onChange={handleToggleVerified}
+                                    loading={verifying}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Verification Status */}
+                            <div>
+                              <label className="text-sm font-medium text-gray-700 mb-3 block">Verification Status</label>
+                              <div className="space-y-3">
+                                <StatusTag status={employer.verificationStatus} />
+                                <CustomSelect
+                                  value={employer.verificationStatus}
+                                  onChange={handleToggleStatus}
+                                  options={statusOptions}
+                                  loading={changingStatus}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
           </div>
         </main>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteEmployer}
+        loading={loading}
+      />
     </div>
   );
 };

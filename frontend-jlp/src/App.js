@@ -57,6 +57,7 @@ import AdminAddUserForm from './AdminPages/AdminAddNewUser'
 import {EmployerProfileProvider} from './Context/EmployerProfileContext'
 import PostEligibilityGate from './Utils/MiniJobPostEligiblityGate'
 import EmployerPostEligibilityGate from './Utils/EmployerJobPostEligibilityGate'
+import AdminViewMiniTaskApplicants from './AdminPages/MiniTaskApplicants'
 import FreelancerSubmissions from  './UserPages/TaskSubmissions'
 import ClientViewSubmissions from './UserPages/ClientViewTaskSubmissions'
 import  ChatPage from './UserPages/ChatPage'
@@ -199,7 +200,7 @@ function App() {
       <Route path='/admin/:Id/mini_task_info' element={<AdminRoutes><AdminProvider><AdminMiniTaskDetailPage/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/:Id/modify_min_task' element={<AdminRoutes><AdminProvider><AdminEditMiniTaskPage/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/add_new_user' element={<AdminRoutes><AdminProvider><AdminAddUserForm/></AdminProvider></AdminRoutes>}/>
-
+      <Route path='/admin/minitask/:taskId/applicants' element={<AdminRoutes><AdminProvider><AdminViewMiniTaskApplicants/></AdminProvider></AdminRoutes>}/>
 
 
     </Routes>

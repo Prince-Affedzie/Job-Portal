@@ -87,13 +87,12 @@ const AdminEditUserPage = () => {
       <ToastContainer position="top-right" autoClose={3000} />
       
       {/* Navbar */}
-      <AdminNavbar />
-      
+     
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div  className="w-64 bg-white border-r">
+       
           <AdminSidebar />
-        </div>
+       
         
         {/* Main Content */}
         <div className="flex-1 p-4 md:p-6 overflow-y-auto">

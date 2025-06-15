@@ -174,15 +174,13 @@ const AdminUserDetails = () => {
   return (
     <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar - Hidden on mobile */}
-      <div className="hidden lg:block w-64 bg-white border-r border-slate-200 shadow-sm">
+      
         <AdminSidebar />
-      </div>
+     
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="bg-white border-b border-slate-200 shadow-sm">
-          <AdminNavbar />
-        </div>
+       
 
         <div className="flex-1 overflow-y-auto">
           <div className="p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto">

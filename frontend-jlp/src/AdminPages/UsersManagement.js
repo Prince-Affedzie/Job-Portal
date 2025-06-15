@@ -280,16 +280,13 @@ const AdminUserManagement = () => {
       />
       
       {/* Sidebar */}
-      <div className="hidden lg:block w-64 bg-white border-r border-slate-200 shadow-sm">
+     
         <AdminSidebar />
-      </div>
+     
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Navbar */}
-        <div className="w-full bg-white border-b border-slate-200 shadow-sm">
-          <AdminNavbar />
-        </div>
+      
 
         {/* Page Content */}
         <div className="flex-1 overflow-y-auto">
