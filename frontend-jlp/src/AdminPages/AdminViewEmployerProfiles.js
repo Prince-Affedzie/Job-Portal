@@ -162,16 +162,16 @@ const AdminEmployerList = () => {
         </td>
 
         {/* Actions */}
-        <td className="px-4 py-2">
+        <td className="px-6 py-4">
           <button
             onClick={() => {
              navigate(`/admin/${employer._id}/employer_profile/details`);
             
             }}
-            className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
+           className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-100 transition-colors"
           >
-            <Eye className="w-4 h-4" />
-            <span>View Details</span>
+            <Eye className="w-4 h-4 mr-1" />
+            <span>View</span>
           </button>
         </td>
       </tr>
@@ -239,12 +239,12 @@ const AdminEmployerList = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="flex flex-col h-screen bg-gray-50">
      
       <div className="flex flex-1">
-        <div className=" w-64 bg-white border-r border-gray-200 shadow-sm">
+       
           <AdminSidebar />
-        </div>
+       
         
         <main className="flex-1 p-6 overflow-auto">
           <div className="max-w-full">

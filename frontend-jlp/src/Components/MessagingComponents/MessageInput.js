@@ -38,16 +38,15 @@ export const MessageInput = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      const maxHeight = isMobile ? 100 : 120;
-      textareaRef.current.style.height = `${Math.min(
-        textareaRef.current.scrollHeight,
-        maxHeight
-      )}px`;
-    }
-  }, [text, isMobile]);
+ useEffect(() => {
+  if (textareaRef.current) {
+    textareaRef.current.style.height = "auto";
+    textareaRef.current.style.height = `${Math.max(
+      40,
+      Math.min(textareaRef.current.scrollHeight, isMobile ? 100 : 120)
+    )}px`;
+  }
+}, [text, isMobile]);
 
   const onEmojiClick = (emojiData, event) => {
     const emojiChar = emojiData?.emoji || "";
@@ -117,7 +116,7 @@ export const MessageInput = ({
 
       {/* Input Container */}
       <div className="bg-white rounded-3xl shadow-lg border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-xl">
-        <div className="flex items-end gap-1 px-4 py-3">
+       <div className="flex items-end gap-1 px-4 py-4 min-h-[64px]">
           {/* Emoji Button */}
           <button
             type="button"
@@ -140,23 +139,23 @@ export const MessageInput = ({
 
           {/* Text Input */}
           <div className="flex-1 mx-2">
-            <textarea
-              ref={textareaRef}
-              value={text}
-              onChange={handleTextareaChange}
-              onClick={handleTextareaClick}
-              onKeyDown={handleKeyDown}
-              rows={1}
-              placeholder="Type a message..."
-              className="w-full resize-none min-h-[24px] max-h-[120px] bg-transparent text-gray-800 text-base placeholder-gray-400 outline-none leading-6"
-              style={{ 
-                 scrollbarWidth: 'none',
-                 msOverflowStyle: 'none',
-                 scrollbarColor: 'rgba(156, 163, 175, 0.3) transparent'
-              }}
-              aria-label="Message input"
-            />
-          </div>
+  <textarea
+    ref={textareaRef}
+    value={text}
+    onChange={handleTextareaChange}
+    onClick={handleTextareaClick}
+    onKeyDown={handleKeyDown}
+    rows={1}
+    placeholder="Type a message..."
+    className="w-full resize-none px-4 py-2 bg-white text-gray-800 text-base placeholder-gray-400 outline-none rounded-md shadow-sm leading-6"    style={{
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+      scrollbarColor: 'rgba(156, 163, 175, 0.3) transparent'
+    }}
+    aria-label="Message input"
+  />
+</div>
+
 
           {/* Send Button */}
           <button
