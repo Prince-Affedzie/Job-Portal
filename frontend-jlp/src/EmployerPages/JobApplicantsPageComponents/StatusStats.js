@@ -5,7 +5,7 @@ const StatusStats = ({ statusCounts, filterStatus, setFilterStatus }) => {
     { status: "all", label: "All Applicants", count: statusCounts.all },
     { status: "reviewing", label: "Reviewing", count: statusCounts.reviewing },
     { status: "shortlisted", label: "Shortlisted", count: statusCounts.shortlisted },
-    { status: "interview", label: "Interviewing", count: statusCounts.interviewing },
+    { status: "interviewing", label: "Interviewing", count: statusCounts.interviewing },
     { status: "offered", label: "Offered", count: statusCounts.offered },
     { status: "rejected", label: "Rejected", count: statusCounts.rejected }
   ];
