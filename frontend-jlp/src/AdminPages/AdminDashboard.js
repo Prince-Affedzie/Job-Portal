@@ -39,11 +39,6 @@ import AdminNavbar from "../Components/AdminComponents/AdminNavbar";
 import { useNavigate } from "react-router-dom";
 
 
-const notifications = [
-  { id: 1, text: "New application for Frontend Developer", time: "10 minutes ago" },
-  { id: 2, text: "TechCorp posted a new job", time: "1 hour ago" },
-  { id: 3, text: "Monthly report is ready", time: "3 hours ago" },
-];
 
 const userActivity = [
   { name: "Mon", users: 120 },

@@ -9,10 +9,12 @@ import Sidebar from "../Components/EmployerDashboard/SideBar";
 import EmployerNavbar from "../Components/EmployerDashboard/EmployerNavbar";
 import ProfileModal from "./JobApplicantsPageComponents/ApplicantsProfileModal";
 import InterviewInviteModal from "../Components/EmployerDashboard/InterviewInviteModal";
+import BulkStatusModal from "../Components/EmployerDashboard/BulkStatusUpdateModal";
 import { getSpecificJobApplications, modifyApplication } from "../APIS/API";
 
 // Import components
 import JobDetailsSummary from "./JobApplicantsPageComponents/JobSummary";
+import { ApplicantActionBar } from "./JobApplicantsPageComponents/ApplicantsCard";
 import ApplicantsControls from "./JobApplicantsPageComponents/ApplicantsControl";
 import StatusStats from "./JobApplicantsPageComponents/StatusStats";
 import ApplicantCard from "./JobApplicantsPageComponents/ApplicantsCard";
@@ -92,19 +94,19 @@ const useApplicantsManager = (jobId) => {
     }, []);
 
   // Status change handler
-  const handleAppStatusChange = async (id, status) => {
+  const handleAppStatusChange = async (payload) => {
     try {
-      const response = await modifyApplication(id, status);
+      const response = await modifyApplication(payload);
       
       if (response.status === 200) {
-        toast.success(`Application ${status.status} successfully`);
-        setApplicants(prev => prev.map(app => 
-          app.id === id ? { ...app, status: status.status } : app
+        toast.success(`Application state modified successfully`);
+       /* setApplicants(prev => prev.map(app => 
+         Ids.includes(app.id) ? { ...app, status: status.status } : app
         ));
         
-        if (selectedApplicant && selectedApplicant.id === id) {
+        if (selectedApplicant && Ids.includes(selectedApplicant.id)) {
           setSelectedApplicant(prev => ({ ...prev, status: status.status }));
-        }
+        }*/
       } else {
         toast.error("Failed to update application status");
       }
@@ -115,11 +117,17 @@ const useApplicantsManager = (jobId) => {
   };
 
   // Toggle applicant selection
-  const toggleApplicant = (id) => {
-    setSelectedApplicants((prev) =>
-      prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]
-    );
-  };
+  const toggleApplicant = (userId, applicationId) => {
+  setSelectedApplicants((prev) => {
+    const exists = prev.find((a) => a.userId === userId);
+    if (exists) {
+      return prev.filter((a) => a.userId !== userId);
+    } else {
+      return [...prev, { userId, applicationId }];
+    }
+  });
+};
+
 
   // Handle profile view
   const handleViewProfile = (applicant) => {
@@ -132,12 +140,15 @@ const useApplicantsManager = (jobId) => {
     applicants,
     selectedApplicant,
     setSelectedApplicant,
+    setSelectedApplicants, 
     selectedApplicants,
     handleAppStatusChange,
     toggleApplicant,
     handleViewProfile
   };
 };
+
+
 
 // Custom hook for filtering and pagination
 const useApplicantsFiltering = (applicants) => {
@@ -222,11 +233,13 @@ const useApplicantsFiltering = (applicants) => {
   };
 };
 
+
 // Main component
 const JobApplicantsPage = () => {
   const { Id } = useParams();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
+  const [isBulkStatusModalOpen, setIsBulkStatusModalOpen] = useState(false);
   const [notes, setNotes] = useState("");
   
   // Use custom hooks
@@ -235,7 +248,7 @@ const JobApplicantsPage = () => {
     jobDetails,
     applicants,
     selectedApplicant,
-    setSelectedApplicant,
+    setSelectedApplicants,
     selectedApplicants,
     handleAppStatusChange,
     toggleApplicant,
@@ -275,16 +288,48 @@ const JobApplicantsPage = () => {
     setIsInterviewModalOpen(true);
   };
 
+   const openBulkStatusModal = () => {
+  if (!selectedApplicants.length) {
+    toast.warning("Select at least one applicant");
+    return;
+  }
+  console.log(selectedApplicants)
+  setIsBulkStatusModalOpen(true);
+};
+
+const handleBulkStatusChange = async (newStatus) => {
+  if (!selectedApplicants.length) return;
+
+  const payload = {
+    status: newStatus,
+    applicants: selectedApplicants, // contains both userId & applicationId
+  };
+
+  await handleAppStatusChange(payload);
+  setSelectedApplicants([]);
+};
+
+
+
+  const clearSelection = () => setSelectedApplicants([]);
+
+
+  const sendBulkInvites = () => openInviteModal();
+
   return (
     <div className="job-applicants-container">
       <EmployerNavbar />
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
       <ToastContainer position="top-right" autoClose={3000} />
       
+      
       <div className="employer-dashboard-container">
-        <Sidebar />
+       
         <div className="employer-dashboard-content job-applicants-page">
           <div className="applicants-page-header">
-            <h2>Applicants for This Job</h2>
+            <h2>Applicants for This {jobDetails?.title} Job</h2>
             <button
               onClick={openInviteModal}
               className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
@@ -344,6 +389,20 @@ const JobApplicantsPage = () => {
                       toggleApplicant={toggleApplicant}
                     />
                   ))}
+
+                  <ApplicantActionBar
+                  selectedApplicants={selectedApplicants}
+                  onSendInvite={sendBulkInvites}
+                  onBulkStatusChange={openBulkStatusModal}
+                  clearSelection={clearSelection}
+                 />
+
+                 <BulkStatusModal
+                 isOpen={isBulkStatusModalOpen}
+                 onClose={() => setIsBulkStatusModalOpen(false)}
+                 onSubmit={handleBulkStatusChange}
+                />
+
                 </div>
               )}
               

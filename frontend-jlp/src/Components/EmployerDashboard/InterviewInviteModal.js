@@ -15,17 +15,15 @@ const InterviewInviteModal = ({ isOpen, onClose, selectedApplicants, jobId }) =>
     if (selectedApplicants.length === 0) {
       return alert("No applicants selected.");
     }
-
-    const interviewDetails = {
-      date: interviewDate,
-      time: interviewTime,
-      location,
-    };
+    const invitationsTo = selectedApplicants.map(app=>app.userId)
+    const applications = selectedApplicants.map(app=>app.applicationId)
+   
 
     setLoading(true);
     try {
     const response =  await scheduleAnInterview({
-        invitationsTo: selectedApplicants,
+        invitationsTo:  invitationsTo,
+        applications:applications,
         jobId,
         interviewDate:interviewDate,
         interviewTime:interviewTime,

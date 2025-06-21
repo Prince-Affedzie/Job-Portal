@@ -16,6 +16,9 @@
 }
 
 /* Layout */
+/* Sidebar Layout Fix - Add this to your JobApplicantsPage.css */
+
+/* Update existing container structure */
 .job-applicants-container {
   display: flex;
   flex-direction: column;
@@ -25,20 +28,40 @@
 .employer-dashboard-container {
   display: flex;
   flex: 1;
+  position: relative;
 }
 
+/* Sidebar styling - visible on desktop screens */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px; /* Adjust this width as needed */
+  height: 100vh;
+  background-color: #fff;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}
+
+/* Update existing content area to account for sidebar */
 .employer-dashboard-content {
   flex: 1;
+  margin-left: 250px; /* Same as sidebar width */
   padding: 1.5rem;
   background-color: var(--neutral-bg);
+  transition: margin-left 0.3s ease;
 }
 
+/* Keep existing header styling and enhance it */
 .applicants-page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .applicants-page-header h2 {
@@ -60,6 +83,100 @@
 
 .applicants-page-header button:hover {
   background-color: var(--primary-hover);
+}
+
+/* Mobile and tablet responsiveness */
+@media screen and (max-width: 1024px) {
+  /* Hide sidebar on tablets and smaller screens */
+  .sidebar {
+    transform: translateX(-100%);
+    visibility: hidden;
+  }
+  
+  /* Remove left margin when sidebar is hidden */
+  .employer-dashboard-content {
+    margin-left: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* Mobile specific adjustments */
+  .employer-dashboard-content {
+    padding: 1rem;
+  }
+  
+  .applicants-page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  
+  .applicants-page-header h2 {
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 1.25rem;
+  }
+  
+  .applicants-page-header button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* Small mobile screens */
+  .employer-dashboard-content {
+    padding: 0.75rem;
+  }
+  
+  .applicants-page-header h2 {
+    font-size: 1.125rem;
+  }
+}
+
+/* Optional: Add a mobile menu toggle if you want to show/hide sidebar on mobile */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1024px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+}
+
+/* Overlay for mobile sidebar (if you want to implement mobile sidebar) */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* Mobile sidebar animation (if implementing mobile sidebar) */
+@media screen and (max-width: 1024px) {
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    visibility: visible;
+  }
 }
 
 /* Loading and Empty States */
