@@ -156,7 +156,7 @@ const EmployerDashboard = () => {
         <EmployerNavbar/>
        
         {/* Dashboard Content */}
-        <main className="p-4 sm:p-6 lg:p-8 pt-5 sm:pt-2">
+        <main className="p-4 sm:p-6 lg:p-8 pt-10 sm:pt-5">
           {/* Welcome Banner */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 sm:p-8 text-white mb-8 shadow-lg">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
