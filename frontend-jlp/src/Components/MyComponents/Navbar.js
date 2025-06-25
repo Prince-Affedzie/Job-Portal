@@ -103,9 +103,9 @@ const Navbar = () => {
       <div className="nav-icons desktop-only">
         {/* Notification Bell */}
         <Link to="/view/all_notifications" className="notification-container">
-          <FaBell className="notification-icon" />
+          <FaBell className="notification-icon-h" />
           {notifications && notifications.filter(n => !n.read).length > 0 && (
-            <span className="notification-badge">
+            <span className="notification-badge-h">
               {notifications.filter(n => !n.read).length}
             </span>
           )}

@@ -108,17 +108,17 @@
   z-index: 100;
 }
 
-.notification-icon {
+.notification-icon-h {
   font-size: 1.5rem;
   color: #fff;
   transition: color 0.3s ease;
 }
 
-.notification-icon:hover {
+.notification-icon-h:hover {
   color: #a0d2ff;
 }
 
-.notification-badge {
+.notification-badge-h {
   position: absolute;
   top: -5px;
   right: -5px;

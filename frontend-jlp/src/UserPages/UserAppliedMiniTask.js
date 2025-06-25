@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaTrash, FaFilter, FaCheck, FaArrowUp, FaArrowDown, FaClock, FaMapMarkerAlt, FaDollarSign, FaUser, FaPhone, FaEye, FaUpload, FaComments, FaTimes, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import WorkSubmissionModal from '../Components/MyComponents/WorkSubmissionModal';
 import StartChatButton from '../Components/MessagingComponents/StartChatButton';
-import MiniTaskActions from '../Components/MyComponents/MiniTaskActionButtons';
+import  TaskActions from '../Components/MyComponents/MiniTaskActionButtons';
 
 const MyMiniTaskApplications = () => {
   const navigate = useNavigate();
@@ -492,73 +492,19 @@ const MyMiniTaskApplications = () => {
                     </div>
 
                     {/* Card Actions */}
-                    <div className="px-6 pb-6">
-                      <div className="flex flex-wrap gap-3">
-                        <button
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
-                          onClick={() => navigate(`/view/mini_task/info/${task._id}`)}
-                        >
-                          <FaEye className="w-4 h-4" />
-                          View Details
-                        </button>
-                        
-                        {isAssigned && (task.status === "In-progress" || task.status === "Completed") && (
-                          <>
-                            <button
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium"
-                              onClick={() => openSubmitModal(task._id)}
-                            >
-                              <FaUpload className="w-4 h-4" />
-                              {task.locationType === 'on-site' ? 'Submit Proof of Work' : 'Submit Work'}
-                            </button>
-                            
-                            <button
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
-                              onClick={() => navigate(`/freelancer/${task._id}/view_task_submissions`)}
-                            >
-                              <FaEye className="w-4 h-4" />
-                              View Submissions
-                            </button>
-                            
-                            <div className="flex items-center">
-                              <StartChatButton
-                                userId2={task.employer._id}
-                                jobId={task._id}
-                              />
-                            </div>
-                          </>
-                        )}
-                        
-                        {(task.assignedTo === user?._id && !task.assignmentAccepted) && (
-                          <>
-                            <button 
-                              className={`inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200 font-medium disabled:opacity-50 ${isTaskActive ? 'animate-pulse' : ''}`}
-                              onClick={() => handleTaskAcceptance(task._id)}
-                              disabled={isProcessing}
-                            >
-                              <FaCheck className="w-4 h-4" />
-                              {isTaskActive && isProcessing ? 'Accepting...' : 'Accept Task'}
-                            </button>
-
-                            <button 
-                              className={`inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium disabled:opacity-50 ${isTaskActive ? 'animate-pulse' : ''}`}
-                              onClick={() => handleTaskRejection(task._id)}
-                              disabled={isProcessing}
-                            >
-                              <FaTimes className="w-4 h-4" />
-                              {isTaskActive && isProcessing ? 'Rejecting...' : 'Reject Task'}
-                            </button>
-                          </>
-                        )}
-                        
-                        {(task.assignedTo === user?._id && task.assignmentAccepted) && (
-                          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg border border-green-200">
-                            <FaCheckCircle className="w-4 h-4" />
-                            <span className="font-medium">Task Accepted</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <TaskActions
+          task={task}
+          user={user}
+          isProcessing={isProcessing}
+          layout="dropdown" // or 'grid', 'priority', 'vertical'
+          onViewDetails={(taskId) => navigate(`/view/mini_task/info/${taskId}`)}
+          onSubmitWork={(taskId) => openSubmitModal(taskId)}
+          onViewSubmissions={(taskId) => navigate(`/freelancer/${taskId}/view_task_submissions`)}
+          onAcceptTask={handleTaskAcceptance}
+          onRejectTask={handleTaskRejection}
+          StartChatButton={StartChatButton}
+          className="custom-task-actions" // Optional custom styling
+        />
 
                     {/* Modal for submitting work */}
                     {modalOpen && activeTaskId === task._id && (

@@ -1,24 +1,4 @@
-/* Variables */
-:root {
-  --primary-color: #3b82f6;
-  --primary-hover: #2563eb;
-  --neutral-bg: #f9f9f9;
-  --light-gray: #f3f4f6;
-  --text-dark: #222;
-  --text-light: #555;
-  --text-muted: #888;
-  --radius-lg: 1rem;
-  --radius-md: 0.5rem;
-  --transition: all 0.3s ease;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
 
-/* Layout */
-/* Sidebar Layout Fix - Add this to your JobApplicantsPage.css */
-
-/* Update existing container structure */
 .job-applicants-container {
   display: flex;
   flex-direction: column;
