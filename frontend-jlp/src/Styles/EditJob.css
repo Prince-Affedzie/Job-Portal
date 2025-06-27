@@ -9,7 +9,7 @@
 .edit-job-form-wrapper {
   flex: 1;
   margin-left: 250px; /* Adjust based on sidebar width */
-  margin-top: 10px; /* Adjust based on navbar height */
+  margin-top: 30px; /* Adjust based on navbar height */
   padding: 2rem;
   max-width: 1200px;
   margin-right: auto;
