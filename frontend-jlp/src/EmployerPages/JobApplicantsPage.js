@@ -319,9 +319,9 @@ const handleBulkStatusChange = async (newStatus) => {
   return (
     <div className="job-applicants-container">
       <EmployerNavbar />
-      <div className="hidden lg:block">
-        <Sidebar />
-      </div>
+      <div style={{ display: window.innerWidth >= 768 ? 'block' : 'none' }}>
+          <Sidebar />
+        </div>
       <ToastContainer position="top-right" autoClose={3000} />
       
       
@@ -339,10 +339,11 @@ const handleBulkStatusChange = async (newStatus) => {
           </div>
 
           {loading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Loading applicants...</p>
-            </div>
+            <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+           <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mb-4" />
+             <p className="text-sm">Loading  Applications...</p>
+           </div>
+      
           ) : !jobDetails ? (
             <div className="no-data-container">
               <FaFileAlt className="no-data-icon" />

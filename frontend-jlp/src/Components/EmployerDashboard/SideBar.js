@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   FaBriefcase,
@@ -19,8 +19,16 @@ import { useAuth } from '../../Context/AuthContext';
 const EmployerSidebar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
   const { logout } = useAuth();
   const navigate = useNavigate();
+
+   useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -53,7 +61,7 @@ const EmployerSidebar = () => {
           fixed top-4 left-4 z-50 p-3 bg-gradient-to-r from-slate-800 to-slate-700
           text-white rounded-xl shadow-lg border border-slate-600/50
           hover:from-slate-700 hover:to-slate-600 transition-all duration-200
-          sm:hidden backdrop-blur-sm
+          sm:hidden backdrop-blur-sm hidden
         "
         aria-label="Toggle menu"
       >
@@ -66,14 +74,18 @@ const EmployerSidebar = () => {
 
       {/* Desktop Sidebar - Hidden on small screens */}
       <div
-        className={`
-          fixed top-0 left-0 h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 
-          shadow-2xl border-r border-slate-700/50 backdrop-blur-sm z-40
-          transition-all duration-300 ease-in-out
-          ${desktopCollapsed ? 'w-16' : 'w-64'}
-          hidden sm:block
-        `}
-      >
+      style={{
+      display: windowWidth >= 1024 ? 'block' : 'none',
+    }}
+  className={`
+    fixed top-0 left-0 h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 
+    shadow-2xl border-r border-slate-700/50 backdrop-blur-sm z-40
+    transition-all duration-300 ease-in-out
+    ${desktopCollapsed ? 'w-16' : 'w-64'}
+   
+  `}
+>
+
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-700/50">
           {!desktopCollapsed && (

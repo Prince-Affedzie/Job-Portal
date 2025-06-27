@@ -3,42 +3,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { 
-  UserOutlined, 
-  EyeOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
-  CloseCircleOutlined, 
-  ReloadOutlined,
-  FileSearchOutlined,
-  CalendarOutlined,
-  PlusOutlined
-} from "@ant-design/icons";
-import { 
-  Table, 
-  Card, 
-  Button, 
-  Input, 
-  Select, 
-  Space, 
-  Badge, 
-  Row, 
-  Col, 
-  Statistic, 
-  Modal, 
-  Tag, 
-  Tooltip,
-  Typography,
-  Empty,
-  Spin
-} from "antd";
+  User, 
+  Eye, 
+  Edit, 
+  Trash2, 
+  X, 
+  RotateCcw,
+  FileSearch,
+  Calendar,
+  Plus,
+  Search,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
 import Sidebar from "../Components/EmployerDashboard/SideBar";
 import EmployerNavbar from "../Components/EmployerDashboard/EmployerNavbar";
 import { jobsCreatedContext } from "../Context/EmployerContext1";
 import { removeJob, modifyJobState } from '../APIS/API';
-
-const { Search } = Input;
-const { Option } = Select;
-const { Title, Text } = Typography;
 
 const EmployerJobs = () => {
   const navigate = useNavigate();
@@ -46,10 +27,8 @@ const EmployerJobs = () => {
   
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Confirm modal states
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -123,129 +102,30 @@ const EmployerJobs = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // Table columns configuration
-  const columns = [
-    {
-      title: 'Job Title',
-      dataIndex: 'title',
-      key: 'title',
-      render: (text, record) => (
-        <div>
-          <div className="font-medium">{text}</div>
-          <div className="text-gray-500 text-sm flex items-center mt-1">
-            <CalendarOutlined style={{ marginRight: 5 }} />
-            Posted on {new Date().toLocaleDateString()}
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: 'Applicants',
-      dataIndex: 'noOfApplicants',
-      key: 'applicants',
-      render: (text, record) => (
-        <div className="flex items-center">
-          <Button 
-            type="text" 
-            icon={<UserOutlined />}
-            onClick={() => navigate(`/employer/job/applicants/${record._id}`)}
-            className="flex items-center"
-            style={{ padding: '4px 8px', backgroundColor: '#EBF5FF' }}
-          >
-            <span style={{ marginLeft: 5, color: '#1890ff', fontWeight: 500 }}>
-              {text || 0}
-            </span>
-          </Button>
-        </div>
-      ),
-    },
-    {
-      title: 'Views',
-      dataIndex: 'interactions',
-      key: 'views',
-      render: (text) => (
-        <div className="flex items-center">
-          <Button 
-            type="text" 
-            icon={<EyeOutlined />}
-            className="flex items-center"
-            style={{ padding: '4px 8px', backgroundColor: '#E6F7FF' }}
-          >
-            <span style={{ marginLeft: 5, color: '#1890ff', fontWeight: 500 }}>
-              {text || 0}
-            </span>
-          </Button>
-        </div>
-      ),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => {
-        let color = status === 'Opened' ? 'success' : 'error';
-        return <Tag color={color}>{status}</Tag>;
-      },
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space size="small">
-          {record.status === "Opened" ? (
-            <Tooltip title="Close Job">
-              <Button 
-                type="text"
-                icon={<CloseCircleOutlined />} 
-                onClick={() => closeJob(record._id)}
-                style={{ color: '#1890ff', backgroundColor: '#e6f7ff' }}
-              />
-            </Tooltip>
-          ) : (
-            <Tooltip title="Reopen Job">
-              <Button 
-                type="text"
-                icon={<ReloadOutlined />} 
-                onClick={() => reopenJob(record._id)}
-                style={{ color: '#52c41a', backgroundColor: '#f6ffed' }}
-              />
-            </Tooltip>
-          )}
-          <Tooltip title="Edit Job">
-            <Link to={`/employer/edit_job/${record._id}`}>
-              <Button 
-                type="text"
-                icon={<EditOutlined />} 
-                style={{ color: '#faad14', backgroundColor: '#fffbe6' }}
-              />
-            </Link>
-          </Tooltip>
-          <Tooltip title="Delete Job">
-            <Button 
-              type="text"
-              icon={<DeleteOutlined />} 
-              onClick={() => showDeleteConfirm(record._id)}
-              style={{ color: '#ff4d4f', backgroundColor: '#fff2f0' }}
-            />
-          </Tooltip>
-        </Space>
-      ),
-    },
-  ];
+  // Pagination logic
+  const totalItems = filteredJobs.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentItems = filteredJobs.slice(startIndex, endIndex);
 
-  // Handle pagination change
-  const handleTableChange = (pagination) => {
-    setPagination(pagination);
-  };
-
-  const handleSearch = (value) => {
-    setSearchTerm(value);
-    setPagination({...pagination, current: 1});
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
   };
   
-  const handleStatusChange = (value) => {
-    setStatusFilter(value);
-    setPagination({...pagination, current: 1});
+  const handleStatusChange = (e) => {
+    setStatusFilter(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (e) => {
+    setPageSize(parseInt(e.target.value));
+    setCurrentPage(1);
   };
 
   return (
@@ -256,143 +136,385 @@ const EmployerJobs = () => {
 
       <div className="lg:ml-64 pt-20 px-4 md:px-8 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header with stats cards */}
-          <Title level={2} style={{ marginBottom: 24 }}>Job Postings Management</Title>
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Job Postings Management</h1>
+            <p className="text-gray-600">Manage and track your job postings and applications</p>
+          </div>
           
-          <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-          <Col xs={24} sm={12} md={8}>
-               <Card >
-                <Statistic
-                   title="Total Jobs"
-                    value={Jobs.length}
-                    prefix={<FileSearchOutlined style={{ color: '#1890ff' }} />}
-                 />
-                </Card>
-                </Col>
-               <Col xs={24} sm={12} md={8}>
-                <Card>
-                   <Statistic
-                       title="Active Jobs"
-                       value={Jobs.filter(job => job.status === "Opened").length}
-                        prefix={<EyeOutlined style={{ color: '#52c41a' }} />}
-                    />
-               </Card>
-                 </Col>
-                     <Col xs={24} sm={12} md={8}>
-                        <Card >
-                          <Statistic
-                          title="Total Applicants"
-                           value={Jobs.reduce((sum, job) => sum + (job.noOfApplicants || 0), 0)}
-                           prefix={<UserOutlined style={{ color: '#faad14' }} />}
-                          />
-                      </Card>
-                  </Col>
-                    </Row>
-
-
-          {/* Action bar */}
-          <Card style={{ marginBottom: 24 }}>
-                 <Row gutter={[16, 16]}>
-                 <Col xs={24} md={16}>
-                <Space direction="vertical" style={{ width: "100%" }} size="middle">
-                <Search
-                 placeholder="Search job titles..."
-                 allowClear
-                 onSearch={handleSearch}
-                 style={{ width: "100%" }}
-                 />
-             <Select
-             defaultValue="All"
-             style={{ width: "100%" }}
-              onChange={handleStatusChange}
-             >
-          <Option value="All">All Status</Option>
-          <Option value="Opened">Active</Option>
-          <Option value="Closed">Closed</Option>
-        </Select>
-         </Space>
-       </Col>
-       <Col xs={24} md={8} style={{ textAlign: 'right' }}>
-        <Link to="/v1/post_job/form">
-         <Button type="primary" icon={<PlusOutlined />} block>
-          Post New Job
-        </Button>
-        </Link>
-        </Col>
-        </Row>
-        </Card>
-
-
-          {/* Job listings table */}
-          {loading ? (
-            <Card>
-              <div style={{ textAlign: 'center', padding: 40 }}>
-                <Spin size="large" />
-                <div style={{ marginTop: 16 }}>Loading your job postings...</div>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Jobs</p>
+                  <p className="text-3xl font-bold text-gray-900">{Jobs.length}</p>
+                </div>
+                <div className="p-3 bg-blue-100 rounded-full">
+                  <FileSearch className="w-6 h-6 text-blue-600" />
+                </div>
               </div>
-            </Card>
-          ) : filteredJobs.length === 0 && !searchTerm && statusFilter === "All" ? (
-            <Card>
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={
-                  <div>
-                    <Text style={{ fontSize: 16 }}>You haven't posted any jobs yet</Text>
-                    <div style={{ marginTop: 16 }}>
-                      <Link to="/v1/post_job/form">
-                        <Button type="primary" icon={<PlusOutlined />}>
-                          Post Your First Job
-                        </Button>
-                      </Link>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Active Jobs</p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {Jobs.filter(job => job.status === "Opened").length}
+                  </p>
+                </div>
+                <div className="p-3 bg-green-100 rounded-full">
+                  <Eye className="w-6 h-6 text-green-600" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Applicants</p>
+                  <p className="text-3xl font-bold text-orange-600">
+                    {Jobs.reduce((sum, job) => sum + (job.noOfApplicants || 0), 0)}
+                  </p>
+                </div>
+                <div className="p-3 bg-orange-100 rounded-full">
+                  <User className="w-6 h-6 text-orange-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Filters and Actions */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+            <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+              <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                {/* Search Input */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Search job titles..."
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none w-full sm:w-80"
+                  />
+                </div>
+                
+                {/* Status Filter */}
+                <select
+                  value={statusFilter}
+                  onChange={handleStatusChange}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                >
+                  <option value="All">All Status</option>
+                  <option value="Opened">Active</option>
+                  <option value="Closed">Closed</option>
+                </select>
+              </div>
+              
+              {/* Post New Job Button */}
+              <Link to="/v1/post_job/form">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors duration-200">
+                  <Plus className="w-4 h-4" />
+                  Post New Job
+                </button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Job Listings */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading your job postings...</p>
+                </div>
+              </div>
+            ) : filteredJobs.length === 0 && !searchTerm && statusFilter === "All" ? (
+              <div className="text-center py-20">
+                <FileSearch className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-medium text-gray-900 mb-2">No jobs posted yet</h3>
+                <p className="text-gray-600 mb-6">You haven't posted any jobs yet. Start by creating your first job posting.</p>
+                <Link to="/v1/post_job/form">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors duration-200">
+                    <Plus className="w-4 h-4" />
+                    Post Your First Job
+                  </button>
+                </Link>
+              </div>
+            ) : currentItems.length === 0 ? (
+              <div className="text-center py-20">
+                <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-medium text-gray-900 mb-2">No matching jobs found</h3>
+                <p className="text-gray-600">Try adjusting your search criteria.</p>
+              </div>
+            ) : (
+              <>
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 border-b border-gray-200">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Job Title</th>
+                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Applicants</th>
+                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Views</th>
+                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Status</th>
+                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {currentItems.map((job) => (
+                        <tr key={job._id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4">
+                            <div>
+                              <div className="font-medium text-gray-900">{job.title}</div>
+                              <div className="text-sm text-gray-500 flex items-center mt-1">
+                                <Calendar className="w-4 h-4 mr-1" />
+                                Posted on {new Date().toLocaleDateString()}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <button
+                              onClick={() => navigate(`/employer/job/applicants/${job._id}`)}
+                              className="flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors duration-200"
+                            >
+                              <User className="w-4 h-4" />
+                              <span className="font-medium">{job.noOfApplicants || 0}</span>
+                            </button>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 text-gray-700 rounded-lg">
+                              <Eye className="w-4 h-4" />
+                              <span className="font-medium">{job.interactions || 0}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                              job.status === 'Opened' 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-red-100 text-red-800'
+                            }`}>
+                              {job.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              {job.status === "Opened" ? (
+                                <button
+                                  onClick={() => closeJob(job._id)}
+                                  className="p-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200"
+                                  title="Close Job"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => reopenJob(job._id)}
+                                  className="p-2 text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors duration-200"
+                                  title="Reopen Job"
+                                >
+                                  <RotateCcw className="w-4 h-4" />
+                                </button>
+                              )}
+                              <Link to={`/employer/edit_job/${job._id}`}>
+                                <button
+                                  className="p-2 text-yellow-600 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors duration-200"
+                                  title="Edit Job"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </button>
+                              </Link>
+                              <button
+                                onClick={() => showDeleteConfirm(job._id)}
+                                className="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors duration-200"
+                                title="Delete Job"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden divide-y divide-gray-200">
+                  {currentItems.map((job) => (
+                    <div key={job._id} className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-900 mb-1">{job.title}</h3>
+                          <div className="text-sm text-gray-500 flex items-center">
+                            <Calendar className="w-4 h-4 mr-1" />
+                            Posted on {new Date().toLocaleDateString()}
+                          </div>
+                        </div>
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                          job.status === 'Opened' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {job.status}
+                        </span>
+                      </div>
+                      
+                      <div className="flex gap-4 mb-4">
+                        <button
+                          onClick={() => navigate(`/employer/job/applicants/${job._id}`)}
+                          className="flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-lg"
+                        >
+                          <User className="w-4 h-4" />
+                          <span className="text-sm font-medium">{job.noOfApplicants || 0} Applicants</span>
+                        </button>
+                        <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 text-gray-700 rounded-lg">
+                          <Eye className="w-4 h-4" />
+                          <span className="text-sm font-medium">{job.interactions || 0} Views</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        {job.status === "Opened" ? (
+                          <button
+                            onClick={() => closeJob(job._id)}
+                            className="flex items-center gap-2 px-3 py-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200"
+                          >
+                            <X className="w-4 h-4" />
+                            <span className="text-sm">Close</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => reopenJob(job._id)}
+                            className="flex items-center gap-2 px-3 py-2 text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors duration-200"
+                          >
+                            <RotateCcw className="w-4 h-4" />
+                            <span className="text-sm">Reopen</span>
+                          </button>
+                        )}
+                        <Link to={`/employer/edit_job/${job._id}`}>
+                          <button className="flex items-center gap-2 px-3 py-2 text-yellow-600 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors duration-200">
+                            <Edit className="w-4 h-4" />
+                            <span className="text-sm">Edit</span>
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => showDeleteConfirm(job._id)}
+                          className="flex items-center gap-2 px-3 py-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors duration-200"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          <span className="text-sm">Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm text-gray-700">
+                        Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of {totalItems} items
+                      </span>
+                      <select
+                        value={pageSize}
+                        onChange={handlePageSizeChange}
+                        className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      >
+                        <option value={5}>5 per page</option>
+                        <option value={10}>10 per page</option>
+                        <option value={25}>25 per page</option>
+                        <option value={50}>50 per page</option>
+                      </select>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="p-2 text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      
+                      {[...Array(totalPages)].map((_, index) => {
+                        const page = index + 1;
+                        const isCurrentPage = page === currentPage;
+                        const shouldShow = page <= 3 || page > totalPages - 3 || Math.abs(page - currentPage) <= 1;
+                        
+                        if (!shouldShow) {
+                          if (page === 4 && currentPage > 6) return <span key={page} className="px-2">...</span>;
+                          if (page === totalPages - 3 && currentPage < totalPages - 5) return <span key={page} className="px-2">...</span>;
+                          return null;
+                        }
+                        
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            className={`px-3 py-2 text-sm rounded-lg transition-colors duration-200 ${
+                              isCurrentPage
+                                ? 'bg-blue-600 text-white'
+                                : 'text-gray-600 bg-white border border-gray-300 hover:bg-gray-50'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        );
+                      })}
+                      
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="p-2 text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
-                }
-              />
-            </Card>
-          ) : (
-        <Card>
-        <div style={{ overflowX: "auto" }}>
-        <Table
-         columns={columns}
-        dataSource={filteredJobs}
-         rowKey="_id"
-            pagination={{
-        ...pagination,
-        total: filteredJobs.length,
-        showSizeChanger: true,
-        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-      }}
-      onChange={handleTableChange}
-      locale={{
-        emptyText: searchTerm || statusFilter !== "All" ? (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description="No matching jobs found. Try adjusting your search criteria."
-          />
-        ) : (
-          <Empty description="No jobs found" />
-        )
-      }}
-    />
-     </div>
-
-    </Card>
-          )}
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
       
       {/* Delete Confirmation Modal */}
-      <Modal
-        title="Delete Job"
-        open={isDeleteModalVisible}
-        onOk={handleDeleteOk}
-        onCancel={handleDeleteCancel}
-        okText="Delete"
-        cancelText="Cancel"
-        okButtonProps={{ danger: true }}
-      >
-        <p>Are you sure you want to delete this job posting? This action cannot be undone.</p>
-      </Modal>
+      {isDeleteModalVisible && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-red-100 rounded-full">
+                  <Trash2 className="w-5 h-5 text-red-600" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900">Delete Job</h3>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete this job posting? This action cannot be undone.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={handleDeleteCancel}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteOk}
+                  className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors duration-200"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

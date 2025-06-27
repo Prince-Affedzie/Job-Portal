@@ -146,7 +146,7 @@ const EmployerDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Sidebar - Hidden on small screens */}
-      <div className="hidden lg:block">
+      <div className=" lg:block sm:hidden">
         <Sidebar />
       </div>
       
