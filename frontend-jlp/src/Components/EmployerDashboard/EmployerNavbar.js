@@ -4,7 +4,6 @@ import { FaBars, FaTimes, FaBriefcase, FaUsers, FaBell, FaUser } from "react-ico
 import { notificationContext } from "../../Context/NotificationContext";
 import "../../Styles/EmployerNavbar.css";
 
-// ... same imports
 const EmployerNavbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -13,9 +12,10 @@ const EmployerNavbar = () => {
   return (
     <nav className="employer-navbar">
       <div className="employer-logo">
-      <Link to="/employer/dashboard" className="text-2xl font-serif font-extrabold text-blue-600 tracking-tight">
-              <span className="text-gray-100">Worka</span><span className="text-blue-300">Flow</span>
-      </Link>
+        <Link to="/employer/dashboard" className="text-2xl font-serif font-extrabold tracking-tight group transition-all duration-300">
+          <span className="text-slate-800 group-hover:text-slate-900 transition-colors duration-300">Worka</span>
+          <span className="text-blue-600 group-hover:text-blue-700 transition-colors duration-300">Flow</span>
+        </Link>
       </div>
 
       {/* Desktop/Mobile Nav Links */}
@@ -26,25 +26,28 @@ const EmployerNavbar = () => {
         <li>
           <Link to="/employer/jobs"><FaBriefcase /> Jobs</Link>
         </li>
-        <li>
+        {/*<li>
           <Link to="/employer/applicants"><FaUsers /> Applicants</Link>
-        </li>
+        </li>*/}
       </ul>
 
       {/* Right Fixed Icons (Outside Menu) */}
       <div className="navbar-right-section">
-        <Link to="/employer/notifications" className="notification-wrapper" onClick={() => setShowNotifications(!showNotifications)}>
+        <Link 
+          to="/employer/notifications" 
+          className="notification-wrapper" 
+          onClick={() => setShowNotifications(!showNotifications)}
+        >
           <FaBell className="notification-icon" />
           {notifications && notifications.filter(n => !n.read).length > 0 && (
-           <span className="notification-badge">
-             {notifications.filter(n => !n.read).length}
-              </span>
+            <span className="notification-badge">
+              {notifications.filter(n => !n.read).length}
+            </span>
           )}
         </Link>
         <Link to="/employer/profile" className="profile-link">
           <FaUser />
         </Link>
-        
       </div>
 
       {/* Hamburger Toggle */}
@@ -54,6 +57,5 @@ const EmployerNavbar = () => {
     </nav>
   );
 };
-
 
 export default EmployerNavbar;
