@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,6 +29,9 @@ const EmployerJobs = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+
 
   // Confirm modal states
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -94,6 +97,13 @@ const EmployerJobs = () => {
       setJobToDelete(null);
     }
   };
+
+   useEffect(() => {
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+  
 
   // Filter jobs based on search term and status
   const filteredJobs = Jobs.filter(job => {
@@ -253,7 +263,11 @@ const EmployerJobs = () => {
             ) : (
               <>
                 {/* Desktop Table */}
-                <div className="hidden md:block overflow-x-auto">
+                <div  style={{
+      
+                    display: windowWidth >= 1024 ? 'block' : 'none',
+                }} 
+               className="overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-gray-50 border-b border-gray-200">
                       <tr>
@@ -278,11 +292,13 @@ const EmployerJobs = () => {
                           </td>
                           <td className="px-6 py-4">
                             <button
+                            title="View Applicants"
                               onClick={() => navigate(`/employer/job/applicants/${job._id}`)}
                               className="flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors duration-200"
                             >
                               <User className="w-4 h-4" />
                               <span className="font-medium">{job.noOfApplicants || 0}</span>
+                              
                             </button>
                           </td>
                           <td className="px-6 py-4">

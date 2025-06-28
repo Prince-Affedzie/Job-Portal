@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FaBriefcase,
   FaUsers,
@@ -23,6 +23,7 @@ const EmployerSidebar = () => {
 
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
    useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -47,10 +48,60 @@ const EmployerSidebar = () => {
   };
 
   const menuItems = [
-    { to: "/employer/dashboard", icon: FaHome, label: "Dashboard" },
-    { to: "/employer/jobs", icon: FaBriefcase, label: "Jobs" },
-    { to: "/employer/profile", icon: FaCog, label: "Account Settings" },
+    { 
+      to: "/employer/dashboard", 
+      icon: FaHome, 
+      label: "Dashboard",
+      gradient: "from-blue-500 to-cyan-400",
+      hoverGradient: "from-blue-400 to-cyan-300",
+      bgGradient: "from-blue-500/20 to-cyan-400/20"
+    },
+    { 
+      to: "/employer/jobs", 
+      icon: FaBriefcase, 
+      label: "Jobs",
+      gradient: "from-purple-500 to-pink-400",
+      hoverGradient: "from-purple-400 to-pink-300",
+      bgGradient: "from-purple-500/20 to-pink-400/20"
+    },
+    { 
+      to: "/employer/profile", 
+      icon: FaCog, 
+      label: "Account Settings",
+      gradient: "from-emerald-500 to-teal-400",
+      hoverGradient: "from-emerald-400 to-teal-300",
+      bgGradient: "from-emerald-500/20 to-teal-400/20"
+    },
   ];
+
+  // Enhanced Icon Wrapper Component
+  const EnhancedIcon = ({ icon: Icon, gradient, hoverGradient, isCollapsed, isActive }) => (
+    <div className={`
+      relative flex items-center justify-center
+      ${isCollapsed ? 'w-10 h-10 mx-auto' : 'w-10 h-10 mr-3'}
+      rounded-xl transition-all duration-300 group-hover:scale-110
+      ${isActive ? `bg-gradient-to-br ${gradient} shadow-lg` : 'bg-slate-700/50'}
+      group-hover:shadow-xl
+      before:absolute before:inset-0 before:rounded-xl
+      before:bg-gradient-to-br before:${hoverGradient} before:opacity-0
+      group-hover:before:opacity-100 before:transition-opacity before:duration-300
+      after:absolute after:inset-0 after:rounded-xl after:ring-2 after:ring-transparent
+      group-hover:after:ring-white/20 after:transition-all after:duration-300
+    `}>
+      <Icon className={`
+        relative z-10 text-lg transition-all duration-300
+        ${isActive ? 'text-white' : 'text-slate-300 group-hover:text-white'}
+        group-hover:drop-shadow-sm
+      `} />
+      
+      {/* Glow effect */}
+      <div className={`
+        absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100
+        bg-gradient-to-br ${gradient} blur-xl scale-75
+        transition-all duration-500 -z-10
+      `} />
+    </div>
+  );
 
   return (
     <>
@@ -90,10 +141,13 @@ const EmployerSidebar = () => {
         <div className="flex items-center justify-between p-4 border-b border-slate-700/50">
           {!desktopCollapsed && (
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <FaBriefcase className="text-white text-sm" />
+              <div className="relative w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <FaBriefcase className="text-white text-lg" />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500 blur-lg scale-75 opacity-50 -z-10" />
               </div>
-              <h2 className="text-white font-bold text-lg">Employer</h2>
+              <h2 className="text-white font-bold text-lg bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">
+                Employer
+              </h2>
             </div>
           )}
           
@@ -108,25 +162,40 @@ const EmployerSidebar = () => {
 
         {/* Navigation */}
         <nav className="flex-1 px-3 py-6">
-          <div className="space-y-2">
+          <div className="space-y-3">
             {menuItems.map((item, index) => {
               const Icon = item.icon;
+              const isActive = location.pathname === item.to;
               return (
                 <Link
                   key={index}
                   to={item.to}
-                  className="
-                    flex items-center px-3 py-3 text-slate-300 
-                    hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20
-                    rounded-xl transition-all duration-200 group relative overflow-hidden
-                    before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-500/10 before:to-purple-500/10 
-                    before:translate-x-full before:transition-transform before:duration-300
-                    hover:before:translate-x-0
-                  "
+                  className={`
+                    relative flex items-center px-3 py-4 text-slate-300 
+                    hover:text-white rounded-xl transition-all duration-300 group overflow-hidden
+                    ${isActive ? `bg-gradient-to-r ${item.bgGradient} text-white border border-white/10` : 'hover:bg-slate-700/30'}
+                    before:absolute before:inset-0 before:bg-gradient-to-r before:${item.bgGradient}
+                    before:translate-x-full before:transition-transform before:duration-500
+                    hover:before:translate-x-0 before:opacity-0 hover:before:opacity-100
+                  `}
                 >
-                  <Icon className={`${desktopCollapsed ? 'mx-auto' : 'mr-3'} text-lg group-hover:scale-110 transition-transform duration-200`} />
+                  <EnhancedIcon 
+                    icon={Icon}
+                    gradient={item.gradient}
+                    hoverGradient={item.hoverGradient}
+                    isCollapsed={desktopCollapsed}
+                    isActive={isActive}
+                  />
+                  
                   {!desktopCollapsed && (
-                    <span className="font-medium truncate">{item.label}</span>
+                    <span className="relative z-10 font-medium truncate transition-all duration-300 group-hover:translate-x-1">
+                      {item.label}
+                    </span>
+                  )}
+                  
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-400 to-purple-500 rounded-l-full" />
                   )}
                 </Link>
               );
@@ -139,14 +208,28 @@ const EmployerSidebar = () => {
           <button
             onClick={handleLogout}
             className="
-              w-full flex items-center px-3 py-3 text-red-400 
+              w-full flex items-center px-3 py-4 text-red-400 
               hover:text-red-300 hover:bg-red-500/10
-              rounded-xl transition-all duration-200 group
+              rounded-xl transition-all duration-300 group relative overflow-hidden
+              before:absolute before:inset-0 before:bg-gradient-to-r before:from-red-500/20 before:to-red-400/20
+              before:translate-x-full before:transition-transform before:duration-500
+              hover:before:translate-x-0
             "
           >
-            <FaSignOutAlt className={`${desktopCollapsed ? 'mx-auto' : 'mr-3'} text-lg group-hover:scale-110 transition-transform duration-200`} />
+            <div className={`
+              relative flex items-center justify-center
+              ${desktopCollapsed ? 'w-10 h-10 mx-auto' : 'w-10 h-10 mr-3'}
+              rounded-xl transition-all duration-300 group-hover:scale-110
+              bg-red-500/20 group-hover:bg-red-500/30
+              group-hover:shadow-lg group-hover:shadow-red-500/25
+            `}>
+              <FaSignOutAlt className="text-lg group-hover:text-red-300 transition-colors duration-200" />
+            </div>
+            
             {!desktopCollapsed && (
-              <span className="font-medium">Logout</span>
+              <span className="relative z-10 font-medium transition-all duration-300 group-hover:translate-x-1">
+                Logout
+              </span>
             )}
           </button>
         </div>
@@ -172,30 +255,47 @@ const EmployerSidebar = () => {
       >
         {/* Header */}
         <div className="flex items-center space-x-3 px-4 py-4 border-b border-slate-700/50">
-          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <FaBriefcase className="text-white text-sm" />
+          <div className="relative w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+            <FaBriefcase className="text-white text-lg" />
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500 blur-lg scale-75 opacity-50 -z-10" />
           </div>
-          <h2 className="text-white font-bold text-lg">Employer Menu</h2>
+          <h2 className="text-white font-bold text-lg bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">
+            Employer Menu
+          </h2>
         </div>
 
         {/* Navigation */}
         <nav className="px-3 py-4">
-          <div className="space-y-1">
+          <div className="space-y-2">
             {menuItems.map((item, index) => {
               const Icon = item.icon;
+              const isActive = location.pathname === item.to;
               return (
                 <Link
                   key={index}
                   to={item.to}
-                  onClick={closeMobileMenu}
-                  className="
-                    flex items-center px-3 py-3 text-slate-300 
-                    hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20
-                    rounded-lg transition-all duration-200 group
-                  "
+                  onClick={() => {
+                    closeMobileMenu();
+                  }}
+                  className={`
+                    relative flex items-center px-3 py-3 text-slate-300 
+                    hover:text-white rounded-xl transition-all duration-300 group overflow-hidden
+                    ${isActive ? `bg-gradient-to-r ${item.bgGradient} text-white` : 'hover:bg-slate-700/30'}
+                    before:absolute before:inset-0 before:bg-gradient-to-r before:${item.bgGradient}
+                    before:translate-x-full before:transition-transform before:duration-500
+                    hover:before:translate-x-0 before:opacity-0 hover:before:opacity-100
+                  `}
                 >
-                  <Icon className="mr-3 text-lg group-hover:scale-110 transition-transform duration-200" />
-                  <span className="font-medium">{item.label}</span>
+                  <EnhancedIcon 
+                    icon={Icon}
+                    gradient={item.gradient}
+                    hoverGradient={item.hoverGradient}
+                    isCollapsed={false}
+                    isActive={isActive}
+                  />
+                  <span className="relative z-10 font-medium transition-all duration-300 group-hover:translate-x-1">
+                    {item.label}
+                  </span>
                 </Link>
               );
             })}
@@ -212,11 +312,23 @@ const EmployerSidebar = () => {
             className="
               w-full flex items-center px-3 py-3 text-red-400 
               hover:text-red-300 hover:bg-red-500/10
-              rounded-lg transition-all duration-200 group
+              rounded-xl transition-all duration-300 group relative overflow-hidden
+              before:absolute before:inset-0 before:bg-gradient-to-r before:from-red-500/20 before:to-red-400/20
+              before:translate-x-full before:transition-transform before:duration-500
+              hover:before:translate-x-0
             "
           >
-            <FaSignOutAlt className="mr-3 text-lg group-hover:scale-110 transition-transform duration-200" />
-            <span className="font-medium">Logout</span>
+            <div className="
+              relative flex items-center justify-center w-10 h-10 mr-3
+              rounded-xl transition-all duration-300 group-hover:scale-110
+              bg-red-500/20 group-hover:bg-red-500/30
+              group-hover:shadow-lg group-hover:shadow-red-500/25
+            ">
+              <FaSignOutAlt className="text-lg group-hover:text-red-300 transition-colors duration-200" />
+            </div>
+            <span className="relative z-10 font-medium transition-all duration-300 group-hover:translate-x-1">
+              Logout
+            </span>
           </button>
         </div>
       </div>
