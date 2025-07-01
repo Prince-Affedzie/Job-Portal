@@ -7,7 +7,7 @@ import EmployerNavbar from "../Components/EmployerDashboard/EmployerNavbar";
 import { getAllApplications, modifyApplication } from '../APIS/API';
 import { useNavigate } from 'react-router-dom';
 import InterviewInviteModal from "../Components/EmployerDashboard/InterviewInviteModal";
-import Pagination from './JobApplicantsPageComponents/Pagination';
+import Pagination from '../Components/EmployerDashboard/Pagination';
 
 const Applicants = () => {
   const navigate = useNavigate();

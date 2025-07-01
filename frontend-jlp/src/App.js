@@ -23,7 +23,7 @@ import ManageMiniTasks from './UserPages/ManageMiniTaskPage';
 import EditJob from './EmployerPages/EditJob';
 import  ApplicantProfilePage from './EmployerPages/ApplicantProfile';
 import EmployerProfile from './EmployerPages/EmployerProfile';
-import ApplicantProfileModal from './EmployerPages/JobApplicantsPageComponents/ApplicantsProfileModal';
+import ApplicantProfileModal from './Components/EmployerDashboard/ApplicantsProfileModal';
 //import ChatModalPage from './UserPages/ChatModalPage';
 import FullChatPage from './UserPages/FullChatPage';
 import { ChatProvider } from './Context/ChatContext';
@@ -85,7 +85,7 @@ function App() {
       </PostEligibilityGate>
       </UserProvider>
       }/>
-      <Route path='/manage/mini_tasks' element={<NotificationProvider><ManageMiniTasks/></NotificationProvider>}/>
+      <Route path='/manage/mini_tasks' element={<UserProvider><NotificationProvider><ManageMiniTasks/></NotificationProvider></UserProvider>}/>
       <Route path='/mini_task/listings' element={<NotificationProvider><MiniTaskPage/></NotificationProvider>}/>
       <Route path='/view/applied/jobs'element={<UserProvider><NotificationProvider><ViewApplications/></NotificationProvider></UserProvider>}/>
       <Route path='/user/modify/profile' element={<UserProvider><RouteProtection><NotificationProvider><EditProfile/></NotificationProvider></RouteProtection></UserProvider>}/>

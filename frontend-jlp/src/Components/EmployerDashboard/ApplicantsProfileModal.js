@@ -23,8 +23,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ImageWithFallback, MatchScoreIndicator, formatDate } from "./Utils";
 import { modifyApplication } from "../../APIS/API";
-import EmployerNavbar from "../../Components/EmployerDashboard/EmployerNavbar";
-import EmployerSidebar from "../../Components/EmployerDashboard/SideBar";
+import EmployerNavbar from "./EmployerNavbar";
+import EmployerSidebar from "./SideBar";
 
 const ApplicantProfileModal = ({ applicants, onStatusChange }) => {
   const navigate = useNavigate();

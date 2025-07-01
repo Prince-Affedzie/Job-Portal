@@ -7,18 +7,18 @@ import '../Styles/JobApplicantsPage.css'
 
 import Sidebar from "../Components/EmployerDashboard/SideBar";
 import EmployerNavbar from "../Components/EmployerDashboard/EmployerNavbar";
-import ProfileModal from "./JobApplicantsPageComponents/ApplicantsProfileModal";
+import ProfileModal from "../Components/EmployerDashboard/ApplicantsProfileModal";
 import InterviewInviteModal from "../Components/EmployerDashboard/InterviewInviteModal";
 import BulkStatusModal from "../Components/EmployerDashboard/BulkStatusUpdateModal";
 import { getSpecificJobApplications, modifyApplication } from "../APIS/API";
 
 // Import components
-import JobDetailsSummary from "./JobApplicantsPageComponents/JobSummary";
-import { ApplicantActionBar } from "./JobApplicantsPageComponents/ApplicantsCard";
-import ApplicantsControls from "./JobApplicantsPageComponents/ApplicantsControl";
-import StatusStats from "./JobApplicantsPageComponents/StatusStats";
-import ApplicantCard from "./JobApplicantsPageComponents/ApplicantsCard";
-import Pagination from "./JobApplicantsPageComponents/Pagination";
+import JobDetailsSummary from "../Components/EmployerDashboard/JobSummary";
+import { ApplicantActionBar } from "../Components/EmployerDashboard//ApplicantsCard";
+import ApplicantsControls from "../Components/EmployerDashboard//ApplicantsControl";
+import StatusStats from "../Components/EmployerDashboard/StatusStats";
+import ApplicantCard from "../Components/EmployerDashboard/ApplicantsCard";
+import Pagination from "../Components/EmployerDashboard/Pagination";
 
 // Custom hook for applicants management
 const useApplicantsManager = (jobId) => {

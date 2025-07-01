@@ -4,7 +4,7 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { userContext } from "../Context/FetchUser";
 import Navbar from '../Components/MyComponents/Navbar';
 import { useNavigate } from 'react-router-dom';
-import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard, rejectMiniTaskAssignment } from '../APIS/API';
+import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard,raiseDispute, rejectMiniTaskAssignment } from '../APIS/API';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaTrash, FaFilter, FaCheck, FaArrowUp, FaArrowDown, FaClock, FaMapMarkerAlt, FaDollarSign, FaUser, FaPhone, FaEye, FaUpload, FaComments, FaTimes, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
@@ -26,6 +26,17 @@ const MyMiniTaskApplications = () => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const applicationsPerPage = 5;
+   const [showReportModal, setShowReportModal] = useState(false);
+   const [reportingTask, setReportingTask] = useState(null);
+   const [reportForm, setReportForm] = useState({
+    against: reportingTask?.employer?._id || '',
+    taskId: reportingTask?._id || '',
+    tasktitle:reportingTask?.title || '',
+    reportedBy : user?.name || '',
+    reason: '',
+    details: ''
+  });
+  
 
   // Use a more efficient debounced fetch
   const debouncedFetch = useCallback(() => {
@@ -98,6 +109,52 @@ const MyMiniTaskApplications = () => {
   const indexOfFirstApplication = indexOfLastApplication - applicationsPerPage;
   const currentApplications = sortedAndFilteredApplications.slice(indexOfFirstApplication, indexOfLastApplication);
   const totalPages = Math.ceil(sortedAndFilteredApplications.length / applicationsPerPage);
+
+  const handleReportIssue = (task) => {
+      setReportingTask(task);
+      setShowReportModal(true);
+    };
+  
+    useEffect(() => {
+    if (reportingTask) {
+      setReportForm((prev) => ({
+        ...prev,
+        against: reportingTask.employer?._id || '',
+        taskId: reportingTask._id || '',
+        tasktitle:reportingTask.title,
+       reportedBy : user?.name
+      }));
+    }
+  }, [reportingTask,user?.name]);
+  
+  
+    const submitReport = async () => {
+      
+      const { against, taskId, reason, details } = reportForm;
+  
+    if (!against || !taskId || !reason || !details) {
+      toast.error("Please fill in all fields before submitting the report.");
+      return;
+    }
+  
+      setIsProcessing(true);
+      try {
+      
+        const response = await raiseDispute(reportForm)
+        if (response.status ===200){
+        toast.success(`Issue reported for task: ${reportingTask.title}. Our Team Would Reach Out Soon.`);
+        setShowReportModal(false);
+        setReportingTask(null);
+       
+        }
+       
+      } catch (error) {
+        toast.error("Failed to submit report");
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+  
 
   const handleTaskAcceptance = async(taskId) => {
     setIsProcessing(true);
@@ -255,7 +312,7 @@ const MyMiniTaskApplications = () => {
       <Navbar />
       <ToastContainer 
         position="top-right" 
-        autoClose={4000} 
+        autoClose={6000} 
         hideProgressBar={false}
         className="mt-16"
       />
@@ -389,137 +446,125 @@ const MyMiniTaskApplications = () => {
                 const isTaskActive = activeTaskId === task._id;
                 const deadlineStatus = getDeadlineStatus(task.deadline);
 
-                return (
-                  <div key={task._id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
-                    {/* Card Header */}
-                    <div className="p-6 border-b border-gray-100">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-4 flex-1">
-                          {isRemovable && (
-                            <div className="mt-1">
-                              <input
-                                type="checkbox"
-                                id={`task-select-${task._id}`}
-                                checked={!!selectedTasks[task._id]}
-                                onChange={() => handleTaskSelection(task._id)}
-                                className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                              />
-                            </div>
-                          )}
-                          <div className="flex-1">
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">{task.title}</h3>
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                              <span className="inline-flex items-center gap-1">
-                                <FaDollarSign className="w-4 h-4" />
-                                Budget: ₵{task.budget}
-                              </span>
-                              <span className="text-gray-400">•</span>
-                              <span>{task.category}</span>
-                              {task.employer?.name && (
-                                <>
-                                  <span className="text-gray-400">•</span>
-                                  <span className="inline-flex items-center gap-1">
-                                    <FaUser className="w-3 h-3" />
-                                    {task.employer.name}
-                                  </span>
-                                </>
-                              )}
-                              {task.employer?.phone && (
-                                <>
-                                  <span className="text-gray-400">•</span>
-                                  <span className="inline-flex items-center gap-1">
-                                    <FaPhone className="w-3 h-3" />
-                                    {task.employer.phone}
-                                  </span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex flex-col items-end gap-2">
-                          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border ${statusInfo.className}`}>
-                            {statusInfo.icon}
-                            <span>{statusInfo.text}</span>
-                          </div>
-                          {statusInfo.subtext && (
-                            <span className="text-xs text-gray-500">{statusInfo.subtext}</span>
-                          )}
-                          {deadlineStatus && (
-                            <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${deadlineStatus.className}`}>
-                              <FaClock className="w-3 h-3" />
-                              {deadlineStatus.text}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+               return (
+  <div
+    key={task._id}
+    className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-5 space-y-4"
+  >
+    {/* Header */}
+    <div className="flex justify-between items-start gap-4">
+      <div className="flex-1">
+        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">
+          {task.title}
+        </h3>
 
-                    {/* Card Body */}
-                    <div className="p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <FaMapMarkerAlt className="w-4 h-4 text-gray-400" />
-                          <span className="font-medium">Location:</span>
-                          <span>
-                            {task.locationType === "remote" ? "Remote" : 
-                              (task.address ? `${task.address.suburb || ''}, ${task.address.city || ''}`.replace(/, $/, '') : "On-site")}
-                          </span>
-                        </div>
-                        
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <FaClock className="w-4 h-4 text-gray-400" />
-                          <span className="font-medium">Deadline:</span>
-                          <span>
-                            {task.deadline ? new Date(task.deadline).toLocaleDateString('en-US', 
-                              {weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'}) : 'Not specified'}
-                          </span>
-                        </div>
-                      </div>
+        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+          <span className="flex items-center gap-1">
+            <FaDollarSign className="text-gray-400" />
+            ₵{task.budget}
+          </span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+            {task.category}
+          </span>
+          {task.locationType && (
+            <span className="flex items-center gap-1">
+              <FaMapMarkerAlt className="text-gray-400" />
+              {task.locationType === 'remote'
+                ? 'Remote'
+                : task.address?.city || 'On-site'}
+            </span>
+          )}
+        </div>
+      </div>
 
-                      {task.skillsRequired && task.skillsRequired.length > 0 && (
-                        <div className="mb-6">
-                          <span className="text-sm font-medium text-gray-700 mb-2 block">Skills Required:</span>
-                          <div className="flex flex-wrap gap-2">
-                            {task.skillsRequired.map((skill, skillIndex) => (
-                              <span key={skillIndex} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
-                                {skill}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
+      {/* Optional status pill (pending/approved/etc.) */}
+      <div className="text-xs font-semibold px-3 py-1 rounded-full border border-blue-300 text-blue-600 bg-blue-50 whitespace-nowrap">
+        {statusInfo?.text || 'Pending'}
+      </div>
+    </div>
 
-                    {/* Card Actions */}
-                    <TaskActions
-          task={task}
-          user={user}
-          isProcessing={isProcessing}
-          layout="dropdown" // or 'grid', 'priority', 'vertical'
-          onViewDetails={(taskId) => navigate(`/view/mini_task/info/${taskId}`)}
-          onSubmitWork={(taskId) => openSubmitModal(taskId)}
-          onViewSubmissions={(taskId) => navigate(`/freelancer/${taskId}/view_task_submissions`)}
-          onAcceptTask={handleTaskAcceptance}
-          onRejectTask={handleTaskRejection}
-          StartChatButton={StartChatButton}
-          className="custom-task-actions" // Optional custom styling
-        />
+    {/* Body */}
+    <div className="text-sm text-gray-700 flex flex-wrap justify-between items-center">
+      {task.deadline && (
+        <div className="flex items-center gap-1">
+          <FaClock className="text-gray-400 w-4 h-4" />
+          <span className="text-sm">
+            {new Date(task.deadline).toLocaleDateString('en-US', {
+              weekday: 'short',
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            })}
+          </span>
+        </div>
+      )}
+      {task.employer?.name && (
+        <span className="text-gray-500 text-xs">Posted by {task.employer.name}</span>
+      )}
+      {isAssigned && (task.status === 'Assigned' || task.status === 'In-progress') && (
+  <div className="w-full mt-2">
+    <button
+      onClick={() => handleReportIssue(task)}
+      className="text-red-600 hover:text-red-800 text-xs flex items-center gap-1"
+    >
+      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+      </svg>
+      Report Issue
+    </button>
+  </div>
+)}
 
-                    {/* Modal for submitting work */}
-                    {modalOpen && activeTaskId === task._id && (
-                      <WorkSubmissionModal
-                        isOpen={modalOpen}
-                        onClose={() => {
-                          setModalOpen(false);
-                          setActiveTaskId(null);
-                        }}
-                        taskId={activeTaskId}
-                        task={task}
-                      />
-                    )}
-                  </div>
-                );
+    </div>
+
+    {/* Skills */}
+    {task.skillsRequired?.length > 0 && (
+      <div className="flex flex-wrap gap-2">
+        {task.skillsRequired.slice(0, 4).map((skill, index) => (
+          <span
+            key={index}
+            className="bg-blue-100 text-blue-700 px-3 py-1 text-xs font-medium rounded-full"
+          >
+            {skill}
+          </span>
+        ))}
+        {task.skillsRequired.length > 4 && (
+          <span className="text-xs text-gray-400">+{task.skillsRequired.length - 4} more</span>
+        )}
+      </div>
+    )}
+
+    {/* Actions */}
+    <TaskActions
+      task={task}
+      user={user}
+      isProcessing={isProcessing}
+      layout="dropdown"
+      onViewDetails={(taskId) => navigate(`/view/mini_task/info/${taskId}`)}
+      onSubmitWork={(taskId) => openSubmitModal(taskId)}
+      onViewSubmissions={(taskId) => navigate(`/freelancer/${taskId}/view_task_submissions`)}
+      onAcceptTask={handleTaskAcceptance}
+      onRejectTask={handleTaskRejection}
+      StartChatButton={StartChatButton}
+      className="custom-task-actions"
+    />
+
+    {/* Modal */}
+    {modalOpen && activeTaskId === task._id && (
+      <WorkSubmissionModal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setActiveTaskId(null);
+        }}
+        taskId={activeTaskId}
+        task={task}
+      />
+    )}
+  </div>
+);
+
+
               })}
             </div>
 
@@ -552,9 +597,76 @@ const MyMiniTaskApplications = () => {
           </div>
         )}
       </div>
+
+
+    {showReportModal && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+      <h3 className="text-lg font-semibold mb-4">Report Issue</h3>
+
+      <p className="text-gray-600 mb-2">
+        Report an issue with: <strong>{reportingTask?.title}</strong>
+      </p>
+      <p className="text-gray-600 mb-4">
+        Assigned to: <strong>{reportingTask?.assignedTo?.name}</strong>
+      </p>
+
+     
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Reason
+          </label>
+          <input
+            type="text"
+            value={reportForm.reason}
+            onChange={(e) =>
+              setReportForm((prev) => ({ ...prev, reason: e.target.value }))
+            }
+            placeholder="Enter a brief reason"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Details
+          </label>
+          <textarea
+            value={reportForm.details}
+            onChange={(e) =>
+              setReportForm((prev) => ({ ...prev, details: e.target.value }))
+            }
+            placeholder="Provide detailed explanation"
+            rows="4"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <div className="flex justify-end space-x-3">
+          <button
+            type="button"
+            onClick={() => setShowReportModal(false)}
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+             onClick={submitReport}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Submit Report
+          </button>
+        </div>
       
+    </div>
+  </div>
+)}
+  
       
-      {/* Confirmation dialog for deleting tasks */}
+   {/* Confirmation dialog for deleting tasks */}
       {showConfirmation && (
         <div className="confirmation-overlay">
           <div className="confirmation-dialog">

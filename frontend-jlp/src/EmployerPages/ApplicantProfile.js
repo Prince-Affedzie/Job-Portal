@@ -21,7 +21,7 @@ import {
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ImageWithFallback, MatchScoreIndicator, formatDate } from "../EmployerPages/JobApplicantsPageComponents/Utils";
+import { ImageWithFallback, MatchScoreIndicator, formatDate } from "../Components/EmployerDashboard/Utils";
 import { modifyApplication } from "../APIS/API";
 
 const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
