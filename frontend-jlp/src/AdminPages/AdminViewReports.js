@@ -16,7 +16,7 @@ import {
   Download,
   RefreshCw
 } from 'lucide-react';
-import {getAllDisputes} from '../APIS/API'
+import {getAllDisputes,resolveDispute} from '../APIS/API'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -30,52 +30,6 @@ const DisputeAdminDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [resolutionNotes, setResolutionNotes] = useState('');
   const [newStatus, setNewStatus] = useState('');
-
-  // Mock data - replace with actual API calls
-  const mockDisputes = [
-    {
-      _id: '1',
-      raisedBy: { _id: 'u1', name: 'John Doe', email: 'john@example.com' },
-      against: { _id: 'u2', name: 'Jane Smith', email: 'jane@example.com' },
-      taskId: { _id: 't1', title: 'Website Development Project' },
-      submissionId: { _id: 's1', submittedAt: '2024-01-15' },
-      reason: 'Poor Quality Work',
-      details: 'The delivered work does not meet the specified requirements and quality standards.',
-      status: 'open',
-      resolutionNotes: '',
-      resolvedBy: null,
-      createdAt: '2024-01-15T10:30:00Z',
-      updatedAt: '2024-01-15T10:30:00Z'
-    },
-    {
-      _id: '2',
-      raisedBy: { _id: 'u3', name: 'Mike Johnson', email: 'mike@example.com' },
-      against: { _id: 'u4', name: 'Sarah Wilson', email: 'sarah@example.com' },
-      taskId: { _id: 't2', title: 'Logo Design Task' },
-      submissionId: { _id: 's2', submittedAt: '2024-01-14' },
-      reason: 'Late Delivery',
-      details: 'The work was submitted 3 days after the agreed deadline without prior notice.',
-      status: 'under_review',
-      resolutionNotes: 'Investigating the timeline and communication records.',
-      resolvedBy: { _id: 'a1', name: 'Admin User' },
-      createdAt: '2024-01-14T15:45:00Z',
-      updatedAt: '2024-01-16T09:20:00Z'
-    },
-    {
-      _id: '3',
-      raisedBy: { _id: 'u5', name: 'David Brown', email: 'david@example.com' },
-      against: { _id: 'u6', name: 'Lisa Davis', email: 'lisa@example.com' },
-      taskId: { _id: 't3', title: 'Content Writing Project' },
-      submissionId: null,
-      reason: 'Communication Issues',
-      details: 'Freelancer has not responded to messages for over a week.',
-      status: 'resolved',
-      resolutionNotes: 'Task has been reassigned to another freelancer. Payment refunded.',
-      resolvedBy: { _id: 'a1', name: 'Admin User' },
-      createdAt: '2024-01-10T11:15:00Z',
-      updatedAt: '2024-01-18T14:30:00Z'
-    }
-  ];
 
   useEffect(() => {
 
@@ -153,31 +107,62 @@ const DisputeAdminDashboard = () => {
     setNewStatus(dispute.status);
   };
 
-  const handleUpdateDispute = async () => {
-    if (!selectedDispute) return;
+ const handleUpdateDispute = async () => {
+  if (!selectedDispute) return;
 
-    setLoading(true);
+  // Create update payload with only changed/non-empty fields
+  const updatePayload = {};
+  
+  // Only include status if it has changed
+  if (newStatus !== selectedDispute.status && newStatus.trim() !== '') {
+    updatePayload.newStatus = newStatus;
+  }
+  
+  // Only include resolution notes if they are not empty and different from existing
+  const trimmedNotes = resolutionNotes.trim();
+  const existingNotes = selectedDispute.resolutionNotes || '';
+  
+  if (trimmedNotes !== '' && trimmedNotes !== existingNotes) {
+    updatePayload.resolutionNotes = trimmedNotes;
+  }
+  
+  // If no fields to update, show message and return
+  if (Object.keys(updatePayload).length === 0) {
+    toast.info("No changes detected to update.");
+    return;
+  }
+
+  setLoading(true);
+  
+  try {
+    const response = await resolveDispute(selectedDispute._id, updatePayload);
     
-    // Simulate API call
-    setTimeout(() => {
+    if (response.status === 200) {
+      // Update the disputes array with the new data
       const updatedDisputes = disputes.map(dispute => 
         dispute._id === selectedDispute._id 
           ? { 
               ...dispute, 
-              status: newStatus, 
-              resolutionNotes: resolutionNotes,
-              updatedAt: new Date().toISOString(),
-              resolvedBy: newStatus === 'resolved' ? { _id: 'a1', name: 'Current Admin' } : dispute.resolvedBy
+              ...(updatePayload.newStatus && { status: updatePayload.newStatus }),
+              ...(updatePayload.resolutionNotes && { resolutionNotes: updatePayload.resolutionNotes }),
+              updatedAt: new Date().toISOString() // Update the timestamp
             }
           : dispute
       );
       
       setDisputes(updatedDisputes);
       setShowModal(false);
-      setLoading(false);
-    }, 1000);
-  };
-
+      toast.success("Dispute updated successfully!");
+    } else {
+      toast.error("Failed to update dispute. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error updating dispute:", error);
+    toast.error("An error occurred while updating the dispute.");
+  } finally {
+    setLoading(false);
+  }
+};
   const getStats = () => {
     const total = disputes.length;
     const open = disputes.filter(d => d.status === 'open').length;
@@ -397,6 +382,11 @@ const DisputeAdminDashboard = () => {
                   <div>
                     <h4 className="text-sm font-medium text-gray-900 mb-3">Dispute Information</h4>
                     <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+
+                       <div>
+                        <span className="text-sm font-medium text-gray-600">Task:</span>
+                        <p className="text-sm text-gray-900 mt-1">{selectedDispute.taskId?.title || 'N/A'}</p>
+                      </div>
                       <div>
                         <span className="text-sm font-medium text-gray-600">Reason:</span>
                         <p className="text-sm text-gray-900 mt-1">{selectedDispute.reason}</p>
@@ -418,12 +408,12 @@ const DisputeAdminDashboard = () => {
                       <div>
                         <span className="text-sm font-medium text-gray-600">Raised By:</span>
                         <p className="text-sm text-gray-900">{selectedDispute.raisedBy.name}</p>
-                        <p className="text-sm text-gray-500">{selectedDispute.raisedBy.email}</p>
+                        <p className="text-sm text-gray-500">{selectedDispute.raisedBy.email}-{selectedDispute.raisedBy.phone}</p>
                       </div>
                       <div>
                         <span className="text-sm font-medium text-gray-600">Against:</span>
                         <p className="text-sm text-gray-900">{selectedDispute.against.name}</p>
-                        <p className="text-sm text-gray-500">{selectedDispute.against.email}</p>
+                        <p className="text-sm text-gray-500">{selectedDispute.against.email}-{selectedDispute.raisedBy.phone}</p>
                       </div>
                     </div>
                   </div>
