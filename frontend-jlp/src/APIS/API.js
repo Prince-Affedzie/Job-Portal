@@ -132,3 +132,4 @@ export const getSingleMinitask = (Id)=>API.get(`/api/admin/get_single_mintask/${
 export const modifyMiniTaskStatus = (Id,status)=>API.put(`/api/admin/modify_mini_task_status/${Id}`,status)
 export const adminDeleteMiniTask =(Id)=>API.delete(`/api/admin/delete_mini_task/${Id}`)
 export const updateMiniTaskByAdmin =(Id,update) =>API.put(`/api/admin/modify_mini_task/${Id}`,update)
+export const getAllDisputes = ()=>API.get('/api/admin/get_disputes')

@@ -20,7 +20,7 @@ const sidebarItems = [
   { path: "/admin/manage_minitasks", icon: FileText, label: "Mini Jobs", color: "from-orange-500 to-amber-500" },
   { path: "/admin/get_employers/list", icon: FileText, label: "Recruiters", color: "from-pink-500 to-rose-500" },
   { path: "/admin/applications", icon: FileText, label: "Applications", color: "from-indigo-500 to-blue-500" },
-  { path: "/admin/reports", icon: BarChart2, label: "Reports", color: "from-teal-500 to-cyan-500" },
+  { path: "/admin/view_all_reports", icon: BarChart2, label: "Reports", color: "from-teal-500 to-cyan-500" },
   { path: "/admin/settings", icon: Settings, label: "Settings", color: "from-gray-500 to-slate-500" },
 ];
 

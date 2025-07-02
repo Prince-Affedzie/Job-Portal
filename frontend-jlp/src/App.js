@@ -36,6 +36,7 @@ import EmployerOnboarding from './EmployerPages/EmployerOnboarding';
 import MyMiniTaskApplications from './UserPages/UserAppliedMiniTask';
 import ApplicantsPage from './Components/MiniTaskManagementComponents/ApplicantsPage';
 import MiniTaskInfo from './UserPages/MiniTaskInfo';
+
 import { AdminProvider } from './Context/AdminContext';
 
 
@@ -54,6 +55,7 @@ import AdminMiniTaskDetailPage from './AdminPages/MiniTaskInfo';
 import AdminEditMiniTaskPage from './AdminPages/AdminEditMiniTaskPage'
 import AdminLogin from './AdminPages/AdminLogin';
 import AdminAddUserForm from './AdminPages/AdminAddNewUser'
+import DisputeAdminDashboard from  './AdminPages/AdminViewReports'
 import {EmployerProfileProvider} from './Context/EmployerProfileContext'
 import PostEligibilityGate from './Utils/MiniJobPostEligiblityGate'
 import EmployerPostEligibilityGate from './Utils/EmployerJobPostEligibilityGate'
@@ -201,7 +203,7 @@ function App() {
       <Route path='/admin/:Id/modify_min_task' element={<AdminRoutes><AdminProvider><AdminEditMiniTaskPage/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/add_new_user' element={<AdminRoutes><AdminProvider><AdminAddUserForm/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/minitask/:taskId/applicants' element={<AdminRoutes><AdminProvider><AdminViewMiniTaskApplicants/></AdminProvider></AdminRoutes>}/>
-
+      <Route path='/admin/view_all_reports' element={<AdminRoutes><AdminProvider><DisputeAdminDashboard/></AdminProvider></AdminRoutes>}/>
 
     </Routes>
 
