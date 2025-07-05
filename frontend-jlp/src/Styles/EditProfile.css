@@ -74,10 +74,13 @@
 }
 
 /* Sections Styling */
+/* Updated sections styling for horizontal row layout */
 .emp-profile__sections-wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Changed to row for horizontal layout */
   gap: 1.5rem;
+  width: 100%;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
 .emp-profile__section {
@@ -86,6 +89,85 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   border: 1px solid #e9ecef;
+  flex: 1; /* Equal width distribution */
+  min-width: 300px; /* Minimum width before wrapping */
+  margin-bottom: 0;
+}
+
+/* Alternative: Fixed width sections */
+.emp-profile__sections-wrapper--fixed {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.emp-profile__sections-wrapper--fixed .emp-profile__section {
+  width: calc(50% - 0.75rem); /* Two columns */
+  min-width: 300px;
+}
+
+/* Three column layout */
+.emp-profile__sections-wrapper--three-col .emp-profile__section {
+  width: calc(33.333% - 1rem); /* Three columns */
+  min-width: 280px;
+}
+
+/* Two column layout - more explicit */
+.emp-profile__sections-wrapper--two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.emp-profile__sections-wrapper--two-col .emp-profile__section {
+  min-width: 0; /* Allow grid items to shrink */
+}
+
+/* Professional job portal style layout */
+.emp-profile__sections-wrapper--portal {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Left section larger, right section smaller */
+  gap: 2rem;
+}
+
+.emp-profile__sections-wrapper--portal .emp-profile__section--main {
+  /* Main content section (left) */
+}
+
+.emp-profile__sections-wrapper--portal .emp-profile__section--sidebar {
+  /* Sidebar content (right) */
+}
+
+/* Responsive behavior */
+@media (max-width: 1024px) {
+  .emp-profile__sections-wrapper,
+  .emp-profile__sections-wrapper--fixed,
+  .emp-profile__sections-wrapper--three-col {
+    flex-direction: column; /* Stack vertically on tablets */
+  }
+  
+  .emp-profile__sections-wrapper--two-col,
+  .emp-profile__sections-wrapper--portal {
+    grid-template-columns: 1fr; /* Single column on tablets */
+  }
+  
+  .emp-profile__section {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .emp-profile__sections-wrapper {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .emp-profile__section {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .emp-profile__section-header {

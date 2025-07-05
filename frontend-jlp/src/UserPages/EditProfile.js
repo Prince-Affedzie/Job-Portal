@@ -172,10 +172,10 @@ const EditProfile = () => {
 
   // Error display component
   const ErrorDisplay = () => (
-    <div className="emp-profile__error">
-      <p>There was an error loading your profile. Please try again later.</p>
+    <div className="flex flex-col items-center justify-center p-8 bg-red-50 rounded-lg border border-red-200">
+      <p className="text-red-600 text-center mb-4">There was an error loading your profile. Please try again later.</p>
       <button 
-        className="emp-profile__retry-btn" 
+        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors" 
         onClick={() => fetchUserInfo && fetchUserInfo()}
       >
         Retry
@@ -188,10 +188,10 @@ const EditProfile = () => {
 
   if (loading) {
     return (
-      <div className="emp-profile__page">
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <div className="emp-profile__container">
-          <h2 className="emp-profile__title">Edit Profile</h2>
+        <div className="flex-1 container mx-auto px-4 py-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">Edit Profile</h2>
           <LoadingSkeleton />
         </div>
         <Footer />
@@ -202,10 +202,10 @@ const EditProfile = () => {
   // If user data failed to load or is empty
   if (!user || Object.keys(user).length === 0) {
     return (
-      <div className="emp-profile__page">
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <div className="emp-profile__container">
-          <h2 className="emp-profile__title">Edit Profile</h2>
+        <div className="flex-1 container mx-auto px-4 py-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">Edit Profile</h2>
           <ErrorDisplay />
         </div>
         <Footer />
@@ -214,409 +214,472 @@ const EditProfile = () => {
   }
 
   return (
-    <div className="emp-profile__page">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <ToastContainer />
       <Navbar />
 
-      <div className="emp-profile__container">
-        <h2 className="emp-profile__title">Edit Profile</h2>
+      <div className="flex-1 container mx-auto px-4 py-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-8">Edit Profile</h2>
 
-        {/* Profile Image */}
-        <div className="emp-profile__image-section">
-          <img
-            src={
-              previewImage ||
-              (formData.profileImage ? formData.profileImage : '/default-avatar.png')
-            }
-            alt="Profile"
-            className="emp-profile__avatar"
-            onError={(e) => {
-              e.target.src = '/default-avatar.png'; // Fallback image on error
-              e.target.onerror = null; // Prevent infinite loop
-            }}
-          />
-          <div className="emp-profile__upload-wrapper">
-            <input 
-              type="file" 
-              id="profile-image" 
-              className="emp-profile__file-input" 
-              accept="image/*" 
-              onChange={handleProfileImageChange} 
+        {/* Profile Image Section */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <div className="flex items-center space-x-6">
+            <img
+              src={
+                previewImage ||
+                (formData.profileImage ? formData.profileImage : '/default-avatar.png')
+              }
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover border-4 border-gray-200"
+              onError={(e) => {
+                e.target.src = '/default-avatar.png';
+                e.target.onerror = null;
+              }}
             />
-            <label htmlFor="profile-image" className="emp-profile__upload-btn">
-              Change Profile Picture
-            </label>
-            {previewImage && (
-       <button 
-        type="button"
-        className="emp-profile__save-image-btn"
-        onClick={saveImageChanges}
-        disabled={isProcessing}
-      >
-        {isProcessing ? (
-          <FaSpinner className="emp-profile__spinner-icon" />
-        ) : (
-          "Save Profile Picture"
-        )}
-      </button>
-    )}
-            
+            <div className="flex-1">
+              <input 
+                type="file" 
+                id="profile-image" 
+                className="hidden" 
+                accept="image/*" 
+                onChange={handleProfileImageChange} 
+              />
+              <label 
+                htmlFor="profile-image" 
+                className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors cursor-pointer"
+              >
+                Change Profile Picture
+              </label>
+              {previewImage && (
+                <button 
+                  type="button"
+                  className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors disabled:opacity-50"
+                  onClick={saveImageChanges}
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? (
+                    <FaSpinner className="animate-spin inline mr-2" />
+                  ) : null}
+                  Save Profile Picture
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Main Content Sections */}
-        <div className="emp-profile__sections-wrapper">
-          {/* Basic Info Section */}
-          <div className="emp-profile__section">
-            <div className="emp-profile__section-header">
-              <h3 className="emp-profile__section-title">Basic Info</h3>
-              {editSection !== "basic" ? (
-                <FaEdit onClick={() => setEditSection("basic")} className="emp-profile__edit-icon" />
-              ) : (
-                <div className="emp-profile__action-icons">
-                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" />
-                  <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
-                </div>
-              )}
-            </div>
+        {/* Horizontal Layout for Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column */}
+          <div className="space-y-8">
+            {/* Basic Info Section */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h3 className="text-xl font-semibold text-gray-800">Basic Info</h3>
+                {editSection !== "basic" ? (
+                  <FaEdit 
+                    onClick={() => setEditSection("basic")} 
+                    className="text-blue-600 hover:text-blue-800 cursor-pointer text-lg"
+                  />
+                ) : (
+                  <div className="flex space-x-2">
+                    <FaSave 
+                      onClick={saveChanges} 
+                      className="text-green-600 hover:text-green-800 cursor-pointer text-lg"
+                    />
+                    <FaTimes 
+                      onClick={() => setEditSection(null)} 
+                      className="text-red-600 hover:text-red-800 cursor-pointer text-lg"
+                    />
+                  </div>
+                )}
+              </div>
 
-            <div className="emp-profile__section-content">
-              {editSection === "basic" ? (
-                <div className="emp-profile__form-group">
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Name</label>
-                    <input 
-                      type="text" 
-                      name="name" 
-                      className="emp-profile__input" 
-                      value={formData.name || ""} 
-                      onChange={handleChange} 
-                    />
-                  </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Email</label>
-                    <input 
-                      type="email" 
-                      className="emp-profile__input emp-profile__input--disabled" 
-                      value={formData.email || ""} 
-                      disabled 
-                    />
-                  </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Phone</label>
-                    <input 
-                      type="text" 
-                      name="phone" 
-                      className="emp-profile__input" 
-                      value={formData.phone || ""} 
-                      onChange={handleChange} 
-                    />
-                  </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Bio</label>
-                    <textarea 
-                      name="Bio" 
-                      className="emp-profile__textarea" 
-                      value={formData.Bio || ""} 
-                      onChange={handleChange}
-                      rows="4"
-                    ></textarea>
-                  </div>
-                </div>
-              ) : (
-                <div className="emp-profile__details">
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Name:</span> 
-                    <span className="emp-profile__detail-value">{formData.name || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Email:</span> 
-                    <span className="emp-profile__detail-value">{formData.email || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Phone:</span> 
-                    <span className="emp-profile__detail-value">{formData.phone || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Bio:</span> 
-                    <span className="emp-profile__detail-value">{formData.Bio || "N/A"}</span>
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Location Info Section */}
-          <div className="emp-profile__section">
-            <div className="emp-profile__section-header">
-              <h3 className="emp-profile__section-title">Location</h3>
-              {editSection !== "location" ? (
-                <FaEdit onClick={() => setEditSection("location")} className="emp-profile__edit-icon" />
-              ) : (
-                <div className="emp-profile__action-icons">
-                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" />
-                  <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
-                </div>
-              )}
-            </div>
-
-            <div className="emp-profile__section-content">
-              {editSection === "location" ? (
-                <div className="emp-profile__form-group">
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Region</label>
-                    <input
-                      type="text"
-                      className="emp-profile__input"
-                      value={formData.location?.region || ""}
-                      onChange={(e) => handleLocationChange("region", e.target.value)}
-                      placeholder="Region"
-                    />
-                  </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">City</label>
-                    <input
-                      type="text"
-                      className="emp-profile__input"
-                      value={formData.location?.city || ""}
-                      onChange={(e) => handleLocationChange("city", e.target.value)}
-                      placeholder="City"
-                    />
-                  </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Street</label>
-                    <input
-                      type="text"
-                      className="emp-profile__input"
-                      value={formData.location?.street || ""}
-                      onChange={(e) => handleLocationChange("street", e.target.value)}
-                      placeholder="Street"
-                    />
-                  </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Town</label>
-                    <input
-                      type="text"
-                      className="emp-profile__input"
-                      value={formData.location?.town || ""}
-                      onChange={(e) => handleLocationChange("town", e.target.value)}
-                      placeholder="Town"
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="emp-profile__details">
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Region:</span> 
-                    <span className="emp-profile__detail-value">{formData.location?.region || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">City:</span> 
-                    <span className="emp-profile__detail-value">{formData.location?.city || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Street:</span> 
-                    <span className="emp-profile__detail-value">{formData.location?.street || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Town:</span> 
-                    <span className="emp-profile__detail-value">{formData.location?.town || "N/A"}</span>
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Skills Section */}
-          <div className="emp-profile__section">
-            <div className="emp-profile__section-header">
-              <h3 className="emp-profile__section-title">Skills</h3>
-              {editSection !== "skills" ? (
-                <FaEdit onClick={() => setEditSection("skills")} className="emp-profile__edit-icon" />
-              ) : (
-                <div className="emp-profile__action-icons">
-                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" />
-                  <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
-                </div>
-              )}
-            </div>
-
-            <div className="emp-profile__section-content">
-              {editSection === "skills" ? (
-                <div className="emp-profile__form-group">
-                  <div className="emp-profile__skills-list">
-                    {formData.skills && formData.skills.length > 0 ? (
-                      formData.skills.map((skill, index) => (
-                        <div key={index} className="emp-profile__skill-item">
-                          <span className="emp-profile__skill-text">{skill}</span>
-                          <button 
-                            type="button"
-                            className="emp-profile__skill-remove" 
-                            onClick={() => handleConfirmDelete("skills", index)}
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="emp-profile__no-items">No skills added yet.</p>
-                    )}
-                  </div>
-                  <button 
-                    type="button"
-                    className="emp-profile__add-btn" 
-                    onClick={() => handleAddItem("skills")}
-                  >
-                    + Add Skill
-                  </button>
-                </div>
-              ) : (
-                <div className="emp-profile__details">
-                  {formData.skills && formData.skills.length > 0 ? (
-                    <div className="emp-profile__skills-display">
-                      {formData.skills.map((skill, index) => (
-                        <span key={index} className="emp-profile__skill-badge">{skill}</span>
-                      ))}
+              <div className="p-6">
+                {editSection === "basic" ? (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                      <input 
+                        type="text" 
+                        name="name" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        value={formData.name || ""} 
+                        onChange={handleChange} 
+                      />
                     </div>
-                  ) : (
-                    <p className="emp-profile__no-items">No skills added yet.</p>
-                  )}
-                </div>
-              )}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                      <input 
+                        type="email" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed" 
+                        value={formData.email || ""} 
+                        disabled 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                      <input 
+                        type="text" 
+                        name="phone" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        value={formData.phone || ""} 
+                        onChange={handleChange} 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                      <textarea 
+                        name="Bio" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        value={formData.Bio || ""} 
+                        onChange={handleChange}
+                        rows="4"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="font-medium text-gray-700">Name:</span>
+                      <span className="text-gray-600">{formData.name || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-gray-700">Email:</span>
+                      <span className="text-gray-600">{formData.email || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-gray-700">Phone:</span>
+                      <span className="text-gray-600">{formData.phone || "N/A"}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-medium text-gray-700 mb-2">Bio:</span>
+                      <span className="text-gray-600">{formData.Bio || "N/A"}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Skills Section */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h3 className="text-xl font-semibold text-gray-800">Skills</h3>
+                {editSection !== "skills" ? (
+                  <FaEdit 
+                    onClick={() => setEditSection("skills")} 
+                    className="text-blue-600 hover:text-blue-800 cursor-pointer text-lg"
+                  />
+                ) : (
+                  <div className="flex space-x-2">
+                    <FaSave 
+                      onClick={saveChanges} 
+                      className="text-green-600 hover:text-green-800 cursor-pointer text-lg"
+                    />
+                    <FaTimes 
+                      onClick={() => setEditSection(null)} 
+                      className="text-red-600 hover:text-red-800 cursor-pointer text-lg"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6">
+                {editSection === "skills" ? (
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-2">
+                      {formData.skills && formData.skills.length > 0 ? (
+                        formData.skills.map((skill, index) => (
+                          <div key={index} className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
+                            <span className="text-sm">{skill}</span>
+                            <button 
+                              type="button"
+                              className="ml-2 text-red-600 hover:text-red-800"
+                              onClick={() => handleConfirmDelete("skills", index)}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-gray-500">No skills added yet.</p>
+                      )}
+                    </div>
+                    <button 
+                      type="button"
+                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                      onClick={() => handleAddItem("skills")}
+                    >
+                      + Add Skill
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    {formData.skills && formData.skills.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {formData.skills.map((skill, index) => (
+                          <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-500">No skills added yet.</p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Education Section */}
-          <div className="emp-profile__section">
-            <div className="emp-profile__section-header">
-              <h3 className="emp-profile__section-title">Education</h3>
-              {editSection !== "education" ? (
-                <FaEdit onClick={() => setEditSection("education")} className="emp-profile__edit-icon" />
-              ) : (
-                <div className="emp-profile__action-icons">
-                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" />
-                  <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
-                </div>
-              )}
+          {/* Right Column */}
+          <div className="space-y-8">
+            {/* Location Info Section */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h3 className="text-xl font-semibold text-gray-800">Location</h3>
+                {editSection !== "location" ? (
+                  <FaEdit 
+                    onClick={() => setEditSection("location")} 
+                    className="text-blue-600 hover:text-blue-800 cursor-pointer text-lg"
+                  />
+                ) : (
+                  <div className="flex space-x-2">
+                    <FaSave 
+                      onClick={saveChanges} 
+                      className="text-green-600 hover:text-green-800 cursor-pointer text-lg"
+                    />
+                    <FaTimes 
+                      onClick={() => setEditSection(null)} 
+                      className="text-red-600 hover:text-red-800 cursor-pointer text-lg"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6">
+                {editSection === "location" ? (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Region</label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.location?.region || ""}
+                        onChange={(e) => handleLocationChange("region", e.target.value)}
+                        placeholder="Region"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.location?.city || ""}
+                        onChange={(e) => handleLocationChange("city", e.target.value)}
+                        placeholder="City"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Street</label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.location?.street || ""}
+                        onChange={(e) => handleLocationChange("street", e.target.value)}
+                        placeholder="Street"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Town</label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.location?.town || ""}
+                        onChange={(e) => handleLocationChange("town", e.target.value)}
+                        placeholder="Town"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="font-medium text-gray-700">Region:</span>
+                      <span className="text-gray-600">{formData.location?.region || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-gray-700">City:</span>
+                      <span className="text-gray-600">{formData.location?.city || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-gray-700">Street:</span>
+                      <span className="text-gray-600">{formData.location?.street || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-gray-700">Town:</span>
+                      <span className="text-gray-600">{formData.location?.town || "N/A"}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="emp-profile__section-content">
-              {editSection === "education" ? (
-                <div className="emp-profile__form-group">
-                  <div className="emp-profile__education-list">
-                    {formData.education && formData.education.length > 0 ? (
-                      formData.education.map((edu, index) => (
-                        <div key={index} className="emp-profile__education-item">
-                          <div className="emp-profile__education-details">
-                            <strong>{edu.degree}</strong> at {edu.institution} ({edu.yearOfCompletion})
+            {/* Education Section */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h3 className="text-xl font-semibold text-gray-800">Education</h3>
+                {editSection !== "education" ? (
+                  <FaEdit 
+                    onClick={() => setEditSection("education")} 
+                    className="text-blue-600 hover:text-blue-800 cursor-pointer text-lg"
+                  />
+                ) : (
+                  <div className="flex space-x-2">
+                    <FaSave 
+                      onClick={saveChanges} 
+                      className="text-green-600 hover:text-green-800 cursor-pointer text-lg"
+                    />
+                    <FaTimes 
+                      onClick={() => setEditSection(null)} 
+                      className="text-red-600 hover:text-red-800 cursor-pointer text-lg"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6">
+                {editSection === "education" ? (
+                  <div className="space-y-4">
+                    <div className="space-y-3">
+                      {formData.education && formData.education.length > 0 ? (
+                        formData.education.map((edu, index) => (
+                          <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                            <div>
+                              <p className="font-medium text-gray-800">{edu.degree}</p>
+                              <p className="text-sm text-gray-600">{edu.institution} ({edu.yearOfCompletion})</p>
+                            </div>
+                            <button 
+                              type="button"
+                              className="text-red-600 hover:text-red-800"
+                              onClick={() => handleConfirmDelete("education", index)}
+                            >
+                              ✕
+                            </button>
                           </div>
-                          <button 
-                            type="button"
-                            className="emp-profile__education-remove" 
-                            onClick={() => handleConfirmDelete("education", index)}
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))
+                        ))
+                      ) : (
+                        <p className="text-gray-500">No education added yet.</p>
+                      )}
+                    </div>
+                    <button 
+                      type="button"
+                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                      onClick={() => handleAddItem("education")}
+                    >
+                      + Add Education
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    {formData.education && formData.education.length > 0 ? (
+                      <div className="space-y-3">
+                        {formData.education.map((edu, index) => (
+                          <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                            <p className="font-medium text-gray-800">{edu.degree}</p>
+                            <p className="text-sm text-gray-600">{edu.institution}</p>
+                            <p className="text-xs text-gray-500">{edu.yearOfCompletion}</p>
+                          </div>
+                        ))}
+                      </div>
                     ) : (
-                      <p className="emp-profile__no-items">No education added yet.</p>
+                      <p className="text-gray-500">No education history available.</p>
                     )}
                   </div>
-                  <button 
-                    type="button"
-                    className="emp-profile__add-btn" 
-                    onClick={() => handleAddItem("education")}
-                  >
-                    + Add Education
-                  </button>
-                </div>
-              ) : (
-                <div className="emp-profile__details">
-                  {formData.education && formData.education.length > 0 ? (
-                    formData.education.map((edu, index) => (
-                      <div key={index} className="emp-profile__detail-card">
-                        <p className="emp-profile__detail-title">{edu.degree}</p>
-                        <p className="emp-profile__detail-subtitle">{edu.institution}</p>
-                        <p className="emp-profile__detail-meta">{edu.yearOfCompletion}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Work Experience Section - Full Width */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden mt-8">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <h3 className="text-xl font-semibold text-gray-800">Work Experience</h3>
+            {editSection !== "experience" ? (
+              <FaEdit 
+                onClick={() => setEditSection("experience")} 
+                className="text-blue-600 hover:text-blue-800 cursor-pointer text-lg"
+              />
+            ) : (
+              <div className="flex space-x-2">
+                <FaSave 
+                  onClick={saveChanges} 
+                  className="text-green-600 hover:text-green-800 cursor-pointer text-lg"
+                  disabled={isProcessing}
+                />
+                <FaTimes 
+                  onClick={() => setEditSection(null)} 
+                  className="text-red-600 hover:text-red-800 cursor-pointer text-lg"
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="p-6">
+            {editSection === "experience" ? (
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  {formData.workExperience && formData.workExperience.length > 0 ? (
+                    formData.workExperience.map((work, index) => (
+                      <div key={index} className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                        <div>
+                          <p className="font-medium text-gray-800">{work.jobTitle}</p>
+                          <p className="text-sm text-gray-600">{work.company}</p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(work.startDate).toLocaleDateString()} - 
+                            {work.endDate ? new Date(work.endDate).toLocaleDateString() : "Present"}
+                          </p>
+                        </div>
+                        <button 
+                          type="button"
+                          className="text-red-600 hover:text-red-800"
+                          onClick={() => handleConfirmDelete("workExperience", index)}
+                        >
+                          ✕
+                        </button>
                       </div>
                     ))
                   ) : (
-                    <p className="emp-profile__no-items">No education history available.</p>
+                    <p className="text-gray-500">No work experience added yet.</p>
                   )}
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Work Experience Section */}
-          <div className="emp-profile__section">
-            <div className="emp-profile__section-header">
-              <h3 className="emp-profile__section-title">Work Experience</h3>
-              {editSection !== "experience" ? (
-                <FaEdit onClick={() => setEditSection("experience")} className="emp-profile__edit-icon" />
-              ) : (
-                <div className="emp-profile__action-icons">
-                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" disabled={isProcessing} />
-                  <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
-                </div>
-              )}
-            </div>
-
-            <div className="emp-profile__section-content">
-              {editSection === "experience" ? (
-                <div className="emp-profile__form-group">
-                  <div className="emp-profile__work-list">
-                    {formData.workExperience && formData.workExperience.length > 0 ? (
-                      formData.workExperience.map((work, index) => (
-                        <div key={index} className="emp-profile__work-item">
-                          <div className="emp-profile__work-details">
-                            <strong>{work.jobTitle}</strong> at {work.company}
-                            <div className="emp-profile__work-dates">
-                              {new Date(work.startDate).toLocaleDateString()} - 
-                              {work.endDate ? new Date(work.endDate).toLocaleDateString() : "Present"}
-                            </div>
-                          </div>
-                          <button 
-                            type="button"
-                            className="emp-profile__work-remove" 
-                            onClick={() => handleConfirmDelete("workExperience", index)}
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="emp-profile__no-items">No work experience added yet.</p>
-                    )}
-                  </div>
-                  <button 
-                    type="button"
-                    className="emp-profile__add-btn" 
-                    onClick={() => handleAddItem("work")}
-                  >
-                    + Add Work Experience
-                  </button>
-                </div>
-              ) : (
-                <div className="emp-profile__details">
-                  {formData.workExperience && formData.workExperience.length > 0 ? (
-                    formData.workExperience.map((work, index) => (
-                      <div key={index} className="emp-profile__detail-card">
-                        <p className="emp-profile__detail-title">{work.jobTitle}</p>
-                        <p className="emp-profile__detail-subtitle">{work.company}</p>
-                        <p className="emp-profile__detail-meta">
+                <button 
+                  type="button"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  onClick={() => handleAddItem("work")}
+                >
+                  + Add Work Experience
+                </button>
+              </div>
+            ) : (
+              <div>
+                {formData.workExperience && formData.workExperience.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {formData.workExperience.map((work, index) => (
+                      <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                        <p className="font-medium text-gray-800">{work.jobTitle}</p>
+                        <p className="text-sm text-gray-600">{work.company}</p>
+                        <p className="text-xs text-gray-500">
                           {new Date(work.startDate).toLocaleDateString()} - 
                           {work.endDate ? new Date(work.endDate).toLocaleDateString() : "Present"}
                         </p>
                       </div>
-                    ))
-                  ) : (
-                    <p className="emp-profile__no-items">No work experience available.</p>
-                  )}
-                </div>
-              )}
-            </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No work experience available.</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -632,18 +695,18 @@ const EditProfile = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteModalOpen && (
-        <div className="emp-profile__modal-overlay">
-          <div className="emp-profile__delete-modal">
-            <p className="emp-profile__delete-message">Are you sure you want to delete this item?</p>
-            <div className="emp-profile__delete-actions">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <p className="text-gray-800 mb-6">Are you sure you want to delete this item?</p>
+            <div className="flex justify-end space-x-3">
               <button 
-                className="emp-profile__delete-confirm" 
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                 onClick={handleDelete}
               >
                 Yes, Delete
               </button>
               <button 
-                className="emp-profile__delete-cancel" 
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
                 onClick={() => setDeleteModalOpen(false)}
               >
                 Cancel
@@ -652,6 +715,7 @@ const EditProfile = () => {
           </div>
         </div>
       )}
+      
       <ProcessingOverlay show={isProcessing} message="Submitting your Changes..." />
       <Footer />
     </div>
