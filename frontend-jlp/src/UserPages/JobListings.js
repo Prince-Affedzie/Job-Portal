@@ -197,12 +197,12 @@ useEffect(() => {
                     <h3>{job.title}</h3>
                     <span className="job-type">{job.type}</span>
                   </div>
-                  <p className="company-name">{job.company}</p>
+                  <p className="company-name">{job.company || 'N/A'}</p>
                   <p className="job-listing-description">{job.description.slice(0,400)+"..."}</p>
                   
                   <div className="job-meta">
                     <span ><FaMapMarkerAlt /> {job.location.city || "N/A"}, {job.location.street || 'N/A'}</span>
-                    <span><FaMoneyBillWave  display={'hidden'} className="icon" /> ₵{job.salary} ({job.paymentStyle})</span>
+                    <span><FaMoneyBillWave  display={'hidden'} className="icon" /> ₵{job.salary || 'N/A'} ({job.paymentStyle || 'N/A'})</span>
                     <span><FaClock className="icon" /> {moment(job.createdAt).fromNow()}</span>
                     
                   </div>

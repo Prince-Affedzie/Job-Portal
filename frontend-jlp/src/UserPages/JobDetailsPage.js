@@ -13,7 +13,8 @@ import {
   FaBuilding,
   FaFileAlt,
   FaEnvelope,
-  FaUser
+  FaUser,
+  FaInfoCircle
 } from "react-icons/fa";
 import Navbar from "../Components/MyComponents/Navbar";
 import { getJobDetails, applyToJob,sendFileToS3  } from "../APIS/API";
@@ -181,7 +182,7 @@ const JobDetails = () => {
                         <FaBuilding size={32} />
                     </div>
                     <h1>{job.title}</h1>
-                    <p className="company-name">{job.company}</p>
+                    <p className="company-name">{job.company || 'Anonymous Company'}</p>
                     
                     <div className="job-highlights">
                         <span className="job-highlight">
@@ -191,7 +192,7 @@ const JobDetails = () => {
                             <FaBriefcase /> {job.jobType}
                         </span>
                         <span className="job-highlight">
-                            <FaMoneyBillWave /> {job.salary}
+                            <FaMoneyBillWave /> {job.salary || 'N/A'}
                         </span>
                     </div>
                     
@@ -209,7 +210,7 @@ const JobDetails = () => {
                     <div className="job-details-job-meta">
                         <span><FaMapMarkerAlt /> {job.location.city}, {job.location.region}</span>
                         <span><FaBriefcase /> {job.jobType}</span>
-                        <span><FaMoneyBillWave /> {job.salary}</span>
+                        <span><FaMoneyBillWave /> {job.salary|| 'N/A'}</span>
                         <span className={`deadline ${isDeadlinePassed ? 'expired' : daysUntilDeadline <= 3 ? 'urgent' : ''}`}>
                             <FaClock /> 
                             {isDeadlinePassed 
@@ -242,15 +243,24 @@ const JobDetails = () => {
 
                     {/* Skills Section */}
                     <div className="skills-container">
-                        <h2>Required Skills</h2>
-                        <div className="skills-container-jobDetails">
-                            {job.skillsRequired.map((skill, index) => (
-                                <span key={index} className="skill-chip">
-                                    <FaCheckCircle /> {skill}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
+                     <h2>Required Skills</h2>
+                     <div className="skills-container-jobDetails">
+                        {job.skillsRequired.length > 0 ? job.skillsRequired.map((skill, index) => (
+                       <span key={index} className="skill-chip">
+                          <FaCheckCircle /> {skill}
+                      </span>
+                          )) : (
+                      <div className="no-skills-container">
+                       <div className="no-skills-content">
+                    <FaInfoCircle className="no-skills-icon" />
+                    <p className="no-skills-text">No specific skills highlighted for this position</p>
+                    <span className="no-skills-subtext">General qualifications may be discussed during the interview process</span>
+                </div>
+                     </div>
+                    )}
+               </div>
+            </div>
+
                 </div>
 
                 {/* Application Section */}
@@ -279,7 +289,7 @@ const JobDetails = () => {
                                 <button className="apply-btn" onClick={() => setShowForm(true)}>Apply Now</button>
                                 
                                 <div className="application-deadline">
-                                    <FaClock /> Application closes: {new Date(job.deadLine).toLocaleDateString()}
+                                    <FaClock /> Application closes: {new Date(job.deadLine).toLocaleDateString()} 
                                 </div>
                             </div>
                         ) : (
