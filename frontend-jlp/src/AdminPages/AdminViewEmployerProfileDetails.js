@@ -14,7 +14,9 @@ import {
   XCircle,
   AlertCircle,
   Loader2,
-  ArrowLeft
+  ArrowLeft,
+  Briefcase,
+  X
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminNavbar from "../Components/AdminComponents/AdminNavbar";
@@ -89,6 +91,96 @@ const StatusTag = ({ status, type = "verification" }) => {
   );
 };
 
+// Jobs Modal Component
+const JobsModal = ({ isOpen, onClose, jobs, companyName }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
+        {/* Modal Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center justify-between">
+          <h3 className="text-xl font-semibold text-white flex items-center">
+            <Briefcase className="w-5 h-5 mr-2" />
+            Posted Jobs - {companyName}
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Modal Content */}
+        <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
+          {jobs && jobs.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-gray-50">
+                    <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                      #
+                    </th>
+                    <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                      Job Title
+                    </th>
+                    <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                      Posted Date
+                    </th>
+                    <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {jobs.map((job, index) => (
+                    <tr key={job._id || index} className="hover:bg-gray-50 transition-colors">
+                      <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900">
+                        {index + 1}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900 font-medium">
+                        {job.title || job.jobTitle || 'Untitled Job'}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-sm text-gray-600">
+                        {job.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'N/A'}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-sm">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          job.status === 'Opened' ? 'bg-green-100 text-green-800' :
+                          job.status === 'Closed' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {job.status || 'Active'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600 text-lg">No jobs posted yet</p>
+            </div>
+          )}
+        </div>
+
+        {/* Modal Footer */}
+        <div className="bg-gray-50 px-6 py-4 flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Confirmation Modal Component
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, loading }) => {
   if (!isOpen) return null;
@@ -130,6 +222,7 @@ const AdminEmployerDetail = () => {
   const [verifying, setVerifying] = useState(false);
   const [changingStatus, setChangingStatus] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showJobsModal, setShowJobsModal] = useState(false);
   const statusOptions = ["pending", "approved", "rejected"];
   const navigate = useNavigate();
 
@@ -363,6 +456,46 @@ const AdminEmployerDetail = () => {
                           </div>
                         </div>
 
+                        {/* Posted Jobs Section */}
+                        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 p-6">
+                          <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-semibold text-gray-900 flex items-center">
+                              <Briefcase className="w-5 h-5 mr-2 text-blue-600" />
+                              Posted Jobs
+                            </h2>
+                            <button
+                              onClick={() => setShowJobsModal(true)}
+                              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                            >
+                              <Eye className="w-4 h-4 mr-2" />
+                              View All Jobs
+                            </button>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="bg-blue-50 rounded-lg p-4 text-center">
+                              <div className="text-2xl font-bold text-blue-600 mb-1">
+                                {employer.postedJobs?.length || 0}
+                              </div>
+                              <div className="text-sm text-blue-800">Total Jobs</div>
+                            </div>
+                            
+                            <div className="bg-green-50 rounded-lg p-4 text-center">
+                              <div className="text-2xl font-bold text-green-600 mb-1">
+                                {employer.postedJobs?.filter(job => job.status === 'Opened').length || 0}
+                              </div>
+                              <div className="text-sm text-green-800">Active Jobs</div>
+                            </div>
+                            
+                            <div className="bg-gray-50 rounded-lg p-4 text-center">
+                              <div className="text-2xl font-bold text-gray-600 mb-1">
+                                {employer.postedJobs?.filter(job => job.status === 'Closed').length || 0}
+                              </div>
+                              <div className="text-sm text-gray-800">Closed Jobs</div>
+                            </div>
+                          </div>
+                        </div>
+
                         {/* Verification Notes */}
                         <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 p-6">
                           <h3 className="text-lg font-semibold text-gray-900 mb-4">Verification Notes</h3>
@@ -444,6 +577,14 @@ const AdminEmployerDetail = () => {
           </div>
         </main>
       </div>
+
+      {/* Jobs Modal */}
+      <JobsModal
+        isOpen={showJobsModal}
+        onClose={() => setShowJobsModal(false)}
+        jobs={employer?.postedJobs || []}
+        companyName={employer?.companyName || 'Unknown Company'}
+      />
 
       {/* Delete Confirmation Modal */}
       <ConfirmationModal

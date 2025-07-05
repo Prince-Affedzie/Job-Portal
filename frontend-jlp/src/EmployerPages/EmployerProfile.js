@@ -245,104 +245,106 @@ const EmployerProfile = () => {
           </div>
         </div>
 
-        {/* Main Content Sections */}
-        <div className="emp-profile__sections-wrapper">
+        {/* Main Content Sections - Horizontal Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 mt-8">
           {/* Personal Info Section */}
-          <div className="emp-profile__section">
-            <div className="emp-profile__section-header">
-              <h3 className="emp-profile__section-title">Personal Info</h3>
+          <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Personal Info</h3>
               {editSection !== "personal" ? (
-                <FaEdit onClick={() => setEditSection("personal")} className="emp-profile__edit-icon" />
+                <FaEdit 
+                  onClick={() => setEditSection("personal")} 
+                  className="text-blue-500 hover:text-blue-700 cursor-pointer transition-colors duration-200" 
+                />
               ) : (
-                <div className="emp-profile__action-icons">
-                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" />
-                  <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
+                <div className="flex space-x-2">
+                  <FaSave 
+                    onClick={saveChanges} 
+                    className="text-green-500 hover:text-green-700 cursor-pointer transition-colors duration-200" 
+                  />
+                  <FaTimes 
+                    onClick={() => setEditSection(null)} 
+                    className="text-red-500 hover:text-red-700 cursor-pointer transition-colors duration-200" 
+                  />
                 </div>
               )}
             </div>
 
-            <div className="emp-profile__section-content">
+            <div className="space-y-4">
               {editSection === "personal" ? (
-                <div className="emp-profile__form-group">
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Name</label>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                     <input 
                       type="text" 
                       name="name" 
-                      className="emp-profile__input" 
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                       value={employer.name} 
                       onChange={handleInputChange} 
                     />
                   </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Email</label>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input 
                       type="email" 
-                      className="emp-profile__input emp-profile__input--disabled" 
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 cursor-not-allowed" 
                       value={employer.email} 
                       disabled 
                     />
                   </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Phone</label>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                     <input 
                       type="text" 
                       name="phone" 
-                      className="emp-profile__input" 
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                       value={employer.phone} 
                       onChange={handleInputChange} 
                     />
                   </div>
                 </div>
               ) : (
-                <div className="emp-profile__details">
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Name:</span> 
-                    <span className="emp-profile__detail-value">{employer.name || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Email:</span> 
-                    <span className="emp-profile__detail-value">{employer.email || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Phone:</span> 
-                    <span className="emp-profile__detail-value">{employer.phone || "N/A"}</span>
-                  </p>
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center">
+                    <span className="text-sm font-medium text-gray-600 w-20">Name:</span> 
+                    <span className="text-sm text-gray-900 mt-1 sm:mt-0">{employer.name || "N/A"}</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center">
+                    <span className="text-sm font-medium text-gray-600 w-20">Email:</span> 
+                    <span className="text-sm text-gray-900 mt-1 sm:mt-0">{employer.email || "N/A"}</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center">
+                    <span className="text-sm font-medium text-gray-600 w-20">Phone:</span> 
+                    <span className="text-sm text-gray-900 mt-1 sm:mt-0">{employer.phone || "N/A"}</span>
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
           {/* Business Info Section */}
-          <div className="emp-profile__section">
-            <div className="emp-profile__section-header">
-              <h3 className="emp-profile__section-title">Business Info</h3>
-              {/*{editSection !== "business" ? (
-                <FaEdit onClick={() => setEditSection("business")} className="emp-profile__edit-icon" />
-              ) : (
-                <div className="emp-profile__action-icons">
-                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" />
-                  <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
-                </div>
-              )}*/}
+          <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Business Info</h3>
+              {/* Business edit functionality is commented out in original code */}
             </div>
 
-            <div className="emp-profile__section-content">
+            <div className="space-y-4">
               {editSection === "business" ? (
-                <div className="emp-profile__form-group">
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Business Name</label>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
                     <input
                       type="text"
                       name="businessName"
-                      className="emp-profile__input"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       value={employer.businessName}
                       onChange={handleInputChange}
                       placeholder="Business Name"
                     />
                   </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Business Registration Proof</label>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Business Registration Proof</label>
                     <input 
                       type="file" 
                       id="business-proof" 
@@ -358,88 +360,109 @@ const EmployerProfile = () => {
                   </div>
                 </div>
               ) : (
-                <div className="emp-profile__details">
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Business Name:</span> 
-                    <span className="emp-profile__detail-value">{employer.businessName || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Registration Proof:</span> 
-                    <span className="emp-profile__detail-value">
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center">
+                    <span className="text-sm font-medium text-gray-600 w-24">Business Name:</span> 
+                    <span className="text-sm text-gray-900 mt-1 sm:mt-0">{employer.businessName || "N/A"}</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center">
+                    <span className="text-sm font-medium text-gray-600 w-24">Registration Proof:</span> 
+                    <span className="text-sm text-gray-900 mt-1 sm:mt-0">
                       {employer.businessRegistrationProof ? "Uploaded" : "Not uploaded"}
                     </span>
-                  </p>
+                  </div>
                 </div>
               )}
 
-            <div className="emp-profile__badges">
-             <div className="emp-profile__badge-item">
-               <span className="emp-profile__badge-label">Business Status:</span>
-               <span className={`emp-profile__badge ${employer.businessVerified ? "emp-profile__badge--verified" : "emp-profile__badge--unverified"}`}>
-                  {employer.businessVerified ? "Business Verified" : "Not Verified"}
-                </span>
-           </div>
+              {/* Status Badges */}
+              <div className="space-y-3 mt-4">
+                <div className="flex flex-col sm:flex-row sm:items-center">
+                  <span className="text-sm font-medium text-gray-600 w-24 mb-1 sm:mb-0">Business Status:</span>
+                  <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                    employer.businessVerified 
+                      ? "bg-green-100 text-green-800" 
+                      : "bg-red-100 text-red-800"
+                  }`}>
+                    {employer.businessVerified ? "Business Verified" : "Not Verified"}
+                  </span>
+                </div>
 
-           <div className="emp-profile__badge-item">
-              <span className="emp-profile__badge-label">Account Status:</span>
-                <span className={`emp-profile__badge ${employer.isVerified ? "emp-profile__badge--verified" : "emp-profile__badge--unverified"}`}>
-               {employer.isVerified ? "Account Verified" : "Account Not Verified"}
-             </span>
-          </div>
+                <div className="flex flex-col sm:flex-row sm:items-center">
+                  <span className="text-sm font-medium text-gray-600 w-24 mb-1 sm:mb-0">Account Status:</span>
+                  <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                    employer.isVerified 
+                      ? "bg-green-100 text-green-800" 
+                      : "bg-red-100 text-red-800"
+                  }`}>
+                    {employer.isVerified ? "Account Verified" : "Account Not Verified"}
+                  </span>
+                </div>
 
-          <div className="emp-profile__badge-item">
-          <span className="emp-profile__badge-label">Mini Task Eligibility:</span>
-             <span className={`emp-profile__badge ${employer.miniTaskEligible ? "emp-profile__badge--eligible" : "emp-profile__badge--not-eligible"}`}>
-                {employer.miniTaskEligible ? "Eligible for Mini Tasks" : "Not Eligible"}
-            </span>
-       </div>
-        </div>
-
+                <div className="flex flex-col sm:flex-row sm:items-center">
+                  <span className="text-sm font-medium text-gray-600 w-24 mb-1 sm:mb-0">Mini Task Eligibility:</span>
+                  <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                    employer.miniTaskEligible 
+                      ? "bg-blue-100 text-blue-800" 
+                      : "bg-gray-100 text-gray-800"
+                  }`}>
+                    {employer.miniTaskEligible ? "Eligible for Mini Tasks" : "Not Eligible"}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Location Info Section */}
-          <div className="emp-profile__section">
-            <div className="emp-profile__section-header">
-              <h3 className="emp-profile__section-title">Location</h3>
+          <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Location</h3>
               {editSection !== "location" ? (
-                <FaEdit onClick={() => setEditSection("location")} className="emp-profile__edit-icon" />
+                <FaEdit 
+                  onClick={() => setEditSection("location")} 
+                  className="text-blue-500 hover:text-blue-700 cursor-pointer transition-colors duration-200" 
+                />
               ) : (
-                <div className="emp-profile__action-icons">
-                  <FaSave onClick={saveChanges} className="emp-profile__save-icon" />
-                  <FaTimes onClick={() => setEditSection(null)} className="emp-profile__cancel-icon" />
+                <div className="flex space-x-2">
+                  <FaSave 
+                    onClick={saveChanges} 
+                    className="text-green-500 hover:text-green-700 cursor-pointer transition-colors duration-200" 
+                  />
+                  <FaTimes 
+                    onClick={() => setEditSection(null)} 
+                    className="text-red-500 hover:text-red-700 cursor-pointer transition-colors duration-200" 
+                  />
                 </div>
               )}
             </div>
 
-            <div className="emp-profile__section-content">
+            <div className="space-y-4">
               {editSection === "location" ? (
-                <div className="emp-profile__form-group">
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Region</label>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
                     <input
                       type="text"
-                      className="emp-profile__input"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       value={employer.location?.region || ""}
                       onChange={(e) => handleLocationChange("region", e.target.value)}
                       placeholder="Region"
                     />
                   </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">City</label>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
                     <input
                       type="text"
-                      className="emp-profile__input"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       value={employer.location?.city || ""}
                       onChange={(e) => handleLocationChange("city", e.target.value)}
                       placeholder="City"
                     />
                   </div>
-                  <div className="emp-profile__input-group">
-                    <label className="emp-profile__label">Street</label>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Street</label>
                     <input
                       type="text"
-                      className="emp-profile__input"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       value={employer.location?.street || ""}
                       onChange={(e) => handleLocationChange("street", e.target.value)}
                       placeholder="Street"
@@ -447,19 +470,19 @@ const EmployerProfile = () => {
                   </div>
                 </div>
               ) : (
-                <div className="emp-profile__details">
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Region:</span> 
-                    <span className="emp-profile__detail-value">{employer.location?.region || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">City:</span> 
-                    <span className="emp-profile__detail-value">{employer.location?.city || "N/A"}</span>
-                  </p>
-                  <p className="emp-profile__detail-item">
-                    <span className="emp-profile__detail-label">Street:</span> 
-                    <span className="emp-profile__detail-value">{employer.location?.street || "N/A"}</span>
-                  </p>
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center">
+                    <span className="text-sm font-medium text-gray-600 w-20">Region:</span> 
+                    <span className="text-sm text-gray-900 mt-1 sm:mt-0">{employer.location?.region || "N/A"}</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center">
+                    <span className="text-sm font-medium text-gray-600 w-20">City:</span> 
+                    <span className="text-sm text-gray-900 mt-1 sm:mt-0">{employer.location?.city || "N/A"}</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center">
+                    <span className="text-sm font-medium text-gray-600 w-20">Street:</span> 
+                    <span className="text-sm text-gray-900 mt-1 sm:mt-0">{employer.location?.street || "N/A"}</span>
+                  </div>
                 </div>
               )}
             </div>
