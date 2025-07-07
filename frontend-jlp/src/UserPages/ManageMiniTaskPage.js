@@ -587,7 +587,7 @@ const ManageMiniTasks = () => {
                           >
                             <option value="" disabled>Choose Action</option>
                             {getTaskActions(task).map(action => (
-                              <option key={action.id} value={action.id} className="text-gray-900">
+                              <option key={action.id} value={action.id} className="text-white">
                                 {action.label}
                               </option>
                             ))}
@@ -609,10 +609,11 @@ const ManageMiniTasks = () => {
                         >
                           <option value="">Select Status</option>
                           <option value="Open">Open</option>
-                          {/*<option value="Assigned">Assigned</option>
-                          <option value="In-progress">In-Progress</option> */}
                           <option value="Closed">Closed</option>
-                          <option value="Completed">Completed</option>
+                          {/*<option value="Assigned">Assigned</option>
+                          <option value="In-progress">In-Progress</option> 
+                          
+                           /*<option value="Completed">Completed</option>*/}
                         </select>
                         <button 
                           onClick={() => handleStatusUpdate(task)}
@@ -666,9 +667,9 @@ const ManageMiniTasks = () => {
         </div>
 
         {showReportModal && (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-      <h3 className="text-lg font-semibold mb-4">Report Issue</h3>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <h3 className="text-lg font-semibold mb-4">Report Issue</h3>
 
       <p className="text-gray-600 mb-2">
         Report an issue with: <strong>{reportingTask?.title}</strong>
