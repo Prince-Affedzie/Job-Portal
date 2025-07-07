@@ -36,7 +36,7 @@ const TaskActions = ({
 
   const buttons = {
     viewDetails: {
-      label: 'View Details',
+      label: 'Visit Task',
       icon: FaEye,
       onClick: () => onViewDetails?.(task._id),
       className: 'bg-white border border-gray-300 text-gray-800 hover:bg-gray-100 text-sm py-1.5 px-3',
