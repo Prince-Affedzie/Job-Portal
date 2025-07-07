@@ -446,8 +446,8 @@ const MyMiniTaskApplications = () => {
                 const isTaskActive = activeTaskId === task._id;
                 const deadlineStatus = getDeadlineStatus(task.deadline);
 
-               return (
-  <div
+    return (
+    <div
     key={task._id}
     className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-5 space-y-4"
   >
@@ -502,18 +502,19 @@ const MyMiniTaskApplications = () => {
         <span className="text-gray-500 text-xs">Posted by {task.employer.name}</span>
       )}
       {isAssigned && (task.status === 'Assigned' || task.status === 'In-progress') && (
-  <div className="w-full mt-2">
-    <button
-      onClick={() => handleReportIssue(task)}
-      className="bg-blue-600 text-red-600 hover:text-red-800 text-xs flex items-center gap-1"
-    >
-      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
-      </svg>
-      Report Issue
-    </button>
-  </div>
-)}
+        <div className="w-full mt-2">
+         <button
+         onClick={() => handleReportIssue(task)}
+       className="bg-blue-600 text-white hover:bg-blue-700 text-xs flex items-center gap-1 px-3 py-1 rounded transition-colors duration-150"
+      >
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+    </svg>
+    Report Issue
+     </button>
+    </div>
+
+    )}
 
     </div>
 
@@ -607,9 +608,7 @@ const MyMiniTaskApplications = () => {
       <p className="text-gray-600 mb-2">
         Report an issue with: <strong>{reportingTask?.title}</strong>
       </p>
-      <p className="text-gray-600 mb-4">
-        Assigned to: <strong>{reportingTask?.assignedTo?.name}</strong>
-      </p>
+      
 
      
         <div className="mb-4">
