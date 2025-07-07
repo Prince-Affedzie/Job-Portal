@@ -197,10 +197,7 @@ const FreelancerSubmissions = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
           <div>
             <div className="flex items-center mb-1">
-              <Link to="/h1/dashboard" className="text-blue-600 hover:text-blue-800 mr-2">
-                Dashboard
-              </Link>
-              <span className="text-gray-500 mx-1">›</span>
+             
               <h1 className="text-xl font-bold text-gray-800">Submissions</h1>
             </div>
             <p className="text-sm text-gray-500">Manage your work submissions for this project</p>
@@ -243,12 +240,6 @@ const FreelancerSubmissions = () => {
             </div>
             <h2 className="text-xl font-semibold text-gray-700 mb-2">No Submissions Found</h2>
             <p className="text-gray-500 mb-6">{filter === 'all' ? "You haven't submitted any work yet for this task." : `No submissions with status: ${filter}`}</p>
-            <Link 
-              to="/h1/dashboard" 
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-            >
-              Back to Dashboard
-            </Link>
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-6">

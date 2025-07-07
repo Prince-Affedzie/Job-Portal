@@ -231,10 +231,7 @@ const ClientViewSubmissions = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
           <div>
             <div className="flex items-center mb-1">
-              <Link to="/dashboard" className="text-blue-600 hover:text-blue-800 mr-2">
-                Dashboard
-              </Link>
-              <span className="text-gray-500 mx-1">›</span>
+             
               <h1 className="text-xl font-bold text-gray-800">Review Submissions</h1>
             </div>
             {taskDetails && (
@@ -286,12 +283,6 @@ const ClientViewSubmissions = () => {
                 ? "Freelancers haven't submitted any work for this task yet." 
                 : `No submissions with status: ${filter}`}
             </p>
-            <Link 
-              to="/dashboard" 
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-            >
-              Back to Dashboard
-            </Link>
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-6">
