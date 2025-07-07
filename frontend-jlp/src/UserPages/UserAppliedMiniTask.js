@@ -464,7 +464,7 @@ const MyMiniTaskApplications = () => {
             ₵{task.budget}
           </span>
           <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
-            {task.category}
+            {task.category || 'N/A'}
           </span>
           {task.locationType && (
             <span className="flex items-center gap-1">
