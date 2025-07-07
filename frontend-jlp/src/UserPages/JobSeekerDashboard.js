@@ -294,23 +294,24 @@ const JobSeekerDashboard = () => {
                   className="flex flex-col items-center justify-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                 >
                   <FaBriefcase className="text-blue-600 text-xl mb-2" />
-                  <span className="text-sm text-gray-700 font-medium">Browse Regular Jobs</span>
+                  <span className="text-sm text-gray-700 font-medium">Find Regular Jobs</span>
                 </button>
+
+                <button 
+                  onClick={() => navigate('/mini_task/listings')}
+                  className="flex flex-col items-center justify-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+                >
+                  <FaTasks className="text-purple-600 text-xl mb-2" />
+                  <span className="text-sm text-gray-700 font-medium">Find Mini Jobs</span>
+                </button>
+                
                 
                 <button 
                   onClick={() => navigate('/view/applied/jobs')}
                   className="flex flex-col items-center justify-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
                 >
                   <FaRegCalendarCheck className="text-green-600 text-xl mb-2" />
-                  <span className="text-sm text-gray-700 font-medium">Regular Job Applications</span>
-                </button>
-                
-                <button 
-                  onClick={() => navigate('/mini_task/listings')}
-                  className="flex flex-col items-center justify-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
-                >
-                  <FaTasks className="text-purple-600 text-xl mb-2" />
-                  <span className="text-sm text-gray-700 font-medium">Browse Mini Jobs</span>
+                  <span className="text-sm text-gray-700 font-medium"> My Regular Job Applications</span>
                 </button>
                 
                 <button 
@@ -318,7 +319,7 @@ const JobSeekerDashboard = () => {
                   className="flex flex-col items-center justify-center p-3 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors"
                 >
                   <FaRegCalendarCheck className="text-amber-600 text-xl mb-2" />
-                  <span className="text-sm text-gray-700 font-medium">Mini Job Applications</span>
+                  <span className="text-sm text-gray-700 font-medium"> My Mini Job Applications</span>
                 </button>
 
                <button 
@@ -326,12 +327,12 @@ const JobSeekerDashboard = () => {
               className="flex flex-col items-center justify-center p-3 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors col-span-2 mt-2 border-2 border-indigo-200"
              >
                 <MdWorkOutline className="text-indigo-600 text-xl mb-2" />
-                <span className="text-sm text-gray-700 font-medium">Manage Your Posted Jobs</span>
+                <span className="text-sm text-gray-700 font-medium">Manage My Posted Mini Jobs</span>
             </button>
               </div>
             </div>
             
-            {/* Application Stats */}
+            {/* Application Stats
             <div className="bg-white rounded-xl shadow p-6">
               <h2 className="text-lg font-bold text-gray-800 mb-4">Application Stats</h2>
               <div className="grid grid-cols-3 gap-2">
@@ -348,7 +349,7 @@ const JobSeekerDashboard = () => {
                   <div className="text-xs text-gray-600 mt-1">Successful</div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           
           {/* Middle and Right Column */}
@@ -366,9 +367,9 @@ const JobSeekerDashboard = () => {
                     }`}
                   >
                     <FaChartLine />
-                    Overview
+                   Job Applications Overview
                   </button>
-                  <button 
+                  {/*<button 
                     onClick={() => setActiveTab("applications")}
                     className={`px-4 py-3 font-medium text-sm flex items-center gap-2 ${
                       activeTab === "applications" 
@@ -378,8 +379,8 @@ const JobSeekerDashboard = () => {
                   >
                     <FaBriefcase />
                     Applications
-                  </button>
-                  <button 
+                  </button>*/}
+                  {/*<button 
                     onClick={() => setActiveTab("minitasks")}
                     className={`px-4 py-3 font-medium text-sm flex items-center gap-2 ${
                       activeTab === "minitasks" 
@@ -389,7 +390,7 @@ const JobSeekerDashboard = () => {
                   >
                     <FaTasks />
                     Mini Jobs
-                  </button>
+                  </button>*/}
                 </div>
               </div>
               
@@ -402,7 +403,7 @@ const JobSeekerDashboard = () => {
                       <div className="flex justify-between items-center mb-3">
                         <h3 className="font-medium text-gray-800 flex items-center gap-2">
                           <FaRegCalendarCheck className="text-green-500" />
-                          Recent Job Applications
+                         My Regular Job Applications
                         </h3>
                         {recentApplications && recentApplications.length > 0 && (
                           <button 
@@ -460,7 +461,7 @@ const JobSeekerDashboard = () => {
                       <div className="flex justify-between items-center mb-3">
                         <h3 className="font-medium text-gray-800 flex items-center gap-2">
                           <MdOutlineRecommend className="text-indigo-500" />
-                          Recent Mini Job Applications
+                          My Mini Job Applications
                         </h3>
                         {minitasks && minitasks.length > 0 && (
                           <button 
@@ -488,12 +489,12 @@ const JobSeekerDashboard = () => {
                                 </div>
                                 <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">₵{task.budget}</span>
                               </div>
-                              <button 
+                              {/*<button 
                                 onClick={() => navigate(`/view/mini_task/info/${task._id}`)} 
                                 className="mt-3 text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 px-3 rounded"
                               >
                                 View Details
-                              </button>
+                              </button> */}
                             </div>
                           ))}
                         </div>
@@ -512,7 +513,7 @@ const JobSeekerDashboard = () => {
                   </div>
                 )}
                 
-                {/* Applications Tab */}
+                {/* Applications Tab, important- Currently Commented Out */}
                 {activeTab === "applications" && (
                   <div>
                     <div className="flex justify-between items-center mb-4">
@@ -570,7 +571,7 @@ const JobSeekerDashboard = () => {
                   </div>
                 )}
                 
-                {/* Mini Tasks Tab */}
+                {/* Mini Tasks Tab, important- Currently Commented Out */}
                 {activeTab === "minitasks" && (
                   <div>
                     <div className="flex justify-between items-center mb-4">
