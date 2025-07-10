@@ -295,9 +295,9 @@ const MiniTaskPage = () => {
                     View Details
                   </button>*/}
                
-               <button className="mini-task-apply-btn" onClick={() => applyToTask(task._id)} disabled={isProcessing}>
+              {/* <button className="mini-task-apply-btn" onClick={() => applyToTask(task._id)} disabled={isProcessing}>
                   I’m Interested
-                 </button>
+                 </button>*/}
 
                
                 

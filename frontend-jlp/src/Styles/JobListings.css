@@ -70,8 +70,7 @@
     width: 100%;
   }
   
-  .search-icon {
-    color: #777;
+  .search-icon-jl{
     margin-right: 8px;
   }
   
@@ -104,6 +103,7 @@
     background: #1e40af;
     padding: 20px;
     border-radius: 8px;
+    position: relative;
   }
   
   .job-listings-sidebar h2 {

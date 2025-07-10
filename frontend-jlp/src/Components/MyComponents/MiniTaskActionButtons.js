@@ -1,5 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaEye, FaUpload, FaCheck, FaTimes, FaCheckCircle, FaEllipsisV, FaComments, FaChevronDown } from 'react-icons/fa';
+import { 
+  FaEye, 
+  FaUpload, 
+  FaCheck, 
+  FaTimes, 
+  FaEllipsisV, 
+  FaChevronDown,
+  FaPaperPlane,
+  FaFileAlt,
+  FaCommentAlt
+} from 'react-icons/fa';
 
 const TaskActions = ({
   task,
@@ -12,12 +22,13 @@ const TaskActions = ({
   onAcceptTask,
   onRejectTask,
   StartChatButton,
-  layout = 'vertical',
+  layout = 'responsive', // 'responsive' is now the default
   className = ''
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -28,107 +39,156 @@ const TaskActions = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Status checks
   const isAssigned = task.assignedTo === user?._id;
   const isTaskActive = task._id;
   const canSubmitWork = isAssigned && (task.status === "In-progress" || task.status === "Completed");
   const needsAcceptance = task.assignedTo === user?._id && !task.assignmentAccepted;
   const isAccepted = task.assignedTo === user?._id && task.assignmentAccepted;
 
-  const buttons = {
-    viewDetails: {
-      label: 'Visit Task',
+  // Action button configurations
+  const actionButtons = [
+    {
+      id: 'viewDetails',
+      label: 'View Details',
       icon: FaEye,
       onClick: () => onViewDetails?.(task._id),
-      className: 'bg-white border border-gray-300 text-gray-800 hover:bg-gray-100 text-sm py-1.5 px-3',
+      variant: 'secondary',
       show: true,
-      priority: 'primary'
+      priority: 'primary',
+      mobileVisible: true
     },
-    submitWork: {
-      label: task.locationType === 'on-site' ? 'Submit Proof of Work' : 'Submit Work',
+    {
+      id: 'submitWork',
+      label: task.locationType === 'on-site' ? 'Submit Work Proof' : 'Submit Work',
       icon: FaUpload,
       onClick: () => onSubmitWork?.(task._id),
-      className: 'bg-green-600 text-white hover:bg-green-700 text-sm py-1.5 px-3',
+      variant: 'primary',
       show: canSubmitWork,
-      priority: 'secondary'
+      priority: 'primary',
+      mobileVisible: true
     },
-    viewSubmissions: {
+    {
+      id: 'viewSubmissions',
       label: 'View Submissions',
-      icon: FaEye,
+      icon: FaFileAlt,
       onClick: () => onViewSubmissions?.(task._id),
-      className: 'bg-blue-600 text-white hover:bg-blue-700 text-sm py-1.5 px-3',
+      variant: 'secondary',
       show: canSubmitWork,
-      priority: 'secondary'
+      priority: 'secondary',
+      mobileVisible: false
     },
-    acceptTask: {
-      label: isTaskActive && isProcessing ? 'Accepting...' : 'Accept Task',
+    {
+      id: 'acceptTask',
+      label: isProcessing ? 'Accepting...' : 'Accept',
       icon: FaCheck,
       onClick: () => onAcceptTask?.(task._id),
-      className: 'bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 text-sm py-1.5 px-3',
-      disabled: isProcessing,
+      variant: 'success',
       show: needsAcceptance,
-      priority: 'primary'
+      priority: 'primary',
+      mobileVisible: true
     },
-    rejectTask: {
-      label: isTaskActive && isProcessing ? 'Rejecting...' : 'Reject Task',
+    {
+      id: 'rejectTask',
+      label: isProcessing ? 'Rejecting...' : 'Reject',
       icon: FaTimes,
       onClick: () => onRejectTask?.(task._id),
-      className: 'bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 text-sm py-1.5 px-3',
-      disabled: isProcessing,
+      variant: 'danger',
       show: needsAcceptance,
-      priority: 'secondary'
+      priority: 'secondary',
+      mobileVisible: false
+    },
+    {
+      id: 'startChat',
+      label: 'Message',
+      icon: FaCommentAlt,
+      onClick: () => onStartChat?.(task._id),
+      variant: 'secondary',
+      show: canSubmitWork && !StartChatButton,
+      priority: 'secondary',
+      mobileVisible: false
     }
-  };
+  ];
 
-  const visibleButtons = Object.entries(buttons).filter(([_, config]) => config.show);
-  const primaryButtons = visibleButtons.filter(([_, config]) => config.priority === 'primary');
-  const secondaryButtons = visibleButtons.filter(([_, config]) => config.priority === 'secondary');
+  // Filter visible buttons
+  const visibleButtons = actionButtons.filter(button => button.show);
+  const primaryButtons = visibleButtons.filter(button => button.priority === 'primary');
+  const secondaryButtons = visibleButtons.filter(button => button.priority === 'secondary');
+  const mobileVisibleButtons = visibleButtons.filter(button => button.mobileVisible);
 
-  const Button = ({ config, compact = false, fullWidth = false }) => {
-    const Icon = config.icon;
+  // Button component with consistent styling
+  const ActionButton = ({ button, compact = false, fullWidth = false }) => {
+    const Icon = button.icon;
+    const baseClasses = `flex items-center justify-center gap-2 rounded-lg transition-all duration-200 font-medium whitespace-nowrap ${
+      fullWidth ? 'w-full' : ''
+    } ${compact ? 'px-3 py-1.5 text-sm' : 'px-4 py-2'}`;
+    
+    const variantClasses = {
+      primary: 'bg-blue-600 text-white hover:bg-blue-700',
+      secondary: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
+      success: 'bg-green-600 text-white hover:bg-green-700',
+      danger: 'bg-red-600 text-white hover:bg-red-700',
+      ghost: 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+    };
+
     return (
       <button
-        className={`inline-flex items-center ${fullWidth ? 'justify-start w-full' : 'justify-center'} gap-2 px-${compact ? '3' : '4'} py-2 rounded-md transition-all duration-200 font-medium ${config.className}`}
-        onClick={config.onClick}
-        disabled={config.disabled}
+        className={`${baseClasses} ${variantClasses[button.variant]}`}
+        onClick={button.onClick}
+        disabled={isProcessing && ['acceptTask', 'rejectTask'].includes(button.id)}
       >
-        <Icon className={`w-${compact ? '3' : '4'} h-${compact ? '3' : '4'}`} />
-        <span className={compact ? 'text-sm' : ''}>{config.label}</span>
+        <Icon className={`${compact ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
+        <span>{button.label}</span>
       </button>
     );
   };
 
-  const DropdownLayout = () => (
-    <div className="flex items-center gap-2">
-      {primaryButtons.length > 0 && <Button config={primaryButtons[0][1]} />}
-      {(secondaryButtons.length > 0 || canSubmitWork) && (
+  // Responsive Layout (default)
+  const ResponsiveLayout = () => (
+    <div className="flex flex-col sm:flex-row gap-2 w-full">
+      <div className="flex gap-2">
+        {mobileVisibleButtons.map(button => (
+          <ActionButton key={button.id} button={button} compact />
+        ))}
+      </div>
+      
+      {(secondaryButtons.length > 0 || (canSubmitWork && StartChatButton)) && (
         <div className="relative" ref={dropdownRef}>
           <button
-            className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-md text-sm font-medium"
+            className="flex items-center justify-center gap-1 px-3 py-1.5 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium w-full sm:w-auto"
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
-            More <FaChevronDown className="w-3 h-3" />
+            <span>More</span>
+            <FaChevronDown className={`w-3 h-3 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
           </button>
+          
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-md border border-gray-200 z-50">
-              <div className="py-2">
-                {secondaryButtons.map(([key, config]) => (
+            <div className="absolute right-0 mt-1 w-48 sm:w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+              <div className="py-1">
+                {secondaryButtons.map(button => (
                   <button
-                    key={key}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-3 text-sm"
+                    key={button.id}
+                    className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-3 text-sm text-gray-700"
                     onClick={() => {
-                      config.onClick();
+                      button.onClick();
                       setDropdownOpen(false);
                     }}
-                    disabled={config.disabled}
                   >
-                    <config.icon className="w-4 h-4 text-gray-500" />
-                    <span>{config.label}</span>
+                    <button.icon className="w-4 h-4 text-gray-500" />
+                    <span>{button.label}</span>
                   </button>
                 ))}
+                
                 {canSubmitWork && StartChatButton && (
-                  <div className="px-4 py-2 hover:bg-gray-50 flex items-center gap-3">
-                    <FaComments className="w-4 h-4 text-purple-600" />
-                    <StartChatButton userId2={task.employer._id} jobId={task._id} />
+                  <div className="px-4 py-2.5 hover:bg-gray-50">
+                    <StartChatButton 
+                      userId2={task.employer._id} 
+                      jobId={task._id} 
+                      className="flex items-center gap-3 text-sm text-gray-700 w-full"
+                    >
+                      <FaCommentAlt className="w-4 h-4 text-gray-500" />
+                      <span>Message</span>
+                    </StartChatButton>
                   </div>
                 )}
               </div>
@@ -139,48 +199,52 @@ const TaskActions = ({
     </div>
   );
 
-  const GridLayout = () => (
-    <div className="grid grid-cols-2 gap-2 max-w-md">
-      {visibleButtons.map(([key, config]) => (
-        <Button key={key} config={config} compact />
-      ))}
-      {canSubmitWork && StartChatButton && (
-        <div className="col-span-1">
-          <StartChatButton userId2={task.employer._id} jobId={task._id} />
-        </div>
-      )}
-    </div>
-  );
-
-  const PriorityLayout = () => (
+  // Desktop Priority Layout
+  const DesktopPriorityLayout = () => (
     <div className="flex items-center gap-2">
-      {primaryButtons.length > 0 && <Button config={primaryButtons[0][1]} />}
-      {secondaryButtons.length > 0 && (
+      {primaryButtons.map(button => (
+        <ActionButton key={button.id} button={button} />
+      ))}
+      
+      {(secondaryButtons.length > 0 || (canSubmitWork && StartChatButton)) && (
         <div className="relative" ref={dropdownRef}>
           <button
-            className="inline-flex items-center justify-center w-9 h-9 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
+            className="flex items-center justify-center w-9 h-9 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            title="More actions"
+            aria-label="More actions"
           >
             <FaEllipsisV className="w-4 h-4" />
           </button>
+          
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-md border border-gray-200 z-50">
-              <div className="py-2">
-                {secondaryButtons.map(([key, config]) => (
+            <div className="absolute right-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+              <div className="py-1">
+                {secondaryButtons.map(button => (
                   <button
-                    key={key}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-3 text-sm"
+                    key={button.id}
+                    className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-3 text-sm text-gray-700"
                     onClick={() => {
-                      config.onClick();
+                      button.onClick();
                       setDropdownOpen(false);
                     }}
-                    disabled={config.disabled}
                   >
-                    <config.icon className="w-4 h-4 text-gray-500" />
-                    <span>{config.label}</span>
+                    <button.icon className="w-4 h-4 text-gray-500" />
+                    <span>{button.label}</span>
                   </button>
                 ))}
+                
+                {canSubmitWork && StartChatButton && (
+                  <div className="px-4 py-2.5 hover:bg-gray-50">
+                    <StartChatButton 
+                      userId2={task.employer._id} 
+                      jobId={task._id} 
+                      className="flex items-center gap-3 text-sm text-gray-700 w-full"
+                    >
+                      <FaCommentAlt className="w-4 h-4 text-gray-500" />
+                      <span>Message</span>
+                    </StartChatButton>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -189,27 +253,32 @@ const TaskActions = ({
     </div>
   );
 
-  const VerticalLayout = () => (
-    <div className="flex flex-col gap-2 max-w-xs">
-      {visibleButtons.map(([key, config]) => (
-        <Button key={key} config={config} fullWidth />
+  // Mobile Expanded Layout
+  const MobileExpandedLayout = () => (
+    <div className="grid grid-cols-2 gap-2 w-full">
+      {visibleButtons.map(button => (
+        <ActionButton key={button.id} button={button} fullWidth />
       ))}
       {canSubmitWork && StartChatButton && (
-        <div className="flex items-center">
-          <StartChatButton userId2={task.employer._id} jobId={task._id} />
-        </div>
+        <StartChatButton 
+          userId2={task.employer._id} 
+          jobId={task._id} 
+          className="col-span-2"
+        />
       )}
     </div>
   );
 
+  // Choose layout based on prop and screen size
+  const getLayout = () => {
+    if (layout === 'desktop-priority') return <DesktopPriorityLayout />;
+    if (layout === 'mobile-expanded') return <MobileExpandedLayout />;
+    return <ResponsiveLayout />;
+  };
+
   return (
-    <div className={`px-6 pb-6 ${className}`}>
-      <div className="flex flex-wrap gap-3">
-        {layout === 'dropdown' && <DropdownLayout />}
-        {layout === 'grid' && <GridLayout />}
-        {layout === 'priority' && <PriorityLayout />}
-        {layout === 'vertical' && <VerticalLayout />}
-      </div>
+    <div className={`${className}`}>
+      {getLayout()}
     </div>
   );
 };

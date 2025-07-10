@@ -28,7 +28,7 @@ const Navbar = () => {
     <nav className="navbar">
       {/* Left: Logo */}
       <Link to="/job/listings" className="text-2xl font-serif font-extrabold text-blue-600 tracking-tight">
-        <span className="text-gray-100">Worka</span><span className="text-blue-300">Flow</span>
+        <span className="text-blue-300">Worka</span><span className="text-blue-300">Flow</span>
       </Link>
 
       {/* Desktop Nav Links */}

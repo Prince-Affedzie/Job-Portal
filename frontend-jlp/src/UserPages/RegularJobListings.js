@@ -89,7 +89,7 @@ useEffect(() => {
       {/* Header Section */}
       <header className="job-header">
         <div className="search-bar">
-          <FaSearch className="search-icon" />
+          <FaSearch className="search-icon-jl" />
           <input 
             type="text" 
             placeholder="Search for jobs..." 
@@ -125,7 +125,13 @@ useEffect(() => {
 
       <div className="content-container">
         {/* Sidebar (Filters) */}
-        <aside className={`job-listings-sidebar ${showFilters ? "show" : ""}`}>
+        <aside
+     className={`
+     job-listings-sidebar 
+     transform transition-transform duration-300 ease-in-out
+      ${showFilters ? "show translate-y-0" : "-translate-y-full"}
+       md:transform-none md:${showFilters ? "show-sidebar" : ""}
+     `} >
           <button className="close-button" onClick={() => setShowFilters(false)}>
             <FaTimes style={{ color: "#fff" }} />
           </button>
@@ -148,7 +154,7 @@ useEffect(() => {
             <option>Freelance</option>
           </select>
           
-          <label style={{ color: "#fff" }}>Region</label>
+          <label style={{ color: "#fff" }}>Location</label>
           <select value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
           <option>All Regions</option>
            <option>Greater Accra</option>

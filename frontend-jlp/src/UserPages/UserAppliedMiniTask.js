@@ -7,10 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard,raiseDispute, rejectMiniTaskAssignment } from '../APIS/API';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaTrash, FaFilter, FaCheck, FaArrowUp, FaArrowDown, FaClock, FaMapMarkerAlt, FaDollarSign, FaUser, FaPhone, FaEye, FaUpload, FaComments, FaTimes, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { FaTrash, FaFilter, FaCheck, FaArrowUp, FaArrowDown, FaClock, FaMapMarkerAlt, FaDollarSign,FaFlag, FaBuilding,FaUser, FaPhone, FaEye, FaUpload, FaComments, FaTimes, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import WorkSubmissionModal from '../Components/MyComponents/WorkSubmissionModal';
 import StartChatButton from '../Components/MessagingComponents/StartChatButton';
 import  TaskActions from '../Components/MyComponents/MiniTaskActionButtons';
+import Pagination from "../Components/MyComponents/Pagination";
+
 
 const MyMiniTaskApplications = () => {
   const navigate = useNavigate();
@@ -447,95 +449,118 @@ const MyMiniTaskApplications = () => {
                 const deadlineStatus = getDeadlineStatus(task.deadline);
 
     return (
-    <div
-    key={task._id}
-    className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-5 space-y-4"
-  >
-    {/* Header */}
-    <div className="flex justify-between items-start gap-4">
-      <div className="flex-1">
-        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">
-          {task.title}
-        </h3>
-
-        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
-          <span className="flex items-center gap-1">
-            <FaDollarSign className="text-gray-400" />
-            ₵{task.budget}
-          </span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
-            {task.category || 'N/A'}
-          </span>
-          {task.locationType && (
-            <span className="flex items-center gap-1">
-              <FaMapMarkerAlt className="text-gray-400" />
-              {task.locationType === 'remote'
-                ? 'Remote'
-                : task.address?.city || 'On-site'}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Optional status pill (pending/approved/etc.) */}
-      <div className="text-xs font-semibold px-3 py-1 rounded-full border border-blue-300 text-blue-600 bg-blue-50 whitespace-nowrap">
-        {statusInfo?.text || 'Pending'}
-      </div>
-    </div>
-
-    {/* Body */}
-    <div className="text-sm text-gray-700 flex flex-wrap justify-between items-center">
-      {task.deadline && (
-        <div className="flex items-center gap-1">
-          <FaClock className="text-gray-400 w-4 h-4" />
-          <span className="text-sm">
-            {new Date(task.deadline).toLocaleDateString('en-US', {
-              weekday: 'short',
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            })}
-          </span>
-        </div>
-      )}
-      {task.employer?.name && (
-        <span className="text-gray-500 text-xs">Posted by {task.employer.name}</span>
-      )}
-      {isAssigned && (task.status === 'Assigned' || task.status === 'In-progress') && (
-        <div className="w-full mt-2">
-         <button
-         onClick={() => handleReportIssue(task)}
-       className="bg-blue-600 text-white hover:bg-blue-700 text-xs flex items-center gap-1 px-3 py-1 rounded transition-colors duration-150"
+   <div
+  key={task._id}
+  className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-sm transition-all duration-200 hover:border-blue-300 p-5 space-y-4 group"
+>
+  {/* Header with improved layout */}
+  <div className="flex justify-between items-start gap-4">
+    <div className="flex-1 min-w-0">
+      <h3 
+        className="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 hover:text-blue-600 cursor-pointer transition-colors"
+        onClick={() => navigate(`/view/mini_task/info/${task._id}`)}
       >
-    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-    </svg>
-    Report Issue
-     </button>
-    </div>
+        {task.title}
+      </h3>
 
-    )}
-
-    </div>
-
-    {/* Skills */}
-    {task.skillsRequired?.length > 0 && (
-      <div className="flex flex-wrap gap-2">
-        {task.skillsRequired.slice(0, 4).map((skill, index) => (
-          <span
-            key={index}
-            className="bg-blue-100 text-blue-700 px-3 py-1 text-xs font-medium rounded-full"
-          >
-            {skill}
+      {/* Metadata chips - Upwork style */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="inline-flex items-center px-2.5 py-1 bg-gray-50 rounded-full text-xs font-medium text-gray-700">
+          <FaDollarSign className="w-3 h-3 mr-1 text-green-500" />
+          ₵{task.budget}
+        </span>
+        
+        {task.category && (
+          <span className="inline-flex items-center px-2.5 py-1 bg-gray-50 rounded-full text-xs font-medium text-gray-700">
+            <FaBuilding className="w-3 h-3 mr-1 text-indigo-500" />
+            {task.category}
           </span>
-        ))}
-        {task.skillsRequired.length > 4 && (
-          <span className="text-xs text-gray-400">+{task.skillsRequired.length - 4} more</span>
+        )}
+        
+        {task.locationType && (
+          <span className="inline-flex items-center px-2.5 py-1 bg-gray-50 rounded-full text-xs font-medium text-gray-700">
+            <FaMapMarkerAlt className="w-3 h-3 mr-1 text-blue-500" />
+            {task.locationType === 'remote' ? 'Remote' : task.address?.city || 'On-site'}
+          </span>
         )}
       </div>
-    )}
+    </div>
 
-    {/* Actions */}
+    {/* Status pill - improved visibility */}
+    <div className={`flex-shrink-0 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusInfo.className}`}>
+      {statusInfo.icon}
+      <span className="ml-1.5">{statusInfo.text}</span>
+    </div>
+  </div>
+
+  {/* Divider for visual separation */}
+  <div className="border-t border-gray-100"></div>
+
+  {/* Body with improved information hierarchy */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+    {/* Deadline */}
+    <div className="flex items-center gap-2">
+      <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+        <FaClock className="text-amber-500 w-3.5 h-3.5" />
+      </div>
+      <div>
+        <p className="text-xs text-gray-500 uppercase tracking-wider">Deadline</p>
+        <p className="font-medium text-gray-900">
+          {new Date(task.deadline).toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+          })}
+        </p>
+      </div>
+    </div>
+
+    {/* Employer */}
+    {task.employer?.name && (
+      <div className="flex items-center gap-2">
+        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+          <FaUser className="text-blue-500 w-3.5 h-3.5" />
+        </div>
+        <div>
+          <p className="text-xs text-gray-500 uppercase tracking-wider">Posted by</p>
+          <p className="font-medium text-gray-900 line-clamp-1">{task.employer.name}</p>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Skills - improved presentation */}
+  {task.skillsRequired?.length > 0 && (
+    <div className="flex flex-wrap gap-2">
+      {task.skillsRequired.slice(0, 4).map((skill, index) => (
+        <span
+          key={index}
+          className="bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium rounded-full"
+        >
+          {skill}
+        </span>
+      ))}
+      {task.skillsRequired.length > 4 && (
+        <span className="text-xs text-gray-500 self-center">+{task.skillsRequired.length - 4} more</span>
+      )}
+    </div>
+  )}
+
+  {/* Report Issue button - improved styling */}
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-3">
+  {/* Report Issue button - now properly aligned with TaskActions on mobile */}
+  {isAssigned && (task.status === 'Assigned' || task.status === 'In-progress') && (
+    <button
+      onClick={() => handleReportIssue(task)}
+      className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white border border-red-300 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-sm font-medium"
+    >
+      <FaFlag className="w-3.5 h-3.5" />
+      Report Issue
+    </button>
+  )}
+  
+  {/* TaskActions with responsive positioning */}
+  <div className="w-full sm:w-auto flex justify-end">
     <TaskActions
       task={task}
       user={user}
@@ -547,22 +572,25 @@ const MyMiniTaskApplications = () => {
       onAcceptTask={handleTaskAcceptance}
       onRejectTask={handleTaskRejection}
       StartChatButton={StartChatButton}
-      className="custom-task-actions"
+      className="custom-task-actions w-full sm:w-auto"
     />
-
-    {/* Modal */}
-    {modalOpen && activeTaskId === task._id && (
-      <WorkSubmissionModal
-        isOpen={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setActiveTaskId(null);
-        }}
-        taskId={activeTaskId}
-        task={task}
-      />
-    )}
+  
+</div>
   </div>
+
+  {/* Modal - unchanged */}
+  {modalOpen && activeTaskId === task._id && (
+    <WorkSubmissionModal
+      isOpen={modalOpen}
+      onClose={() => {
+        setModalOpen(false);
+        setActiveTaskId(null);
+      }}
+      taskId={activeTaskId}
+      task={task}
+    />
+  )}
+</div>
 );
 
 
@@ -571,28 +599,12 @@ const MyMiniTaskApplications = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Previous
-                  </button>
-
-                  <span className="text-sm text-gray-700 font-medium">
-                    Page {currentPage} of {totalPages}
-                  </span>
-
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Next
-                  </button>
-                </div>
+              <div className="mt-6">
+                    <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)}
+                    />
               </div>
             )}
           </div>
