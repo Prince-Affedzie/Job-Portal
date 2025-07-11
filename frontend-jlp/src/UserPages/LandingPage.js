@@ -9,6 +9,7 @@ import {
 export default function WorkaflowLanding() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,6 +19,13 @@ export default function WorkaflowLanding() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+  
 
   return (
     <div className="min-h-screen bg-white font-sans antialiased">
@@ -33,7 +41,9 @@ export default function WorkaflowLanding() {
         </div>
         
         {/* Desktop Navigation */}
-        <nav className="md:flex items-center space-x-8">
+        <nav style={{
+             display: windowWidth >= 1024 ? 'flex' : 'none',
+            }} className="items-center space-x-8">
           <a href="#features" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Features</a>
           <a href="#solutions" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Solutions</a>
           <a href="#testimonials" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Testimonials</a>
