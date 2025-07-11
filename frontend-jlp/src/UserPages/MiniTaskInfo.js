@@ -118,7 +118,7 @@ const MiniTaskInfo = () => {
       {showScamAlert && <ScamAlert />}
       
    {/* Header with visual enhancement */}
-     <div className="task-header mx-auto mt-5 max-w-4xl px-6 py-4">
+     <div className="task-header mx-auto mt-5 max-w-7xl px-6 py-4">
   <h1 className="text-2xl font-bold mb-3">{task.title}</h1>
   <div className="flex flex-wrap items-center justify-between gap-4">
     {/* Status Badge */}

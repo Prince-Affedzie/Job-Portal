@@ -355,6 +355,7 @@
 .category-scroll-wrapper::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
 }
+
 .category-scroll-bar {
   display: inline-flex;
   gap: 10px;
