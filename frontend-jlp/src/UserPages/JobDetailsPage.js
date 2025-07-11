@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import '../Styles/coverLetter.css'
 import { 
   FaMapMarkerAlt, 
   FaClock, 
@@ -555,11 +556,12 @@ const JobDetails = () => {
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Cover Letter</label>
+                                                    
                                                     <CoverLetterField 
                                                         value={applicationData.coverLetter} 
                                                         onChange={handleChange}
                                                     />
+                                                   
                                                 </div>
 
                                                 <div className="flex justify-between pt-4">
@@ -576,6 +578,7 @@ const JobDetails = () => {
                                                     >
                                                         Submit Application
                                                     </button>
+                                                     {isEditorExpanded && <div className="modal-backdrop" onClick={() => setIsEditorExpanded(false)}></div>}
                                                 </div>
                                             </form>
                                         )}
