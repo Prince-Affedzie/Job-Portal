@@ -86,10 +86,10 @@
     margin-bottom: 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     max-height: 20rem;
-    margin-top:1rem;
-    
-  }
-  
+    margin: 1rem auto; /* Top/bottom margin 1rem, left/right auto for centering */
+    max-width: 1200px; /* Or your preferred maximum width */
+    width: 90%; /* Takes 90% of parent width, creating side margins */
+}
   .task-header h1 {
     margin: 0 0 1rem 0;
     font-size: 2rem;
