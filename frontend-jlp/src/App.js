@@ -6,6 +6,8 @@ import LandingPage from './UserPages/LandingPage';
 import Signup from './UserPages/SignUpPage';
 import ProfileCompletion from './UserPages/ProfileCompletion';
 import Login from './UserPages/LoginPage';
+import ForgotPasswordPage from './UserPages/ForgotPassword';
+import ResetPasswordPage from './UserPages/ResetPassword'
 import JobSeekerDashboard from './UserPages/JobSeekerDashboard';
 import JobListings from './UserPages/RegularJobListings';
 import EmployerDashboard from './EmployerPages/EmployerDashboard';
@@ -75,6 +77,8 @@ function App() {
       <Route path='/signup' element={<Signup/>}/>
       <Route path='/complete_profile' element = {<ProfileCompletion/>}/>
       <Route path='/login' element={<NotificationProvider><Login/></NotificationProvider>}/>
+      <Route path= '/forgot-password' element={<ForgotPasswordPage/>}/>
+      <Route path= '/reset-password' element={<ResetPasswordPage/>}/>
       <Route path='/h1/dashboard' element={<UserProvider><RouteProtection><ChatProvider><NotificationProvider><JobSeekerDashboard/></NotificationProvider></ChatProvider></RouteProtection></UserProvider>}/>
       <Route path='/job/listings' element={<UserProvider><RouteProtection><NotificationProvider><JobListings/></NotificationProvider></RouteProtection></UserProvider>}/>
       <Route path='/job/details/:id' element={<UserProvider><NotificationProvider><JobDetails/></NotificationProvider></UserProvider>}/>

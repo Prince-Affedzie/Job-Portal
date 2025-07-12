@@ -2,6 +2,9 @@ import axios from "axios"
 const BackendURL = process.env.REACT_APP_BACKEND_URL
 const API = axios.create({baseURL:process.env.REACT_APP_BACKEND_URL,withCredentials:true,timeout: 10000, })
 export const signUp =(data)=>API.post("/api/user/signup",data)
+export const requestPasswordReset = (email)=>API.post("/api/user/request-password-reset",{email:email})
+export const verifyResetToken = ()=>API.post()
+export const resetPassword = (password)=>API.post('/api/user/reset-password',{password:password})
 export const loginUser =(data)=>API.post("/api/user/login",data)
 export const logoutUser =()=>API.post('/api/user/logout')
 export const completeProfile = (data)=>
