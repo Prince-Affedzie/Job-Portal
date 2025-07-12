@@ -7,7 +7,7 @@ import '../Styles/JobApplicantsPage.css'
 
 import Sidebar from "../Components/EmployerDashboard/SideBar";
 import EmployerNavbar from "../Components/EmployerDashboard/EmployerNavbar";
-import ProfileModal from "../Components/EmployerDashboard/ApplicantsProfileModal";
+
 import InterviewInviteModal from "../Components/EmployerDashboard/InterviewInviteModal";
 import BulkStatusModal from "../Components/EmployerDashboard/BulkStatusUpdateModal";
 import { getSpecificJobApplications, modifyApplication } from "../APIS/API";
@@ -419,16 +419,6 @@ const handleBulkStatusChange = async (newStatus) => {
         </div>
       </div>
 
-      {/* Profile Modal */}
-      {showProfileModal && selectedApplicant && (
-        <ProfileModal 
-          applicant={selectedApplicant}
-          onClose={() => setShowProfileModal(false)}
-          onStatusChange={handleAppStatusChange}
-          notes={notes}
-          setNotes={setNotes}
-        />
-      )}
       
       {/* Interview Invite Modal */}
       {isInterviewModalOpen && (

@@ -1,26 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   FaArrowLeft,
   FaEnvelope,
   FaPhone,
   FaDownload,
+  FaUserCircle,
   FaLinkedin,
   FaMapMarkerAlt,
-  FaCalendarAlt,
   FaBriefcase,
   FaGraduationCap,
-  FaAward,
   FaFileAlt,
-  FaUser,
-  FaStar,
-  FaCheck,
-  FaTimes,
   FaClock,
-  FaEye
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaExclamationCircle,
+  FaEye,
+  FaAward,
+  FaGlobe,
+  FaCertificate
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Sidebar from "../Components/EmployerDashboard/SideBar";
+import EmployerNavbar from "../Components/EmployerDashboard/EmployerNavbar";
+
 import { ImageWithFallback, MatchScoreIndicator, formatDate } from "../Components/EmployerDashboard/Utils";
 import { modifyApplication } from "../APIS/API";
 
@@ -28,44 +33,44 @@ const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const applicant = location.state?.app;
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const applicant = location.state?.applicant;
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
+  
   const handleAppStatusChange = async (id, status) => {
     try {
-      setIsUpdating(true);
       const response = await modifyApplication(id, status);
       
       if (response.status === 200) {
-        toast.success(`Application ${status.status} successfully`);
+        toast.success(`Application ${status.status} successfully`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else {
         toast.error("Failed to update application status");
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || "An unexpected error occurred";
       toast.error(errorMessage);
-    } finally {
-      setIsUpdating(false);
     }
   };
 
   if (!applicant) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-12 text-center max-w-md">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FaUser className="w-8 h-8 text-red-500" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Applicant Not Found</h3>
-          <p className="text-gray-600 mb-6">The requested applicant profile could not be found.</p>
+        <div className="bg-white rounded-2xl shadow-xl p-8 text-center max-w-md mx-4">
+          <FaExclamationCircle className="text-red-500 text-6xl mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Applicant Not Found</h2>
+          <p className="text-gray-600 mb-6">The requested applicant profile could not be loaded.</p>
           <button
             onClick={() => navigate(-1)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
           >
             Go Back
           </button>
@@ -74,467 +79,459 @@ const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
     );
   }
 
+  const statusOptions = ["Reviewing", "Shortlisted", "Interview", "Offered", "Rejected"];
   const statusConfig = {
     reviewing: { 
-      color: "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100", 
+      color: "border-blue-500 text-blue-700 hover:bg-blue-50 bg-blue-50/30", 
       icon: FaEye,
-      gradient: "from-blue-500 to-blue-600"
+      bgGradient: "from-blue-500 to-blue-600"
     },
     shortlisted: { 
-      color: "bg-green-50 text-green-700 border-green-200 hover:bg-green-100", 
-      icon: FaStar,
-      gradient: "from-green-500 to-green-600"
+      color: "border-green-500 text-green-700 hover:bg-green-50 bg-green-50/30", 
+      icon: FaCheckCircle,
+      bgGradient: "from-green-500 to-green-600"
     },
     interview: { 
-      color: "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100", 
-      icon: FaCalendarAlt,
-      gradient: "from-purple-500 to-purple-600"
+      color: "border-purple-500 text-purple-700 hover:bg-purple-50 bg-purple-50/30", 
+      icon: FaClock,
+      bgGradient: "from-purple-500 to-purple-600"
     },
     offered: { 
-      color: "bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100", 
+      color: "border-yellow-500 text-yellow-700 hover:bg-yellow-50 bg-yellow-50/30", 
       icon: FaAward,
-      gradient: "from-yellow-500 to-yellow-600"
+      bgGradient: "from-yellow-500 to-yellow-600"
     },
     rejected: { 
-      color: "bg-red-50 text-red-700 border-red-200 hover:bg-red-100", 
-      icon: FaTimes,
-      gradient: "from-red-500 to-red-600"
-    },
-    accepted: { 
-      color: "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100", 
-      icon: FaCheck,
-      gradient: "from-emerald-500 to-emerald-600"
-    },
-    pending: { 
-      color: "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100", 
-      icon: FaClock,
-      gradient: "from-amber-500 to-amber-600"
+      color: "border-red-500 text-red-700 hover:bg-red-50 bg-red-50/30", 
+      icon: FaTimesCircle,
+      bgGradient: "from-red-500 to-red-600"
     }
   };
 
-  const statusOptions = ["Reviewing", "Shortlisted", "Interview", "Offered", "Rejected"];
-  
-  const currentStatus = applicant.status?.toLowerCase() || 'pending';
-  const StatusIcon = statusConfig[currentStatus]?.icon || FaClock;
-
-  const tabs = [
-    { id: 'overview', label: 'Overview', icon: FaUser },
-    { id: 'experience', label: 'Experience', icon: FaBriefcase },
-    { id: 'education', label: 'Education', icon: FaGraduationCap },
-    { id: 'documents', label: 'Documents', icon: FaFileAlt }
-  ];
+  const currentStatus = applicant.status?.toLowerCase() || 'reviewing';
+  const StatusIcon = statusConfig[currentStatus]?.icon || FaEye;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <ToastContainer position="top-right" autoClose={3000} />
-      
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <button
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors group"
-              onClick={() => navigate(-1)}
-            >
-              <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
-              <span className="font-medium">Back to Applications</span>
-            </button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50">
+       <EmployerNavbar />
+       <div className="flex">
+        <div style={{ display: window.innerWidth >= 768 ? 'block' : 'none' }}>
+          <Sidebar />
+        </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        className="mt-16"
+      />
+      <div className="space-y-8 flex-1 md:ml-60">
+      <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <button
+            className="group flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 mb-6"
+            onClick={() => navigate(-1)}
+          >
+            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform duration-200" />
+            <span className="font-medium">Back to Applications</span>
+          </button>
+        </div>
+
+        {/* Main Content */}
+       
+          {/* Profile Header Card */}
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+            {/* Status Banner */}
+            <div className={`h-2 bg-gradient-to-r ${statusConfig[currentStatus]?.bgGradient || 'from-gray-400 to-gray-500'}`}></div>
             
-            <div className="flex items-center space-x-3">
-              <div className={`px-4 py-2 rounded-full border-2 ${statusConfig[currentStatus]?.color} flex items-center space-x-2`}>
-                <StatusIcon className="w-4 h-4" />
-                <span className="font-medium capitalize">{applicant.status || 'Pending'}</span>
+            <div className="p-8">
+              <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start">
+                {/* Profile Image */}
+                <div className="relative group">
+                  <div className="w-32 h-32 rounded-2xl overflow-hidden shadow-lg border-4 border-white bg-gradient-to-br from-gray-100 to-gray-200">
+                    {applicant?.profileImage ? (
+                      <img
+                        src={applicant.profileImage}
+                        alt="Profile"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <FaUserCircle className="w-full h-full text-gray-400" />
+                    )}
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-lg">
+                    <StatusIcon className={`text-xl ${statusConfig[currentStatus]?.color.split(' ')[1] || 'text-gray-500'}`} />
+                  </div>
+                </div>
+
+                {/* Profile Info */}
+                <div className="flex-1 text-center lg:text-left">
+                  <div className="mb-4">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2">{applicant.name}</h1>
+                    <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-gray-600">
+                      {applicant.currentPosition && (
+                        <div className="flex items-center gap-2">
+                          <FaBriefcase className="text-blue-500" />
+                          <span className="font-medium">{applicant.currentPosition}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <FaMapMarkerAlt className="text-red-500" />
+                        <span>{applicant.location}</span>
+                      </div>
+                      {applicant.website && (
+                        <a 
+                          href={applicant.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-blue-600 hover:underline"
+                        >
+                          <FaGlobe className="text-blue-500" />
+                          <span>Website</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Status Badge */}
+                  <div className="mb-6">
+                    <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border-2 ${statusConfig[currentStatus]?.color || 'border-gray-300 text-gray-600'}`}>
+                      <StatusIcon />
+                      {applicant.status || 'Reviewing'}
+                    </span>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+                    <ActionButton
+                      href={`mailto:${applicant.email}`}
+                      icon={FaEnvelope}
+                      text="Send Email"
+                      variant="primary"
+                    />
+                    <ActionButton
+                      href={`tel:${applicant.phone}`}
+                      icon={FaPhone}
+                      text="Call Now"
+                      variant="secondary"
+                    />
+                    {applicant.linkedIn && (
+                      <ActionButton
+                        href={applicant.linkedIn}
+                        icon={FaLinkedin}
+                        text="LinkedIn"
+                        variant="linkedin"
+                        external
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+
+          {/* Quick Info Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <InfoCard
+              icon={FaCalendarAlt}
+              label="Applied Date"
+              value={formatDate(applicant.dateApplied)}
+              iconColor="text-blue-500"
+              bgColor="bg-blue-50"
+            />
+            <InfoCard
+              icon={FaClock}
+              label="Last Activity"
+              value={formatDate(applicant.lastActivity)}
+              iconColor="text-green-500"
+              bgColor="bg-green-50"
+            />
+            {applicant.resume && (
+              <InfoCard
+                icon={FaDownload}
+                label="Resume"
+                value={
+                  <a
+                    href={applicant.resume}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-purple-600 hover:text-purple-700 font-semibold hover:underline transition-colors duration-200"
+                  >
+                    Download PDF
+                  </a>
+                }
+                iconColor="text-purple-500"
+                bgColor="bg-purple-50"
+              />
+            )}
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            {/* Left Column */}
+            <div className="xl:col-span-2 space-y-8">
+              {/* About Section */}
+              {applicant.about && (
+                <ContentCard title="About" icon={FaUserCircle}>
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border-l-4 border-blue-500 shadow-inner">
+                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+                      {applicant.about}
+                    </div>
+                  </div>
+                </ContentCard>
+              )}
+
+              {/* Skills Section */}
+              <ContentCard title="Skills & Expertise" icon={FaAward}>
+                {applicant.skills?.length ? (
+                  <div className="flex flex-wrap gap-3">
+                    {applicant.skills.map((skill, i) => (
+                      <span
+                        key={i}
+                        className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 px-4 py-2 text-sm font-medium rounded-full text-blue-800 hover:shadow-md transition-shadow duration-200"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState text="No skills listed" />
+                )}
+              </ContentCard>
+
+              {/* Work Experience Section */}
+              <ContentCard title="Work Experience" icon={FaBriefcase}>
+                {applicant.workExperience?.length ? (
+                  <div className="space-y-6">
+                    {applicant.workExperience.map((exp, i) => (
+                      <ExperienceCard
+                        key={i}
+                        title={exp.jobTitle}
+                        company={exp.company}
+                        startDate={exp.startDate}
+                        endDate={exp.endDate}
+                        description={exp.description}
+                        type="work"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState text="No work experience listed" />
+                )}
+              </ContentCard>
+
+              {/* Cover Letter Section */}
+              {applicant.coverLetter && (
+                <ContentCard title="Cover Letter" icon={FaFileAlt}>
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border-l-4 border-blue-500 shadow-inner">
+                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+                      {applicant.coverLetter}
+                    </div>
+                  </div>
+                </ContentCard>
+              )}
+            </div>
+
+            {/* Right Column */}
+            <div className="space-y-8">
+              {/* Education Section */}
+              <ContentCard title="Education" icon={FaGraduationCap}>
+                {applicant.educationList?.length ? (
+                  <div className="space-y-4">
+                    {applicant.educationList.map((edu, i) => (
+                      <ExperienceCard
+                        key={i}
+                        title={edu.degree}
+                        company={edu.institution}
+                        startDate={edu.startDate}
+                        endDate={edu.yearOfCompletion}
+                        description={edu.description}
+                        type="education"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState text="No education information" />
+                )}
+              </ContentCard>
+
+              {/* Documents Section */}
+              <ContentCard title="Documents" icon={FaFileAlt}>
+                <div className="space-y-4">
+                  {applicant.resume && (
+                    <DocumentCard
+                      title="Resume"
+                      url={applicant.resume}
+                      type="PDF"
+                      icon={FaFileAlt}
+                    />
+                  )}
+                  {applicant.portfolio && (
+                    <DocumentCard
+                      title="Portfolio"
+                      url={applicant.portfolio}
+                      type="Link"
+                      icon={FaGlobe}
+                    />
+                  )}
+                  {applicant.certifications?.map((cert, i) => (
+                    <DocumentCard
+                      key={i}
+                      title={cert.name || `Certification ${i+1}`}
+                      url={cert.url}
+                      type="Certificate"
+                      icon={FaCertificate}
+                    />
+                  ))}
+                  {!applicant.resume && !applicant.portfolio && (!applicant.certifications || applicant.certifications.length === 0) && (
+                    <EmptyState text="No documents available" />
+                  )}
+                </div>
+              </ContentCard>
+
+              {/* Status Update Section */}
+              <ContentCard title="Application Status" icon={FaClock}>
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-600 mb-4">
+                    Update the status of this application by clicking one of the buttons below:
+                  </p>
+                  <div className="grid grid-cols-1 gap-3">
+                    {statusOptions.map((status) => {
+                      const isActive = applicant.status?.toLowerCase() === status.toLowerCase();
+                      const config = statusConfig[status.toLowerCase()];
+                      const StatusButtonIcon = config?.icon || FaEye;
+                      
+                      return (
+                        <button
+                          key={status}
+                          onClick={() => handleAppStatusChange(applicant.id, { status })}
+                          className={`flex items-center gap-3 px-4 py-3 border-2 rounded-xl transition-all duration-200 text-left hover:shadow-md transform hover:-translate-y-0.5 ${
+                            config?.color || "border-gray-300 text-gray-600"
+                          } ${isActive ? "font-semibold shadow-lg ring-2 ring-opacity-50" : ""}`}
+                        >
+                          <StatusButtonIcon className="text-lg" />
+                          <span>{status}</span>
+                          {isActive && (
+                            <span className="ml-auto text-xs bg-white bg-opacity-50 px-2 py-1 rounded-full">
+                              Current
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </ContentCard>
             </div>
           </div>
         </div>
       </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        {/* Profile Header */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
-          <div className={`h-32 bg-gradient-to-r ${statusConfig[currentStatus]?.gradient || 'from-blue-500 to-purple-600'}`}></div>
-          
-          <div className="px-6 sm:px-8 pb-8">
-            <div className="flex flex-col sm:flex-row items-center sm:items-end -mt-16 sm:-mt-12">
-              <div className="relative mb-4 sm:mb-0 sm:mr-6">
-                <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-white bg-white shadow-xl">
-                  <ImageWithFallback
-                    src={applicant.user.profileImage}
-                    alt={applicant.user.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-r ${statusConfig[currentStatus]?.gradient} flex items-center justify-center shadow-lg`}>
-                  <StatusIcon className="w-4 h-4 text-white" />
-                </div>
-              </div>
-              
-              <div className="flex-1 text-center sm:text-left">
-                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
-                  {applicant.user.name}
-                </h1>
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-gray-600 mb-4">
-                  <div className="flex items-center gap-1">
-                    <FaBriefcase className="w-4 h-4" />
-                    <span>{applicant.user.experience}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <FaMapMarkerAlt className="w-4 h-4" />
-                    <span>{applicant.user.location?.city}, {applicant.user.location?.region}</span>
-                  </div>
-                </div>
-                
-                <div className="flex flex-wrap justify-center sm:justify-start gap-3">
-                  <a
-                    href={`mailto:${applicant.user.email}`}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium"
-                  >
-                    <FaEnvelope className="w-4 h-4" />
-                    Email
-                  </a>
-                  <a
-                    href={`tel:${applicant.user.phone}`}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors font-medium"
-                  >
-                    <FaPhone className="w-4 h-4" />
-                    Call
-                  </a>
-                  {applicant.user.linkedIn && (
-                    <a
-                      href={applicant.user.linkedIn}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium"
-                    >
-                      <FaLinkedin className="w-4 h-4" />
-                      LinkedIn
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard
-            icon={FaCalendarAlt}
-            label="Applied"
-            value={formatDate(applicant.dateApplied)}
-            gradient="from-blue-500 to-blue-600"
-          />
-          <StatCard
-            icon={FaClock}
-            label="Last Activity"
-            value={formatDate(applicant.lastActivity)}
-            gradient="from-purple-500 to-purple-600"
-          />
-          <StatCard
-            icon={FaAward}
-            label="Skills"
-            value={`${applicant.user.skills?.length || 0} Listed`}
-            gradient="from-green-500 to-green-600"
-          />
-          <StatCard
-            icon={FaBriefcase}
-            label="Experience"
-            value={`${applicant.user.workExperience?.length || 0} Roles`}
-            gradient="from-orange-500 to-orange-600"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            {/* Tabs */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="border-b border-gray-200">
-                <nav className="flex space-x-8 px-6" role="tablist">
-                  {tabs.map((tab) => {
-                    const TabIcon = tab.icon;
-                    const isActive = activeTab === tab.id;
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                          isActive
-                            ? 'border-blue-500 text-blue-600'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                        }`}
-                      >
-                        <TabIcon className="w-4 h-4" />
-                        {tab.label}
-                      </button>
-                    );
-                  })}
-                </nav>
-              </div>
-
-              <div className="p-6">
-                {activeTab === 'overview' && (
-                  <div className="space-y-6">
-                    {/* Skills */}
-                    <Section title="Skills & Expertise" icon={FaAward}>
-                      {applicant.user.skills?.length ? (
-                        <div className="flex flex-wrap gap-2">
-                          {applicant.user.skills.map((skill, i) => (
-                            <span
-                              key={i}
-                              className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 text-blue-800 px-4 py-2 text-sm rounded-full font-medium hover:shadow-md transition-shadow"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <EmptyState message="No skills listed" />
-                      )}
-                    </Section>
-
-                    {/* Cover Letter */}
-                    {applicant.coverLetter && (
-                      <Section title="Cover Letter" icon={FaFileAlt}>
-                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
-                          <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-line leading-relaxed">
-                            {applicant.coverLetter}
-                          </div>
-                        </div>
-                      </Section>
-                    )}
-                  </div>
-                )}
-
-                {activeTab === 'experience' && (
-                  <Section title="Work Experience" icon={FaBriefcase}>
-                    {applicant.user.workExperience?.length ? (
-                      <div className="space-y-4">
-                        {applicant.user.workExperience.map((exp, i) => (
-                          <ExperienceCard key={i} experience={exp} />
-                        ))}
-                      </div>
-                    ) : (
-                      <EmptyState message="No work experience listed" />
-                    )}
-                  </Section>
-                )}
-
-                {activeTab === 'education' && (
-                  <Section title="Education" icon={FaGraduationCap}>
-                    {applicant.user.education?.length ? (
-                      <div className="space-y-4">
-                        {applicant.user.education.map((edu, i) => (
-                          <EducationCard key={i} education={edu} />
-                        ))}
-                      </div>
-                    ) : (
-                      <EmptyState message="No education information available" />
-                    )}
-                  </Section>
-                )}
-
-                {activeTab === 'documents' && (
-                  <Section title="Documents & Files" icon={FaFileAlt}>
-                    <div className="space-y-4">
-                      {applicant.resume && (
-                        <DocumentCard
-                          title="Resume"
-                          url={applicant.resume}
-                          type="PDF"
-                          icon={FaFileAlt}
-                        />
-                      )}
-                      {/* Add more document types as needed */}
-                      {!applicant.resume && (
-                        <EmptyState message="No documents available" />
-                      )}
-                    </div>
-                  </Section>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Status Update */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <FaAward className="w-5 h-5 text-blue-600" />
-                Update Application Status
-              </h3>
-              <div className="space-y-3">
-                {statusOptions.map((status) => {
-                  const isActive = applicant.status?.toLowerCase() === status.toLowerCase();
-                  const config = statusConfig[status.toLowerCase()];
-                  const StatusButtonIcon = config?.icon || FaClock;
-                  
-                  return (
-                    <button
-                      key={status}
-                      onClick={() => handleAppStatusChange(applicant._id, { status })}
-                      disabled={isUpdating || isActive}
-                      className={`w-full flex items-center gap-3 px-4 py-3 border-2 rounded-xl transition-all text-left font-medium ${
-                        config?.color || "bg-gray-50 text-gray-700 border-gray-200"
-                      } ${
-                        isActive 
-                          ? "ring-2 ring-blue-500 ring-opacity-50 shadow-md" 
-                          : "hover:shadow-md"
-                      } ${
-                        isUpdating ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                    >
-                      <StatusButtonIcon className="w-4 h-4" />
-                      <span>{status}</span>
-                      {isActive && <FaCheck className="w-4 h-4 ml-auto" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <FaUser className="w-5 h-5 text-blue-600" />
-                Contact Information
-              </h3>
-              <div className="space-y-3">
-                <ContactItem
-                  icon={FaEnvelope}
-                  label="Email"
-                  value={applicant.user.email}
-                  href={`mailto:${applicant.user.email}`}
-                />
-                <ContactItem
-                  icon={FaPhone}
-                  label="Phone"
-                  value={applicant.user.phone}
-                  href={`tel:${applicant.user.phone}`}
-                />
-                <ContactItem
-                  icon={FaMapMarkerAlt}
-                  label="Address"
-                  value={`${applicant.user.location?.street}, ${applicant.user.location?.city}, ${applicant.user.location?.region}`}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
 };
 
 // Helper Components
-const Section = ({ title, icon: Icon, children }) => (
-  <div>
-    <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-      {Icon && <Icon className="w-5 h-5 text-blue-600" />}
-      {title}
-    </h3>
+const ActionButton = ({ href, icon: Icon, text, variant, external = false }) => {
+  const variants = {
+    primary: "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg",
+    secondary: "bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-200 hover:border-gray-300",
+    linkedin: "bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-blue-900 text-white shadow-lg"
+  };
+
+  return (
+    <a
+      href={href}
+      {...(external && { target: "_blank", rel: "noopener noreferrer" })}
+      className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 ${variants[variant]}`}
+    >
+      <Icon className="text-lg" />
+      {text}
+    </a>
+  );
+};
+
+const InfoCard = ({ icon: Icon, label, value, iconColor, bgColor }) => (
+  <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+    <div className="flex items-center gap-4">
+      <div className={`${bgColor} p-3 rounded-xl`}>
+        <Icon className={`text-xl ${iconColor}`} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">{label}</p>
+        <div className="font-semibold text-gray-900 truncate">{value}</div>
+      </div>
+    </div>
+    
+  </div>
+);
+
+const ContentCard = ({ title, icon: Icon, children }) => (
+  <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300">
+    <div className="flex items-center gap-3 mb-6">
+      <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-3 rounded-xl">
+        <Icon className="text-xl text-blue-600" />
+      </div>
+      <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+    </div>
     {children}
   </div>
 );
 
-const StatCard = ({ icon: Icon, label, value, gradient }) => (
-  <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium text-gray-600">{label}</p>
-        <p className="text-lg font-bold text-gray-900 mt-1">{value}</p>
+const ExperienceCard = ({ title, company, startDate, endDate, description, type }) => (
+  <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border-l-4 border-blue-500 hover:shadow-md transition-shadow duration-200">
+    <h4 className="font-bold text-lg text-gray-900 mb-1">{title}</h4>
+    <p className="text-blue-600 font-semibold mb-2">{company}</p>
+    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+      <FaCalendarAlt className="text-xs" />
+      <span>{formatDate(startDate)} - {formatDate(endDate)}</span>
+    </div>
+    {description && (
+      <div className="text-gray-700 text-sm whitespace-pre-line">
+        {description}
       </div>
-      <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${gradient} flex items-center justify-center`}>
-        <Icon className="w-6 h-6 text-white" />
-      </div>
-    </div>
-  </div>
-);
-
-const ExperienceCard = ({ experience }) => (
-  <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 p-6 rounded-xl hover:shadow-md transition-shadow">
-    <div className="flex items-start justify-between mb-2">
-      <h4 className="text-lg font-semibold text-gray-900">{experience.jobTitle}</h4>
-      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-        <FaBriefcase className="w-5 h-5 text-white" />
-      </div>
-    </div>
-    <p className="text-blue-700 font-medium mb-2">{experience.company}</p>
-    <div className="flex items-center gap-2 text-sm text-gray-600">
-      <FaCalendarAlt className="w-4 h-4" />
-      <span>{formatDate(experience.startDate)} - {formatDate(experience.endDate)}</span>
-    </div>
-  </div>
-);
-
-const EducationCard = ({ education }) => (
-  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 p-6 rounded-xl hover:shadow-md transition-shadow">
-    <div className="flex items-start justify-between mb-2">
-      <h4 className="text-lg font-semibold text-gray-900">{education.degree}</h4>
-      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-        <FaGraduationCap className="w-5 h-5 text-white" />
-      </div>
-    </div>
-    <p className="text-green-700 font-medium mb-2">{education.institution}</p>
-    <div className="flex items-center gap-2 text-sm text-gray-600">
-      <FaCalendarAlt className="w-4 h-4" />
-      <span>{formatDate(education.startDate)} - {formatDate(education.yearOfCompletion)}</span>
-    </div>
+    )}
   </div>
 );
 
 const DocumentCard = ({ title, url, type, icon: Icon }) => (
-  <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 p-4 rounded-xl hover:shadow-md transition-shadow">
+  <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-xl border-l-4 border-purple-500 hover:shadow-md transition-shadow duration-200">
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-yellow-600 rounded-lg flex items-center justify-center">
-          <Icon className="w-5 h-5 text-white" />
+        <div className="bg-gradient-to-br from-purple-100 to-indigo-100 p-3 rounded-lg">
+          <Icon className="text-lg text-purple-600" />
         </div>
         <div>
-          <h4 className="font-medium text-gray-900">{title}</h4>
-          <p className="text-sm text-gray-600">{type}</p>
+          <h4 className="font-semibold text-gray-900">{title}</h4>
+          <p className="text-xs text-gray-500">{type}</p>
         </div>
       </div>
       <a
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors font-medium"
+        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors font-medium"
       >
-        <FaDownload className="w-4 h-4" />
-        Download
+        {type === 'Link' ? 'View' : 'Download'}
       </a>
     </div>
   </div>
 );
 
-const ContactItem = ({ icon: Icon, label, value, href }) => (
-  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-      <Icon className="w-4 h-4 text-blue-600" />
+const EmptyState = ({ text }) => (
+  <div className="text-center py-12">
+    <div className="text-gray-400 mb-3">
+      <FaExclamationCircle className="text-4xl mx-auto" />
     </div>
-    <div className="flex-1">
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label}</p>
-      {href ? (
-        <a href={href} className="text-blue-600 hover:text-blue-700 font-medium">
-          {value}
-        </a>
-      ) : (
-        <p className="font-medium text-gray-900">{value}</p>
-      )}
-    </div>
+    <p className="text-gray-500 font-medium">{text}</p>
   </div>
 );
 
-const EmptyState = ({ message }) => (
-  <div className="text-center py-8">
-    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-      <FaFileAlt className="w-8 h-8 text-gray-400" />
-    </div>
-    <p className="text-gray-500">{message}</p>
-  </div>
-);
-
-export default ApplicantProfilePage;
+export default  ApplicantProfilePage;

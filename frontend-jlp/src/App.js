@@ -25,7 +25,6 @@ import ManageMiniTasks from './UserPages/ManageMiniTaskPage';
 import EditJob from './EmployerPages/EditJob';
 import  ApplicantProfilePage from './EmployerPages/ApplicantProfile';
 import EmployerProfile from './EmployerPages/EmployerProfile';
-import ApplicantProfileModal from './Components/EmployerDashboard/ApplicantsProfileModal';
 //import ChatModalPage from './UserPages/ChatModalPage';
 import FullChatPage from './UserPages/FullChatPage';
 import { ChatProvider } from './Context/ChatContext';
@@ -137,7 +136,7 @@ function App() {
       }/>
 
       <Route path='/employer/applicants' element={ <PrivateRoutes><NotificationProvider><Applicants/> </NotificationProvider></PrivateRoutes>}/>
-      <Route path='/employer/job/applicantprofile' element={ <PrivateRoutes><NotificationProvider>< ApplicantProfileModal /></NotificationProvider></PrivateRoutes>}/>
+      <Route path='/employer/job/applicantprofile' element={ <PrivateRoutes><NotificationProvider><ApplicantProfilePage /></NotificationProvider></PrivateRoutes>}/>
       <Route path='/v1/post_job/form' element={
          <PrivateRoutes>
           <UserProvider>
