@@ -133,7 +133,7 @@ useEffect(() => {
        md:transform-none md:${showFilters ? "show-sidebar" : ""}
      `} >
           <button className="close-button" onClick={() => setShowFilters(false)}>
-            <FaTimes style={{ color: "#fff" }} />
+            <FaTimes style={{ color: "#6b7280" }} />
           </button>
           <h2 style={{ color: "#fff" }}>Filters</h2>
 

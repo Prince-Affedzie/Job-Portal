@@ -129,6 +129,49 @@
   outline-offset: 2px;
   border-color: #2563eb;
 }
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 20px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #374151;
+  background-color: #f3f4f6;
+}
+
+.close-button:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  color: #374151;
+}
+
+.close-button:active {
+  background-color: #e5e7eb;
+  transform: scale(0.95);
+}
+
+/* Icon styling if using an icon font or SVG */
+.close-button .icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
   
   /* 🔹 Job Listings */
   .job-listings {
