@@ -6,6 +6,7 @@
   background: #0056b3;
   color: white;
   padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   width: 100%;
@@ -49,9 +50,13 @@
   display: block;
   padding: 8px 0;
 }
+.desktop-nav-links a.active {
+  border-bottom: 2px solid #a0d2ff;
+}
 
 .desktop-nav-links a:hover {
-  color: #f0f0f0;
+  color: #a0d2ff; /* Lighter blue */
+  transform: translateY(-1px); 
 }
 
 /* Mobile Nav Links */

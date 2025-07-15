@@ -7,7 +7,8 @@ import { MessageBubble } from "./MessageBubble"
 import { TypingIndicator } from './TypingIndicator';
 import { FilePreview } from './FilePreview'
 import { ReplyPreview } from './ReplyPreview'
-import  {MessageInput}  from './MessageInput'
+import { MessageInput } from './MessageInput'
+import { FileUploadProgress } from './FileUploadProgress' // New component
 
 // Main component
 const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
@@ -19,6 +20,11 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [replyTo, setReplyTo] = useState(null);
+  
+  // New state for file upload progress
+  const [uploadingFiles, setUploadingFiles] = useState(new Map());
+  const [fileUploadQueue, setFileUploadQueue] = useState([]);
+  
   const messageRefs = useRef({});
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -32,7 +38,7 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
   // Simplified scroll state management
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
-  const [pendingScroll, setPendingScroll] = useState(null); // 'bottom' | 'preserve' | null
+  const [pendingScroll, setPendingScroll] = useState(null);
   const userScrollTimeoutRef = useRef(null);
   const [currentRoomId, setCurrentRoomId] = useState(null);
   
@@ -46,11 +52,111 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
   const { fetchUserInfo, user } = useContext(userContext);
   const finalUser = currentUser || user;
 
+  // Generate unique ID for file uploads
+  const generateFileId = () => `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+  // File upload progress tracking
+  const updateFileProgress = useCallback((fileId, progress, status = 'uploading') => {
+    setUploadingFiles(prev => {
+      const newMap = new Map(prev);
+      const existing = newMap.get(fileId);
+      if (existing) {
+        newMap.set(fileId, { ...existing, progress, status });
+      }
+      return newMap;
+    });
+  }, []);
+
+  const removeFileFromUploads = useCallback((fileId) => {
+    setUploadingFiles(prev => {
+      const newMap = new Map(prev);
+      newMap.delete(fileId);
+      return newMap;
+    });
+  }, []);
+
+  // Enhanced file upload with progress tracking
+ const uploadFileWithProgress = useCallback(async (file, messageText = '', replyToMessage = null) => {
+  const fileId = generateFileId();
+  const fileData = {
+    id: fileId,
+    name: file.name,
+    size: file.size,
+    type: file.type,
+    progress: 0,
+    status: 'preparing',
+    startTime: Date.now()
+  };
+  
+  // Add to uploading files immediately
+  setUploadingFiles(prev => new Map(prev).set(fileId, fileData));
+  
+  try {
+    // Step 1: Get upload URL
+    updateFileProgress(fileId, 0, 'preparing');
+    const res = await handleChatFiles({ filename: file.name, contentType: file.type });
+    
+    if (res.status !== 200) {
+      throw new Error('Failed to get upload URL');
+    }
+
+    const { fileKey,fileUrl, publicUrl } = res.data;
+    console.log(res.data)
+    
+    // Step 2: Upload to S3 using your API function with progress tracking
+    updateFileProgress(fileId, 5, 'uploading');
+    
+    // Modify sendFileToS3 to accept progress callback
+    await sendFileToS3(
+        fileUrl,
+        file);
+    
+    // Step 3: Send message with file
+    updateFileProgress(fileId, 95, 'processing');
+    
+    const payload = {
+  senderId: finalUser._id,
+  roomId,
+  ...(messageText.trim() && { text: messageText.trim() }),  // Only include if not empty
+  mediaUrl: publicUrl,
+  fileName: file.name,
+  ...(replyToMessage?._id && { replyTo: replyToMessage._id }),
+};
+    
+    socket.emit('sendMessage', payload);
+    setText('');
+    setFile(null);
+    setIsSending(false);
+    setReplyTo(null);
+    
+    // Step 4: Mark as completed
+    updateFileProgress(fileId, 100, 'completed');
+    
+    // Remove from uploading files after a short delay
+    setTimeout(() => removeFileFromUploads(fileId), 2000);
+    
+    toast.success(`File "${file.name}" uploaded successfully!`);
+    return true;
+  } catch (error) {
+    console.error('File upload failed:', error);
+    updateFileProgress(fileId, 0, 'failed');
+    
+    const errorMessage = error.response?.data?.message || 
+                        error.message ||
+                        "Failed to upload file";
+    
+    toast.error(`Upload failed: ${errorMessage}`);
+    
+    // Remove failed upload after showing error
+    setTimeout(() => removeFileFromUploads(fileId), 5000);
+    return false;
+  }
+}, [finalUser._id, roomId, socket, updateFileProgress, removeFileFromUploads]);
   // Utility function to check if user is at bottom
   const checkIfAtBottom = useCallback(() => {
     if (!chatContainerRef.current) return false;
     const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-    return scrollHeight - scrollTop - clientHeight < 50; // Reduced threshold
+    return scrollHeight - scrollTop - clientHeight < 50;
   }, []);
 
   // Scroll to bottom function
@@ -67,14 +173,12 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
       element.scrollIntoView({ behavior: 'auto', block: 'center' });
       setInitialScrollSet(true);
     } else if (messages.length > 0 && !initialScrollSet) {
-      // If no last read message, scroll to bottom on initial load
       scrollToBottom('auto');
       setInitialScrollSet(true);
     }
   }, [lastReadMessageId, messages.length, initialScrollSet, scrollToBottom]);
 
   const findLastReadMessage = useCallback((messageList) => {
-    // Find the last message that the current user has seen
     for (let i = messageList.length - 1; i >= 0; i--) {
       const msg = messageList[i];
       if (msg.seenBy.includes(finalUser._id) && msg.sender._id !== finalUser._id) {
@@ -109,7 +213,6 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
     if (isFetchingMore || (append && !hasMoreMessages)) return;
     setIsFetchingMore(true);
     
-    // Store scroll position before fetching if appending older messages
     let previousScrollHeight = 0;
     let previousScrollTop = 0;
     if (append && chatContainerRef.current) {
@@ -125,15 +228,12 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
         setMessages((prev) => {
           let updatedMessages;
           if (append) {
-            // When appending older messages, filter out duplicates
             const existingIds = new Set(prev.map(msg => msg._id));
             const uniqueNewMessages = newMessages.filter(msg => !existingIds.has(msg._id));
             updatedMessages = [...uniqueNewMessages, ...prev];
           } else {
-            // For initial load, just set the messages
             updatedMessages = newMessages;
             
-            // Set initial scroll positioning data
             if (isInitialLoad) {
               const lastRead = findLastReadMessage(newMessages);
               const unread = identifyUnreadMessages(newMessages);
@@ -147,7 +247,6 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
         setNextCursor(nextCursor);
         setHasMoreMessages(hasMore);
         
-        // Mark messages as seen only if they're visible or user is at bottom
         const shouldMarkAsSeen = !isInitialLoad || checkIfAtBottom();
         
         if (shouldMarkAsSeen) {
@@ -158,11 +257,8 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
           });
         }
         
-        // Handle scroll positioning with proper timing
         if (append && chatContainerRef.current) {
-          // Set pending scroll to preserve position
           setPendingScroll('preserve');
-          // Use setTimeout to ensure DOM is updated
           setTimeout(() => {
             if (chatContainerRef.current && pendingScroll === 'preserve') {
               const newScrollHeight = chatContainerRef.current.scrollHeight;
@@ -187,14 +283,10 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
     }
   }, [roomId, finalUser._id, socket, isFetchingMore, hasMoreMessages, isInitialLoad, findLastReadMessage, identifyUnreadMessages, checkIfAtBottom, pendingScroll]);
 
-    if (isUserScrolling < 80 && hasMoreMessages) {
-    fetchMessages(nextCursor, true);
-    }
   // Reset state when room changes and fetch initial messages
   useEffect(() => {
     if (!finalUser?._id || !roomId) return;
     
-    // Only reset and fetch if the room actually changed
     if (roomId !== currentRoomId) {
       setCurrentRoomId(roomId);
       setMessages([]);
@@ -210,7 +302,11 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
       setInitialScrollSet(false);
       setIsInitialLoad(true);
       
-      fetchMessages(); // fetch initial batch
+      // Clear upload states when switching rooms
+      setUploadingFiles(new Map());
+      setFileUploadQueue([]);
+      
+      fetchMessages();
       socket.emit('joinRoom', { roomId });
     }
 
@@ -224,7 +320,6 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
   // Handle initial scroll positioning after messages are loaded
   useEffect(() => {
     if (!isLoading && messages.length > 0 && !initialScrollSet) {
-      // Small delay to ensure DOM is updated
       const timeoutId = setTimeout(() => {
         scrollToLastReadMessage();
       }, 100);
@@ -240,21 +335,17 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
       
       const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
       
-      // Don't interfere with scroll position preservation, but allow other scroll logic
       if (pendingScroll === 'preserve') return;
       
-      // Mark user as actively scrolling
       setIsUserScrolling(true);
       clearTimeout(userScrollTimeoutRef.current);
       userScrollTimeoutRef.current = setTimeout(() => {
         setIsUserScrolling(false);
-      }, 300); // Increased timeout for better UX
+      }, 300);
       
-      // Update bottom status
       const nowAtBottom = scrollHeight - scrollTop - clientHeight < 50;
       setIsAtBottom(nowAtBottom);
       
-      // Mark visible messages as seen when user scrolls to bottom
       if (nowAtBottom && unreadMessages.length > 0) {
         unreadMessages.forEach(msg => {
           socket.emit('markAsSeen', { messageId: msg._id, userId: finalUser._id });
@@ -262,7 +353,6 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
         setUnreadMessages([]);
       }
       
-      // Load older messages when scrolled to top (only if not fetching)
       if (scrollTop < 80 && hasMoreMessages && !isFetchingMore) {
         fetchMessages(nextCursor, true);
       }
@@ -319,23 +409,19 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
     const handleReceiveMessage = (newMsg) => {
       if (newMsg.room === roomId) {
         setMessages((prev) => {
-          // Check if message already exists to prevent duplicates
           const messageExists = prev.some(msg => msg._id === newMsg._id);
           if (messageExists) return prev;
           
           return [...prev, newMsg];
         });
         
-        // Handle scroll behavior for new messages
         const wasAtBottom = checkIfAtBottom();
         const isOwnMessage = newMsg.sender._id === finalUser._id;
         
         if (wasAtBottom || isOwnMessage) {
-          // Scroll to bottom if user was at bottom or sent the message
           setPendingScroll('bottom');
           socket.emit('markAsSeen', { messageId: newMsg._id, userId: finalUser._id });
         } else {
-          // Add to unread messages if not at bottom
           setUnreadMessages(prev => [...prev, newMsg]);
         }
       }
@@ -394,8 +480,8 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
     }
   }, [pendingScroll, isUserScrolling, scrollToBottom]);
 
-  // Message handlers
-  const handleSend = async (e) => {
+  // Enhanced message send handler
+   const handleSend = async (e) => {
     if (e) e.preventDefault();
     if ((!text.trim() && !file) || isSending) return;
 
@@ -406,15 +492,7 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
 
     if (file) {
       try {
-        const res = await handleChatFiles({ filename: file.name, contentType: file.type });
-        if (res.status === 200) {
-          const { fileUrl, publicUrl } = res.data;
-          console.log(res.data);
-
-          await sendFileToS3(fileUrl, file);
-          fileurl = publicUrl;
-          fileName = file.name;
-        }
+        await uploadFileWithProgress(file, text.trim(), replyTo);
       } catch (error) {
         const errorMessage =
           error.response?.data?.message ||
@@ -426,6 +504,7 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
         setPendingScroll(null);
         return;
       }
+      return;
     }
 
     const payload = {
@@ -470,17 +549,14 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
 
   const handleReply = (message) => {
     setReplyTo(message);
-    // Focus on the text input
     const textarea = document.querySelector('textarea');
     if (textarea) textarea.focus();
   };
 
-  
-  // Function to scroll to latest messages (for unread message indicator)
+  // Function to scroll to latest messages
   const scrollToLatestMessages = () => {
     setPendingScroll('bottom');
     
-    // Mark all unread messages as seen
     unreadMessages.forEach(msg => {
       socket.emit('markAsSeen', { messageId: msg._id, userId: finalUser._id });
     });
@@ -491,7 +567,7 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
 
   return (
     <div className="flex flex-col h-full w-full bg-gray-900 overflow-hidden">
-      {/* Chat Header - Fixed height with responsive padding */}
+      {/* Chat Header */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-2 sm:px-4 py-2 sm:py-3 border-b border-blue-800 shadow-md flex items-center justify-between flex-shrink-0 min-h-[3rem] sm:min-h-[4rem]">
         {onBack && (
           <button
@@ -522,7 +598,7 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
         )}
       </div>
 
-      {/* Messages Area - Takes remaining space with proper scrolling */}
+      {/* Messages Area */}
       <div 
         ref={chatContainerRef}
         className="flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-4 space-y-1 bg-gradient-to-b from-gray-50 to-white relative"
@@ -544,12 +620,6 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
               <div className="flex justify-end gap-2">
                 <div className="flex-1 py-1 flex flex-col items-end min-w-0">
                   <div className="w-3/4 h-3 sm:h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
-                  <div className="w-1/2 h-3 sm:h-4 bg-gray-200 rounded animate-pulse"></div>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 rounded-full animate-pulse flex-shrink-0"></div>
-                <div className="flex-1 py-1 min-w-0">
                   <div className="w-1/2 h-3 sm:h-4 bg-gray-200 rounded animate-pulse"></div>
                 </div>
               </div>
@@ -581,9 +651,18 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
                 currentUser={finalUser}
                 socket={socket}
                 messageRef={(el) => (messageRefs.current[msg._id] = el)}
-                
               />
             ))}
+            
+            {/* File Upload Progress Components */}
+            {Array.from(uploadingFiles.entries()).map(([fileId, fileData]) => (
+              <FileUploadProgress
+                key={fileId}
+                fileData={fileData}
+                onCancel={() => removeFileFromUploads(fileId)}
+              />
+            ))}
+            
             {isTyping && <TypingIndicator />}
           </>
         )}
@@ -605,30 +684,31 @@ const ChatWindow = ({ roomId, socket, currentUser, onlineUserIds, onBack }) => {
         )}
       </div>
 
-      {/* File Preview - Conditional with max height */}
+      {/* File Preview */}
       {file && (
         <div className="flex-shrink-0 max-h-32 overflow-hidden border-t border-gray-200">
-          <FilePreview file={file} onClear={() => setFile(null)} />
+          <FilePreview file={file} onClear={() => setFile(null)}  />
         </div>
       )}
 
-      {/* Reply Preview - Conditional with max height */}
+      {/* Reply Preview */}
       {replyTo && (
         <div className="flex-shrink-0 max-h-20 overflow-hidden border-t border-gray-200">
           <ReplyPreview replyTo={replyTo} onClear={() => setReplyTo(null)} />
         </div>
       )}
 
-      {/* Message Input - Fixed at bottom */}
-      <div className="flex-shrink-0 border-t border-gray-200 bg-white">
+      {/* Message Input */}
+      <div className="flex-shrink-0 bg-white">
         <MessageInput
           text={text}
           setText={setText}
           handleSend={handleSend}
           handleTyping={handleTyping}
           triggerFileInput={triggerFileInput}
-          disabled={isSending || (!text.trim() && !file)}
+          disabled={isSending }
           hasFile={!!file}
+          isUploading={uploadingFiles.size > 0}
         />
       </div>
 
