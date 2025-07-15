@@ -7,7 +7,9 @@
   --cta-color: #4f46e5;
   --cta-hover: #4338ca;
   --notification-badge: #ef4444;
-  --mobile-menu-bg: #2563eb;
+  --mobile-menu-bg: #ffffff;
+  --mobile-text-color: #374151;
+  --mobile-text-hover: #2563eb;
   --active-indicator: #93c5fd;
   --transition-speed: 0.3s;
 }
@@ -219,7 +221,7 @@
 }
 
 .mobile-nav-link {
-  color: var(--text-color);
+  color: var(--mobile-text-color);
   text-decoration: none;
   font-size: 1.1rem;
   font-weight: 500;
@@ -234,14 +236,14 @@
 }
 
 .mobile-nav-link:hover {
-  color: #a5b4fc;
-  background-color: rgba(165, 180, 252, 0.1);
+  color: var(--mobile-text-hover);
+  background-color: rgba(37, 99, 235, 0.1);
 }
 
 .mobile-nav-link.active {
-  color: #a5b4fc;
-  background-color: rgba(165, 180, 252, 0.15);
-  border-left: 4px solid var(--active-indicator);
+  color: var(--mobile-text-hover);
+  background-color: rgba(37, 99, 235, 0.15);
+  border-left: 4px solid var(--primary-color);
 }
 
 .mobile-cta-link {
@@ -271,12 +273,12 @@
   gap: 0.5rem;
   margin-top: 2.5rem;
   padding-top: 1.0rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(55, 65, 81, 0.2);
 }
 
 .mobile-notification-icon,
 .mobile-dashboard-icon {
-  color: var(--text-color);
+  color: var(--mobile-text-color);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -291,8 +293,8 @@
 
 .mobile-notification-icon:hover,
 .mobile-dashboard-icon:hover {
-  color: #a5b4fc;
-  background-color: rgba(165, 180, 252, 0.1);
+  color: var(--mobile-text-hover);
+  background-color: rgba(37, 99, 235, 0.1);
 }
 
 .mobile-notification-badge {

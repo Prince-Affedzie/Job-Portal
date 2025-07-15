@@ -86,35 +86,58 @@
   }
   
   /* Sidebar */
-  .mini-task-sidebar {
-    width: 250px;
-    height:250px;
-    background: #1e40af;
-    padding: 20px;
-    border-radius: 8px;
-    position: relative;
-  }
-  .mini-task-sidebar h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  .mini-task-sidebar select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-  }
-  
-  .mini-task-close-btn {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    display: none; /* Hidden by default on large screens */
-  }
+ .mini-task-sidebar {
+  width: 250px;
+  height: 250px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.mini-task-sidebar h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #374151;
+}
+
+.mini-task-sidebar select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  color: #374151;
+}
+
+.mini-task-sidebar select:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-color: #2563eb;
+}
+
+.mini-task-close-btn {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 20px;
+  cursor: pointer;
+  display: none; /* Hidden by default on large screens */
+  transition: color 0.2s ease;
+}
+
+.mini-task-close-btn:hover {
+  color: #374151;
+}
+
+.mini-task-close-btn:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
   
   /* Task List (One Row per Task) */
   .mini-task-list {
