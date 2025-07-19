@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { employerSignUp } from '../APIS/API'; // Adjust this path as needed
+import { employerSignUp,sendFileToS3 } from '../APIS/API'; // Adjust this path as needed
 import 'react-toastify/dist/ReactToastify.css';
 import ProcessingOverlay from '../Components/MyComponents/ProcessingOverLay';
 
@@ -54,6 +54,8 @@ const EmployerOnboarding = () => {
     try {
       const response = await employerSignUp(data); // API must handle FormData
       if (response.status === 200) {
+        const { uploadUrl } = response.data;
+        await sendFileToS3(uploadUrl, formData.businessDocs);
         toast.success('Profile completed successfully!');
         setTimeout(() => {
           navigate('/employer/dashboard');
