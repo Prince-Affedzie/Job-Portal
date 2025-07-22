@@ -2,68 +2,68 @@ import './App.css';
 import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
 import RouteProtection from './Utils/checkIfLoggedIn';
 import AdminRoutes from './Utils/AdminRouteProtection';
-import LandingPage from './UserPages/LandingPage';
-import Signup from './UserPages/SignUpPage';
-import ProfileCompletion from './UserPages/ProfileCompletion';
-import Login from './UserPages/LoginPage';
-import ForgotPasswordPage from './UserPages/ForgotPassword';
-import ResetPasswordPage from './UserPages/ResetPassword'
-import JobSeekerDashboard from './UserPages/JobSeekerDashboard';
-import JobListings from './UserPages/RegularJobListings';
-import EmployerDashboard from './EmployerPages/EmployerDashboard';
-import EmployerJobs from './EmployerPages/EmployerJobs';
-import Applicants from './EmployerPages/Applicants';
-import PostJobForm from './EmployerPages/JobPostingForm';
-import JobDetails from './UserPages/JobDetailsPage';
+import LandingPage from './Pages/UserPages/LandingPage';
+import Signup from './Pages/UserPages/SignUpPage';
+import ProfileCompletion from './Pages/UserPages/ProfileCompletion';
+import Login from './Pages/UserPages/LoginPage';
+import ForgotPasswordPage from './Pages/UserPages/ForgotPassword';
+import ResetPasswordPage from './Pages/UserPages/ResetPassword'
+import JobSeekerDashboard from './Pages/UserPages/JobSeekerDashboard';
+import JobListings from './Pages/UserPages/RegularJobListings';
+import EmployerDashboard from './Pages/EmployerPages/EmployerDashboard';
+import EmployerJobs from './Pages/EmployerPages/EmployerJobs';
+import Applicants from './Pages/EmployerPages/Applicants';
+import PostJobForm from './Pages/EmployerPages/JobPostingForm';
+import JobDetails from './Pages/UserPages/JobDetailsPage';
 import { UserProvider } from './Context/FetchUser';
 import { JobsContextProvider } from './Context/EmployerContext1';
-import PostMiniTask from './UserPages/MiniTaskForm';
-import MiniTaskPage from './UserPages/MiniTaskListings';
-import ViewApplications from './UserPages/ViewApplications';
-import EditProfile from './UserPages/EditProfile';
-import ManageMiniTasks from './UserPages/ManageMiniTaskPage';
-import EditJob from './EmployerPages/EditJob';
-import  ApplicantProfilePage from './EmployerPages/ApplicantProfile';
-import EmployerProfile from './EmployerPages/EmployerProfile';
+import PostMiniTask from './Pages/UserPages/MiniTaskForm';
+import MiniTaskPage from './Pages/UserPages/MiniTaskListings';
+import ViewApplications from './Pages/UserPages/ViewApplications';
+import EditProfile from './Pages/UserPages/EditProfile';
+import ManageMiniTasks from './Pages/UserPages/ManageMiniTaskPage';
+import EditJob from './Pages/EmployerPages/EditJob';
+import  ApplicantProfilePage from './Pages/EmployerPages/ApplicantProfile';
+import EmployerProfile from './Pages/EmployerPages/EmployerProfile';
 //import ChatModalPage from './UserPages/ChatModalPage';
-import FullChatPage from './UserPages/FullChatPage';
+import FullChatPage from './Pages/UserPages/FullChatPage';
 import { ChatProvider } from './Context/ChatContext';
 import {NotificationProvider} from './Context/NotificationContext'
 import PrivateRoutes from './Utils/PrivateRoute';
-import NotificationsPage from './UserPages/NotificationPage';
-import EmployerNotificationsPage from './EmployerPages/EmployerNotificationPage';
-import JobApplicantsPage from './EmployerPages/JobApplicantsPage';
-import EmployerOnboarding from './EmployerPages/EmployerOnboarding';
-import MyMiniTaskApplications from './UserPages/UserAppliedMiniTask';
+import NotificationsPage from './Pages/UserPages/NotificationPage';
+import EmployerNotificationsPage from './Pages/EmployerPages/EmployerNotificationPage';
+import JobApplicantsPage from './Pages/EmployerPages/JobApplicantsPage';
+import EmployerOnboarding from './Pages/EmployerPages/EmployerOnboarding';
+import MyMiniTaskApplications from './Pages/UserPages/UserAppliedMiniTask';
 import ApplicantsPage from './Components/MiniTaskManagementComponents/ApplicantsPage';
-import MiniTaskInfo from './UserPages/MiniTaskInfo';
+import MiniTaskInfo from './Pages/UserPages/MiniTaskInfo';
 
 import { AdminProvider } from './Context/AdminContext';
 
 
-import AdminDashboard from './AdminPages/AdminDashboard';
-import AdminUserManagement  from './AdminPages/UsersManagement';
-import AdminUserDetails from './AdminPages/UserInfo';
-import AdminEditUserPage from './AdminPages/AdminEditUser';
-import AdminJobManagementDashboard from './AdminPages/AdminJobManagement';
-import JobDetailsAdminView from './AdminPages/JobInfo';
-import ViewApplicantsAdmin from './AdminPages/AdminViewJobApplicants';
-import AdminEditJob from './AdminPages/AdminEditJob';
-import AdminEmployerList from './AdminPages/AdminViewEmployerProfiles';
-import AdminEmployerDetail from './AdminPages/AdminViewEmployerProfileDetails';
-import AdminManageMiniTasks from './AdminPages/AdminMiniTaskManagement';
-import AdminMiniTaskDetailPage from './AdminPages/MiniTaskInfo';
-import AdminEditMiniTaskPage from './AdminPages/AdminEditMiniTaskPage'
-import AdminLogin from './AdminPages/AdminLogin';
-import AdminAddUserForm from './AdminPages/AdminAddNewUser'
-import DisputeAdminDashboard from  './AdminPages/AdminViewReports'
+import AdminDashboard from './Pages/AdminPages/AdminDashboard';
+import AdminUserManagement  from './Pages/AdminPages/UsersManagement';
+import AdminUserDetails from './Pages/AdminPages/UserInfo';
+import AdminEditUserPage from './Pages/AdminPages/AdminEditUser';
+import AdminJobManagementDashboard from './Pages/AdminPages/AdminJobManagement';
+import JobDetailsAdminView from './Pages/AdminPages/JobInfo';
+import ViewApplicantsAdmin from './Pages/AdminPages/AdminViewJobApplicants';
+import AdminEditJob from './Pages/AdminPages/AdminEditJob';
+import AdminEmployerList from './Pages/AdminPages/AdminViewEmployerProfiles';
+import AdminEmployerDetail from './Pages/AdminPages/AdminViewEmployerProfileDetails';
+import AdminManageMiniTasks from './Pages/AdminPages/AdminMiniTaskManagement';
+import AdminMiniTaskDetailPage from './Pages/AdminPages/MiniTaskInfo';
+import AdminEditMiniTaskPage from './Pages/AdminPages/AdminEditMiniTaskPage'
+import AdminLogin from './Pages/AdminPages/AdminLogin';
+import AdminAddUserForm from './Pages/AdminPages/AdminAddNewUser'
+import DisputeAdminDashboard from  './Pages/AdminPages/AdminViewReports'
 import {EmployerProfileProvider} from './Context/EmployerProfileContext'
 import PostEligibilityGate from './Utils/MiniJobPostEligiblityGate'
 import EmployerPostEligibilityGate from './Utils/EmployerJobPostEligibilityGate'
-import AdminViewMiniTaskApplicants from './AdminPages/MiniTaskApplicants'
-import FreelancerSubmissions from  './UserPages/TaskSubmissions'
-import ClientViewSubmissions from './UserPages/ClientViewTaskSubmissions'
-import  ChatPage from './UserPages/ChatPage'
+import AdminViewMiniTaskApplicants from './Pages/AdminPages/MiniTaskApplicants'
+import FreelancerSubmissions from  './Pages/UserPages/TaskSubmissions'
+import ClientViewSubmissions from './Pages/UserPages/ClientViewTaskSubmissions'
+import  ChatPage from './Pages/UserPages/ChatPage'
 
 
 
