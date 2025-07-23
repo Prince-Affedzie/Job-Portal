@@ -1,7 +1,7 @@
 import './App.css';
 import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
-import RouteProtection from './Utils/checkIfLoggedIn';
-import AdminRoutes from './Utils/AdminRouteProtection';
+import RouteProtection from './Services/auth/checkIfLoggedIn';
+import AdminRoutes from './Services/auth//AdminRouteProtection';
 import LandingPage from './Pages/UserPages/LandingPage';
 import Signup from './Pages/UserPages/SignUpPage';
 import ProfileCompletion from './Pages/UserPages/ProfileCompletion';
@@ -29,7 +29,7 @@ import EmployerProfile from './Pages/EmployerPages/EmployerProfile';
 import FullChatPage from './Pages/UserPages/FullChatPage';
 import { ChatProvider } from './Context/ChatContext';
 import {NotificationProvider} from './Context/NotificationContext'
-import PrivateRoutes from './Utils/PrivateRoute';
+import PrivateRoutes from './Services/auth/PrivateRoute';
 import NotificationsPage from './Pages/UserPages/NotificationPage';
 import EmployerNotificationsPage from './Pages/EmployerPages/EmployerNotificationPage';
 import JobApplicantsPage from './Pages/EmployerPages/JobApplicantsPage';
@@ -58,8 +58,8 @@ import AdminLogin from './Pages/AdminPages/AdminLogin';
 import AdminAddUserForm from './Pages/AdminPages/AdminAddNewUser'
 import DisputeAdminDashboard from  './Pages/AdminPages/AdminViewReports'
 import {EmployerProfileProvider} from './Context/EmployerProfileContext'
-import PostEligibilityGate from './Utils/MiniJobPostEligiblityGate'
-import EmployerPostEligibilityGate from './Utils/EmployerJobPostEligibilityGate'
+import PostEligibilityGate from './Services/auth/MiniJobPostEligiblityGate'
+import EmployerPostEligibilityGate from './Services/auth/EmployerJobPostEligibilityGate'
 import AdminViewMiniTaskApplicants from './Pages/AdminPages/MiniTaskApplicants'
 import FreelancerSubmissions from  './Pages/UserPages/TaskSubmissions'
 import ClientViewSubmissions from './Pages/UserPages/ClientViewTaskSubmissions'

@@ -22,10 +22,10 @@ import {
   FaChevronDown,
   FaChevronUp
 } from "react-icons/fa";
-import Navbar from "../../Components/MyComponents/Navbar";
+import Navbar from "../../Components/Common/Navbar";
 import { getJobDetails, applyToJob, sendFileToS3 } from "../../APIS/API";
-import ProcessingOverlay from "../../Components/MyComponents/ProcessingOverLay";
-import CoverLetterField from "../../Components/MyComponents/coverLetter";
+import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
+import CoverLetterField from "../../Components/Common/coverLetter";
 
 const JobDetails = () => {
     const { id } = useParams();

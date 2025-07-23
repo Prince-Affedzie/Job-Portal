@@ -14,8 +14,8 @@ import {
 import 'stream-chat-react/dist/css/v2/index.css';
 import { authenticateChat } from '../../APIS/API';
 import { ChatContext } from '../../Context/ChatContext';
-import Navbar from '../../Components/MyComponents/Navbar';
-import Footer from '../../Components/MyComponents/Footer';
+import Navbar from '../../Components/Common/Navbar';
+import Footer from '../../Components/Common/Footer';
 import '../../Styles/FullChats.css'
 import { 
   FaSearch, 

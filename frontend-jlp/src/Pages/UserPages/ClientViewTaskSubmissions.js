@@ -19,7 +19,7 @@ import { clientgetTaskSubmissions, reviewSubmission, getPreviewUrl } from '../..
 import { useParams, Link } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Navbar from '../../Components/MyComponents/Navbar';
+import Navbar from '../../Components/Common/Navbar';
 import SubmittedFiles from '../../Components/MiniTaskManagementComponents/SubmittedFiles';
 
 const ClientViewSubmissions = () => {

@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { FaSearch, FaFilter, FaClock, FaDollarSign, FaTimes,FaMoneyBillWave,FaMapMarkerAlt  } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import "../../Styles/JobListings.css";
-import Navbar from "../../Components/MyComponents/Navbar";
-import Footer from "../../Components/MyComponents/Footer";
+import Navbar from "../../Components/Common/Navbar";
+import Footer from "../../Components/Common/Footer";
 import { getJobs } from "../../APIS/API"; // API function
 import moment from "moment";
 import debounce from "lodash.debounce"; // Optimize API calls
-import Pagination from "../../Components/MyComponents/Pagination";
+import Pagination from "../../Components/Common/Pagination";
 
 const JobListings = () => {
   const [jobs, setJobs] = useState([]);

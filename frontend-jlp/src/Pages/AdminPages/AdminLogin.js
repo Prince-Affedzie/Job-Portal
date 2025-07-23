@@ -5,7 +5,7 @@ import { adminLogin } from "../../APIS/API";
 import { useAuth } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-import RequestStatusIndicator from "../../Components/MyComponents/RequestStatusIndicator";
+import RequestStatusIndicator from "../../Components/Common/RequestStatusIndicator";
 
 const AdminLogin = () => {
   const navigate = useNavigate();

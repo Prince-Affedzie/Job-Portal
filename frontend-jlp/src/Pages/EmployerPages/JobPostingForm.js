@@ -5,8 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../Styles/PostJobForm.css";
 import { addJob } from "../../APIS/API";
 import EmployerNavbar from "../../Components/EmployerDashboard/EmployerNavbar";
-import Footer from "../../Components/MyComponents/Footer";
-import ProcessingOverlay from "../../Components/MyComponents/ProcessingOverLay";
+import Footer from "../../Components/Common/Footer";
+import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 
 const PostJobForm = () => {
     const navigate = useNavigate();

@@ -8,9 +8,9 @@ import ViewTaskModal from "../../Components/MiniTaskManagementComponents/ViewTas
 import ApplicantsPage from "../../Components/MiniTaskManagementComponents/ApplicantsPage";
 import AssignApplicantModal from "../../Components/MiniTaskManagementComponents/AssignApplicantsModal";
 import EditMiniTaskForm from "../../Components/MiniTaskManagementComponents/EditMiniTaskForm";
-import Navbar from "../../Components/MyComponents/Navbar";
+import Navbar from "../../Components/Common/Navbar";
 import "../../Styles/ManageMiniTasks.css";
-import ProcessingOverlay from "../../Components/MyComponents/ProcessingOverLay";
+import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 
 const ManageMiniTasks = () => {
   const navigate = useNavigate();

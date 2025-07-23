@@ -2,16 +2,16 @@
 // MyMiniTaskApplications.jsx
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { userContext } from "../../Context/FetchUser";
-import Navbar from '../../Components/MyComponents/Navbar';
+import Navbar from '../../Components/Common/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard,raiseDispute, rejectMiniTaskAssignment } from '../../APIS/API';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaTrash, FaFilter, FaCheck, FaArrowUp, FaArrowDown, FaClock, FaMapMarkerAlt, FaDollarSign,FaFlag, FaBuilding,FaUser, FaPhone, FaEye, FaUpload, FaComments, FaTimes, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
-import WorkSubmissionModal from '../../Components/MyComponents/WorkSubmissionModal';
+import WorkSubmissionModal from '../../Components/Common/WorkSubmissionModal';
 import StartChatButton from '../../Components/MessagingComponents/StartChatButton';
-import  TaskActions from '../../Components/MyComponents/MiniTaskActionButtons';
-import Pagination from "../../Components/MyComponents/Pagination";
+import  TaskActions from '../../Components/MiniTaskManagementComponents/MiniTaskActionButtons';
+import Pagination from "../../Components/Common/Pagination";
 
 
 const MyMiniTaskApplications = () => {

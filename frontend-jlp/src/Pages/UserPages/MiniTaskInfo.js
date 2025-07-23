@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getMiniTaskInfo, applyToMiniTask } from "../../APIS/API";
-import Navbar from "../../Components/MyComponents/Navbar";
+import Navbar from "../../Components/Common/Navbar";
 import '../../Styles/MiniTaskInfo.css';
 
-import ProcessingOverlay from "../../Components/MyComponents/ProcessingOverLay";
+import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 import {FaCheckCircle,FaHandPointer,FaClock}  from "react-icons/fa"
 
 

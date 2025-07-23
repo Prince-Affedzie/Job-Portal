@@ -6,7 +6,7 @@ import { useAuth } from "../../Context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { FiMail, FiLock, FiUserPlus } from 'react-icons/fi';
-import RequestStatusIndicator from "../../Components/MyComponents/RequestStatusIndicator";
+import RequestStatusIndicator from "../../Components/Common/RequestStatusIndicator";
 
 const Login = () => {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FaBars, FaTimes, FaBell } from "react-icons/fa";
 import { TbLayoutDashboard } from "react-icons/tb";
 import { notificationContext } from '../../Context/NotificationContext';
-import "./Navbar.css";
+import "../../Styles/Navbar.css";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);

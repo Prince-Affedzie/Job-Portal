@@ -8,7 +8,7 @@ import ChatWindow from '../../Components/MessagingComponents/ChatWindow';
 import { Loader2 } from 'lucide-react';
 import { userContext } from "../../Context/FetchUser";
 import { getAllChatRooms } from '../../APIS/API';
-import Navbar from '../../Components/MyComponents/Navbar';
+import Navbar from '../../Components/Common/Navbar';
 
 const ChatPage = () => {
   const { roomId } = useParams();

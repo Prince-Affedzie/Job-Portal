@@ -5,8 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { useLocation, useParams } from "react-router-dom";
 import { assignApplicantToTask } from "../../APIS/API";
-import Navbar from "../MyComponents/Navbar";
-import ProcessingOverlay from "../MyComponents/ProcessingOverLay";
+import Navbar from "../Common/Navbar";
+import ProcessingOverlay from "../Common/ProcessingOverLay";
 import StartChatButton from "../MessagingComponents/StartChatButton";
 
 const ApplicantsPage = () => {

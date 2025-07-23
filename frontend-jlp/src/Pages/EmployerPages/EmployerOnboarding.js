@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { employerSignUp,sendFileToS3 } from '../../APIS/API'; // Adjust this path as needed
 import 'react-toastify/dist/ReactToastify.css';
-import ProcessingOverlay from '../../Components/MyComponents/ProcessingOverLay';
+import ProcessingOverlay from '../../Components/Common/ProcessingOverLay';
 
 const EmployerOnboarding = () => {
   const navigate = useNavigate();

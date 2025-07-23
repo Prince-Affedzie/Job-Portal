@@ -2,7 +2,7 @@
 import React, { useContext, useEffect } from 'react';
 import { notificationContext } from '../../Context/NotificationContext';
 import { FaBell, FaClock } from 'react-icons/fa';
-import Navbar from '../../Components/MyComponents/Navbar';
+import Navbar from '../../Components/Common/Navbar';
 import { markNotificationAsRead } from '../../APIS/API';
 
 const NotificationsPage = () => {

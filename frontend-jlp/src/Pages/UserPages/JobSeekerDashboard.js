@@ -15,10 +15,10 @@ import {
   MdOutlineWarning,
   MdDashboard
 } from "react-icons/md";
-import Navbar from "../../Components/MyComponents/Navbar";
+import Navbar from "../../Components/Common/Navbar";
 import { userContext } from "../../Context/FetchUser";
 import { notificationContext } from "../../Context/NotificationContext";
-import VerifyTooltip from "../../Components/MyComponents/VerifyToolTip";
+import VerifyTooltip from "../../Components/Common/VerifyToolTip";
 
 const JobSeekerDashboard = () => {
   const navigate = useNavigate();

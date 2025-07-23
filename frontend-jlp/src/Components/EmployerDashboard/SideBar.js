@@ -59,7 +59,7 @@ const EmployerSidebar = () => {
     { 
       to: "/employer/jobs", 
       icon: FaBriefcase, 
-      label: "Jobs",
+      label: "My Jobs",
       gradient: "from-purple-500 to-pink-400",
       hoverGradient: "from-purple-400 to-pink-300",
       bgGradient: "from-purple-500/20 to-pink-400/20"

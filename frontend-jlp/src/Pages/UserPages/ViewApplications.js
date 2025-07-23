@@ -20,9 +20,9 @@ import {
   FaUserTie
 } from "react-icons/fa";
 import moment from "moment";
-import Navbar from "../../Components/MyComponents/Navbar";
+import Navbar from "../../Components/Common/Navbar";
 import { getRecentApplications } from "../../APIS/API";
-import Pagination from "../../Components/MyComponents/Pagination";
+import Pagination from "../../Components/Common/Pagination";
 
 const ViewApplications = () => {
   const navigate = useNavigate()

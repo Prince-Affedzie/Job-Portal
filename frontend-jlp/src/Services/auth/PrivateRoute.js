@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Outlet,Navigate } from "react-router-dom";
-import { useAuth } from "../Context/AuthContext";
+import { useAuth } from "../../Context/AuthContext";
 
 const PrivateRoutes =({children})=>{
     const {role} = useAuth()

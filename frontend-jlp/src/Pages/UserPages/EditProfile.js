@@ -6,10 +6,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../Styles/EditProfile.css";
 import { modifyProfile, uploadImage  } from "../../APIS/API";
-import Navbar from "../../Components/MyComponents/Navbar";
-import Footer from "../../Components/MyComponents/Footer";
-import ProcessingOverlay from "../../Components/MyComponents/ProcessingOverLay";
-import { LoadingSkeleton,Modal } from "../../Utils/LoadingSkeleton";
+import Navbar from "../../Components/Common/Navbar";
+import Footer from "../../Components/Common/Footer";
+import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
+import { LoadingSkeleton,Modal } from "../../Components/Ui/LoadingSkeleton";
 
 const EditProfile = () => {
   const { user, setUser, fetchUserInfo, loading, setLoading } = useContext(userContext);

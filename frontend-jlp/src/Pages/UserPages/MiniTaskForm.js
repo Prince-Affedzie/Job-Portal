@@ -4,10 +4,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../Styles/MiniTaskForm.css";
 import { postMiniTask } from "../../APIS/API";
-import Navbar from "../../Components/MyComponents/Navbar";
-import Footer from "../../Components/MyComponents/Footer";
-import ProcessingOverlay from "../../Components/MyComponents/ProcessingOverLay";
-import VerifyTooltip from "../../Components/MyComponents/VerifyToolTip";
+import Navbar from "../../Components/Common/Navbar";
+import Footer from "../../Components/Common/Footer";
+import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
+import VerifyTooltip from "../../Components/Common/VerifyToolTip";
 import { userContext } from "../../Context/FetchUser";
 
 const PostMiniTask = () => {

@@ -3,20 +3,20 @@ import { FaSearch, FaClock, FaFilter, FaTimes,FaCheckCircle } from "react-icons/
 import { useNavigate } from "react-router-dom";
 import { getMiniTasks } from "../../APIS/API";
 import "../../Styles/MiniTaskPage.css";
-import Navbar from "../../Components/MyComponents/Navbar";
-import Footer from "../../Components/MyComponents/Footer";
+import Navbar from "../../Components/Common/Navbar";
+import Footer from "../../Components/Common/Footer";
 import moment from "moment";
 import debounce from "lodash.debounce"; 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SkeletonLoader from "../../Components/MyComponents/SkeletonLoader";
-import MiniTaskDetailsModal from "../../Components/MyComponents/MiniTaskDetailsModal";
+import SkeletonLoader from "../../Components/Common/SkeletonLoader";
+import MiniTaskDetailsModal from "../../Components/Common/MiniTaskDetailsModal";
 import { applyToMiniTask } from "../../APIS/API";
-import RequestStatusIndicator from "../../Components/MyComponents/RequestStatusIndicator";
-import LoadingButton from "../../Components/MyComponents/LoadingButton";
+import RequestStatusIndicator from "../../Components/Common/RequestStatusIndicator";
+import LoadingButton from "../../Components/Common/LoadingButton";
 import { useRequestStatus } from "../../hooks/useRequestStatus";
-import ProcessingOverlay from "../../Components/MyComponents/ProcessingOverLay";
-import Pagination from "../../Components/MyComponents/Pagination";
+import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
+import Pagination from "../../Components/Common/Pagination";
 
 const MiniTaskPage = () => {
   const navigate = useNavigate()

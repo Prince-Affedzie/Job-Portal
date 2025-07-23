@@ -6,7 +6,7 @@ import { signUp } from "../../APIS/API";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FiUser, FiMail, FiLock, FiBriefcase, FiSearch } from "react-icons/fi";
 import { useAuth } from "../../Context/AuthContext";
-import RequestStatusIndicator from "../../Components/MyComponents/RequestStatusIndicator";
+import RequestStatusIndicator from "../../Components/Common/RequestStatusIndicator";
 
 const Signup = () => {
   const navigate = useNavigate();

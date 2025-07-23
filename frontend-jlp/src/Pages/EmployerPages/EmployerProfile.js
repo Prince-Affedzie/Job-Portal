@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../Styles/EmployerProfile.css";
 import EmployerNavbar from '../../Components/EmployerDashboard/EmployerNavbar';
-import Footer from "../../Components/MyComponents/Footer";
+import Footer from "../../Components/Common/Footer";
 import { userContext } from "../../Context/FetchUser";
 import {modifyProfile,uploadImage } from '../../APIS/API'
 import { useEmployerProfileContext } from "../../Context/EmployerProfileContext";
