@@ -23,7 +23,7 @@ export const modifyProfile = (formData) =>
 
 
 export const uploadImage = (file) => {
-    console.log(file)
+    
     const form = new FormData();
     form.append("profileImage", file);
     for (let pair of form.entries()) {
@@ -34,6 +34,8 @@ export const uploadImage = (file) => {
       headers: { "Content-Type": "multipart/form-data" },
     });
   };
+
+export const addPortfolio = (data)=>API.post("/api/user/upload_portfolio",data)
   
 export const authenticateChat =(targetUserId) =>API.post("/api/user/athenticate",{targetUserId:targetUserId})
 export const createNotification =(data)=>API.post('/api/notifications',data)

@@ -24,7 +24,7 @@ const EmployerNavbar = () => {
           <Link to="/employer/dashboard"><FaBriefcase /> Dashboard</Link>
         </li>
         <li>
-          <Link to="/employer/jobs"><FaBriefcase /> Jobs</Link>
+          <Link to="/employer/jobs"><FaBriefcase />My Jobs</Link>
         </li>
         {/*<li>
           <Link to="/employer/applicants"><FaUsers /> Applicants</Link>
