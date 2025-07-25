@@ -17,9 +17,18 @@ const ViewApplicantsAdmin = ({ jobId }) => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(8);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
   
   const job = location.state;
-  console.log(job);
+  
+
+   useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
 
   // Your original API call - uncomment when ready to use
   /* useEffect(() => {
