@@ -213,7 +213,7 @@ const ViewApplicantsAdmin = ({ jobId }) => {
                   {/* Desktop Table View */}
                   <div style={{
                    display: windowWidth >= 1024 ? 'block' : 'none',
-                   }}  className="hidden md:block">
+                   }}  className="md:block">
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead>
