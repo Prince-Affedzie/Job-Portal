@@ -87,6 +87,16 @@ const EditProfile = () => {
    setTriggerSave(true);
 };
 
+
+// This removeortfolio Listen to the delete portfolio Function from the Profile Section   Component
+const handleRemovePortfolio = (updatedPortfolio) => {
+  setFormData(prev => ({
+    ...prev,
+    workPortfolio: updatedPortfolio // Directly set the filtered array
+  }));
+  setTriggerSave(true);
+};
+
 useEffect(() => {
   if (triggerSave) {
     saveChanges().finally(() => setTriggerSave(false));
@@ -114,6 +124,12 @@ useEffect(() => {
       setFormData(prev => ({
         ...prev,
         skills: [...prev.skills, data],
+      }));
+    }
+     else if (modalType === "portfolio") {
+      setFormData(prev => ({
+        ...prev,
+        workPortfolio: [...(prev.workPortfolio || []),data]
       }));
     }
     setModalOpen(false);
@@ -257,6 +273,9 @@ useEffect(() => {
           setEditSection={setEditSection}
           setFormData={setFormData}
           handleAddPortfolio={handleAddPortfolio}
+          setModalType={setModalType}
+          setModalOpen={setModalOpen}
+          handleRemovePortfolio= { handleRemovePortfolio}
           saveChanges={saveChanges}
          isProcessing={isProcessing}
          />
@@ -267,6 +286,7 @@ useEffect(() => {
         type={modalType}
         onClose={() => setModalOpen(false)}
         onSave={handleSaveModalData}
+        handleAddPortfolio={handleAddPortfolio}
       />
 
       <DeleteConfirmationModal

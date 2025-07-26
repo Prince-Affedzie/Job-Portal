@@ -25,14 +25,20 @@ const EducationSection = ({
         </button>
       ) : (
         <div className="flex space-x-2">
-          <FaSave 
-            onClick={saveChanges} 
-            className="text-green-600 hover:text-green-800 cursor-pointer text-lg"
-          />
-          <FaTimes 
-            onClick={() => setEditSection(null)} 
-            className="text-red-600 hover:text-red-800 cursor-pointer text-lg"
-          />
+           <button
+                onClick={saveChanges}
+                className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              >
+                <FaSave className="mr-2" />
+                Save
+              </button>
+           <button
+                onClick={() => setEditSection(null)}
+                className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                <FaTimes className="mr-2" />
+                Cancel
+              </button>
         </div>
       )}
     </div>
