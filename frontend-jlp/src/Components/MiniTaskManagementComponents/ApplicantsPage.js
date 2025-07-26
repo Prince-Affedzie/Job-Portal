@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Link} from 'react-router-dom'
 import './minitaskmanagementcss/ApplicantsPage.css';
 import ApplicantDetailModal from './ApplicantsDetailsModal';
 import "react-toastify/dist/ReactToastify.css";
@@ -113,7 +114,15 @@ const ApplicantsPage = () => {
                     )}
                     <div className="action-buttons">
                   {/* Assign button only shows if no one is assigned, or if reassignment is active */}
-              {!assignedApplicant && (
+
+                  <Link 
+                   to={`/applicants/${applicant._id}`}
+                   state={{ applicant }} // Pass the full applicant data
+                   className="inline-flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md text-sm font-medium transition-colors"
+                    >
+                     View Profile
+                 </Link>
+                {!assignedApplicant && (
                  <button
                  className="assign-btn"
                  onClick={() => handleAssignApplicant(taskId, applicant._id, applicant.name)}

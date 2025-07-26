@@ -36,6 +36,7 @@ import JobApplicantsPage from './Pages/EmployerPages/JobApplicantsPage';
 import EmployerOnboarding from './Pages/EmployerPages/EmployerOnboarding';
 import MyMiniTaskApplications from './Pages/UserPages/UserAppliedMiniTask';
 import ApplicantsPage from './Components/MiniTaskManagementComponents/ApplicantsPage';
+import MiniTaskApplicantProfilePage from './Components/MiniTaskManagementComponents/ApplicantProfilePage'
 import MiniTaskInfo from './Pages/UserPages/MiniTaskInfo';
 
 import { AdminProvider } from './Context/AdminContext';
@@ -91,6 +92,7 @@ function App() {
       </UserProvider>
       }/>
       <Route path='/manage/mini_tasks' element={<UserProvider><NotificationProvider><ManageMiniTasks/></NotificationProvider></UserProvider>}/>
+      <Route path='/applicants/:applicantId' element={<UserProvider><NotificationProvider><MiniTaskApplicantProfilePage/></NotificationProvider></UserProvider>}/>
       <Route path='/mini_task/listings' element={<NotificationProvider><MiniTaskPage/></NotificationProvider>}/>
       <Route path='/view/applied/jobs'element={<UserProvider><NotificationProvider><ViewApplications/></NotificationProvider></UserProvider>}/>
       <Route path='/user/modify/profile' element={<UserProvider><RouteProtection><NotificationProvider><EditProfile/></NotificationProvider></RouteProtection></UserProvider>}/>
