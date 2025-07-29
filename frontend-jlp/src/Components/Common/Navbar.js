@@ -105,7 +105,7 @@ const Navbar = () => {
                 to="/mini_task/listings" 
                 className={`u-nav-link ${isActive('mini_task') ? 'active' : ''}`}
               >
-                Mini Jobs
+                Micro Jobs
               </Link>
             </li>
             <li>
@@ -129,7 +129,7 @@ const Navbar = () => {
                 to="/post/mini_task" 
                 className="cta-link"
               >
-                Post Mini Job
+                Post Micro Job
               </Link>
             </li>
           </ul>
@@ -167,19 +167,22 @@ const Navbar = () => {
                   >
                     Dashboard
                   </Link>
+                  
+                  <Link 
+                    to="/manage/mini_tasks" 
+                    className="dropdown-item"
+                    onClick={() => setDashboardDropdownOpen(false)}
+                  >
+                    My Micro Jobs
+                  </Link>
+
                   <Link 
                     to="/user/modify/profile" 
                     className="dropdown-item"
                     onClick={() => setDashboardDropdownOpen(false)}
                   >
                     My Profile
-                  </Link>
-                  <Link 
-                    to="/manage/mini_tasks" 
-                    className="dropdown-item"
-                    onClick={() => setDashboardDropdownOpen(false)}
-                  >
-                    Manage My Jobs
+
                   </Link>
                 </div>
               )}
@@ -217,7 +220,7 @@ const Navbar = () => {
                   onClick={closeMenu}
                   className={`mobile-nav-link ${isActive('mini_task') ? 'active' : ''}`}
                 >
-                  Mini Jobs
+                  Micro Jobs
                 </Link>
               </li>
               <li>
@@ -244,7 +247,7 @@ const Navbar = () => {
                   onClick={closeMenu}
                   className="mobile-cta-link"
                 >
-                  Post Mini Job
+                  Post Micro Job
                 </Link>
               </li>
               
@@ -273,7 +276,7 @@ const Navbar = () => {
                   onClick={closeMenu}
                   className="mobile-nav-link"
                 >
-                  Manage My Jobs
+                  My Micro Jobs
                 </Link>
               </li>
             </ul>
