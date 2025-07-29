@@ -116,7 +116,7 @@ const PostMiniTask = () => {
       <Navbar />
       {
               user && <VerifyTooltip isVerified ={user.isVerified}/>
-               }
+         }
       <div className="mtask-primary-container">
          
         <div className="mtask-header-section">

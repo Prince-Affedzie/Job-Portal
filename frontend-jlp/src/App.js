@@ -86,7 +86,7 @@ function App() {
       element={<UserProvider>
         <PostEligibilityGate>
         <NotificationProvider><RouteProtection>
-          <PostMiniTask/>
+        <PostMiniTask/>
       </RouteProtection></NotificationProvider>
       </PostEligibilityGate>
       </UserProvider>

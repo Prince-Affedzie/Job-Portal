@@ -19,6 +19,7 @@ import Navbar from "../../Components/Common/Navbar";
 import { userContext } from "../../Context/FetchUser";
 import { notificationContext } from "../../Context/NotificationContext";
 import VerifyTooltip from "../../Components/Common/VerifyToolTip";
+import { UserGuide } from "../../Components/Common/NewUserGuide";
 
 const JobSeekerDashboard = () => {
   const navigate = useNavigate();
@@ -122,58 +123,7 @@ const JobSeekerDashboard = () => {
   const topTask = getTopPriorityTask();
 
   // Render the user guide for new users
-  const renderUserGuide = () => {
-    if (!showGuide) return null;
-    
-    return (
-      <div className="bg-blue-50 rounded-xl border border-blue-200 p-6 mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-blue-800">Welcome to Your Dashboard!</h3>
-          <button 
-            onClick={() => setShowGuide(false)} 
-            className="text-blue-800 hover:text-blue-600"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-        <p className="text-blue-700 mb-4">Here's how to get started in 3 easy steps:</p>
-        <div className="space-y-3">
-          <div className="flex items-start">
-            <div className="bg-blue-200 rounded-full w-6 h-6 flex items-center justify-center mr-3 text-blue-800 font-bold text-sm">1</div>
-            <div>
-              <p className="font-medium text-blue-800">Complete your profile</p>
-              <p className="text-sm text-blue-700">Add your skills, education and experience to stand out</p>
-            </div>
-          </div>
-          <div className="flex items-start">
-            <div className="bg-blue-200 rounded-full w-6 h-6 flex items-center justify-center mr-3 text-blue-800 font-bold text-sm">2</div>
-            <div>
-              <p className="font-medium text-blue-800">Browse job listings</p>
-              <p className="text-sm text-blue-700">Find and apply to jobs that match your skills</p>
-            </div>
-          </div>
-          <div className="flex items-start">
-            <div className="bg-blue-200 rounded-full w-6 h-6 flex items-center justify-center mr-3 text-blue-800 font-bold text-sm">3</div>
-            <div>
-              <p className="font-medium text-blue-800">Check notifications</p>
-              <p className="text-sm text-blue-700">Stay updated on your application status</p>
-            </div>
-          </div>
-        </div>
-        <div className="mt-4">
-          <button 
-            onClick={() => navigate('/user/modify/profile')}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors"
-          >
-            Start Completing Your Profile
-          </button>
-        </div>
-      </div>
-    );
-  };
-
+ 
   return (
     <div className="bg-gray-50 min-h-screen">
       <Navbar />
@@ -182,8 +132,12 @@ const JobSeekerDashboard = () => {
         {user && <VerifyTooltip isVerified={user.isVerified} />}
         
         {/* New User Guide (only shown to new users) */}
-        {renderUserGuide()}
-
+        <UserGuide 
+         showGuide={showGuide}
+         setShowGuide={setShowGuide}
+         profileCompletion={profileCompletion}
+         topTask={topTask}
+          />
         {/* Welcome Banner - Simplified */}
         <div className="mb-6 bg-gradient-to-r from-indigo-600 to-blue-500 rounded-xl shadow-lg p-6 text-white">
           <div className="flex flex-wrap items-center justify-between">
