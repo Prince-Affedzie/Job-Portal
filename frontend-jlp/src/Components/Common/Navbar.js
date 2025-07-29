@@ -263,15 +263,6 @@ const Navbar = () => {
               </li>
               <li>
                 <Link 
-                  to="/user/modify/profile" 
-                  onClick={closeMenu}
-                  className="mobile-nav-link"
-                >
-                  My Profile
-                </Link>
-              </li>
-              <li>
-                <Link 
                   to="/manage/mini_tasks" 
                   onClick={closeMenu}
                   className="mobile-nav-link"
@@ -279,22 +270,37 @@ const Navbar = () => {
                   My Micro Jobs
                 </Link>
               </li>
-            </ul>
 
-            <div className="mobile-nav-link">
+              <li>
               <Link 
                 to="/view/all_notifications" 
                 onClick={closeMenu}
-                className="mobile-notification-icon"
+                className="mobile-nav-link"
                 aria-label={`Notifications (${unreadCount} unread)`}
               >
+                <div className="mobile-notification-icon">
                 <FaBell size={18} />
                 <span>Notifications</span>
                 {unreadCount > 0 && (
                   <span className="mobile-notification-badge">{unreadCount}</span>
                 )}
+                </div>
               </Link>
-            </div>
+            </li>
+              <li>
+                <Link 
+                  to="/user/modify/profile" 
+                  onClick={closeMenu}
+                  className="mobile-nav-link"
+                >
+                  My Profile
+                </Link>
+              </li>
+              
+              
+            </ul>
+
+            
           </div>
         </div>
       )}
