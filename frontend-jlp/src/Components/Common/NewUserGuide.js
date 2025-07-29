@@ -32,7 +32,7 @@ export const UserGuide = ({
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 25 }}
-        className="relative w-80 bg-white shadow-lg pointer-events-auto flex flex-col max-h-[85vh] mt-4 mr-4 rounded-lg border border-gray-200"
+        className="relative w-80 bg-white shadow-lg pointer-events-auto flex flex-col max-h-[85vh] mt-20 mr-4 rounded-lg border border-gray-200"
       >
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-100">
