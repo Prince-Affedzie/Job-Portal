@@ -206,7 +206,7 @@
   padding: 80px 1.5rem 2rem 1.5rem; /* Top padding to account for navbar height */
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.0rem;
   overflow-y: auto;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
 }
