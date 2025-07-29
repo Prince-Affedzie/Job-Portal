@@ -1,19 +1,35 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaBars, FaTimes, FaBell } from "react-icons/fa";
+import { FaBars, FaTimes, FaBell, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { TbLayoutDashboard } from "react-icons/tb";
 import { notificationContext } from '../../Context/NotificationContext';
 import "../../Styles/Navbar.css";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dashboardDropdownOpen, setDashboardDropdownOpen] = useState(false);
   const { notifications, fetchNotifications } = useContext(notificationContext);
   const location = useLocation();
   const unreadCount = notifications?.filter(n => !n.read).length || 0;
+  const dropdownRef = useRef(null);
   
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
+
+  // Handle clicks outside dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDashboardDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Handle menu toggle with proper body scroll management
   const toggleMenu = () => {
@@ -42,6 +58,11 @@ const Navbar = () => {
     document.body.style.width = '';
   };
 
+  const toggleDashboardDropdown = (e) => {
+    e.preventDefault();
+    setDashboardDropdownOpen(!dashboardDropdownOpen);
+  };
+
   // Clean up on component unmount
   useEffect(() => {
     return () => {
@@ -55,14 +76,15 @@ const Navbar = () => {
   // Handle escape key to close mobile menu
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape' && menuOpen) {
-        closeMenu();
+      if (e.key === 'Escape') {
+        if (menuOpen) closeMenu();
+        if (dashboardDropdownOpen) setDashboardDropdownOpen(false);
       }
     };
 
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [menuOpen]);
+  }, [menuOpen, dashboardDropdownOpen]);
 
   const isActive = (path) => location.pathname.includes(path);
 
@@ -123,13 +145,45 @@ const Navbar = () => {
                 <span className="notification-badge">{unreadCount}</span>
               )}
             </Link>
-            <Link 
-              to="/h1/dashboard" 
-              className="dashboard-icon"
-              aria-label="Dashboard"
-            >
-              <TbLayoutDashboard size={20} />
-            </Link>
+            
+            {/* Desktop Dashboard Dropdown */}
+            <div className="dashboard-dropdown-container" ref={dropdownRef}>
+              <button 
+                className="dashboard-dropdown-toggle"
+                onClick={toggleDashboardDropdown}
+                aria-label="Dashboard menu"
+                aria-expanded={dashboardDropdownOpen}
+              >
+                <TbLayoutDashboard size={20} />
+                {dashboardDropdownOpen ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
+              </button>
+              
+              {dashboardDropdownOpen && (
+                <div className="dashboard-dropdown-menu">
+                  <Link 
+                    to="/h1/dashboard" 
+                    className="dropdown-item"
+                    onClick={() => setDashboardDropdownOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link 
+                    to="/user/modify/profile" 
+                    className="dropdown-item"
+                    onClick={() => setDashboardDropdownOpen(false)}
+                  >
+                    My Profile
+                  </Link>
+                  <Link 
+                    to="/manage/mini_tasks" 
+                    className="dropdown-item"
+                    onClick={() => setDashboardDropdownOpen(false)}
+                  >
+                    Manage My Jobs
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -193,9 +247,38 @@ const Navbar = () => {
                   Post Mini Job
                 </Link>
               </li>
+              
+              {/* Mobile Dashboard Dropdown Items */}
+              <li>
+                <Link 
+                  to="/h1/dashboard" 
+                  onClick={closeMenu}
+                  className="mobile-nav-link"
+                >
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/user/modify/profile" 
+                  onClick={closeMenu}
+                  className="mobile-nav-link"
+                >
+                  My Profile
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/manage/mini_tasks" 
+                  onClick={closeMenu}
+                  className="mobile-nav-link"
+                >
+                  Manage My Jobs
+                </Link>
+              </li>
             </ul>
 
-            <div className="mobile-nav-icons">
+            <div className="mobile-nav-link">
               <Link 
                 to="/view/all_notifications" 
                 onClick={closeMenu}
@@ -207,15 +290,6 @@ const Navbar = () => {
                 {unreadCount > 0 && (
                   <span className="mobile-notification-badge">{unreadCount}</span>
                 )}
-              </Link>
-              <Link 
-                to="/h1/dashboard" 
-                onClick={closeMenu}
-                className="mobile-dashboard-icon"
-                aria-label="Dashboard"
-              >
-                <TbLayoutDashboard size={18} />
-                <span>Dashboard</span>
               </Link>
             </div>
           </div>
