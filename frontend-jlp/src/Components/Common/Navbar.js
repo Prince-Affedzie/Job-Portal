@@ -254,15 +254,6 @@ const Navbar = () => {
               {/* Mobile Dashboard Dropdown Items */}
               <li>
                 <Link 
-                  to="/h1/dashboard" 
-                  onClick={closeMenu}
-                  className="mobile-nav-link"
-                >
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link 
                   to="/manage/mini_tasks" 
                   onClick={closeMenu}
                   className="mobile-nav-link"
@@ -287,6 +278,16 @@ const Navbar = () => {
                 </div>
               </Link>
             </li>
+            <li>
+                <Link 
+                  to="/h1/dashboard" 
+                  onClick={closeMenu}
+                  className="mobile-nav-link"
+                >
+                  Dashboard
+                </Link>
+              </li>
+              
               <li>
                 <Link 
                   to="/user/modify/profile" 
