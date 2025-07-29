@@ -2,6 +2,7 @@ import { createContext,useEffect,useState,useContext } from "react";
 import io from 'socket.io-client'
 import {getNotifications } from "../APIS/API";
 import { fetchUser } from "../APIS/API";
+import { NotificationToast } from "../Components/Common/NotificationToast";
 
 
 export const notificationContext = createContext()
@@ -78,6 +79,7 @@ const [socket, setSocket] = useState(null);
   return(
     <notificationContext.Provider value={{notifications,fetchNotifications,socket}}>
        {children}
+      <NotificationToast notifications={notifications} />
     </notificationContext.Provider>
   )
 
