@@ -4,7 +4,7 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { userContext } from "../../Context/FetchUser";
 import Navbar from '../../Components/Common/Navbar';
 import { useNavigate } from 'react-router-dom';
-import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard,raiseDispute, rejectMiniTaskAssignment } from '../../APIS/API';
+import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard,raiseDispute, rejectMiniTaskAssignment,addReportingEvidence,sendFileToS3 } from '../../APIS/API';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaTrash, FaFilter, FaCheck, FaArrowUp, FaArrowDown, FaClock, FaMapMarkerAlt, FaDollarSign,FaFlag, FaBuilding,FaUser, FaPhone, FaEye, FaUpload, FaComments, FaTimes, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
@@ -12,6 +12,7 @@ import WorkSubmissionModal from '../../Components/Common/WorkSubmissionModal';
 import StartChatButton from '../../Components/MessagingComponents/StartChatButton';
 import  TaskActions from '../../Components/MiniTaskManagementComponents/MiniTaskActionButtons';
 import Pagination from "../../Components/Common/Pagination";
+import ReportForm from "../../Components/Common/ReportForm";
 
 
 const MyMiniTaskApplications = () => {
@@ -30,16 +31,7 @@ const MyMiniTaskApplications = () => {
   const applicationsPerPage = 5;
    const [showReportModal, setShowReportModal] = useState(false);
    const [reportingTask, setReportingTask] = useState(null);
-   const [reportForm, setReportForm] = useState({
-    against: reportingTask?.employer?._id || '',
-    taskId: reportingTask?._id || '',
-    tasktitle:reportingTask?.title || '',
-    reportedBy : user?.name || '',
-    reason: '',
-    details: ''
-  });
-  
-
+   
   // Use a more efficient debounced fetch
   const debouncedFetch = useCallback(() => {
     if (user && !minitasks) {
@@ -117,47 +109,6 @@ const MyMiniTaskApplications = () => {
       setShowReportModal(true);
     };
   
-    useEffect(() => {
-    if (reportingTask) {
-      setReportForm((prev) => ({
-        ...prev,
-        against: reportingTask.employer?._id || '',
-        taskId: reportingTask._id || '',
-        tasktitle:reportingTask.title,
-       reportedBy : user?.name
-      }));
-    }
-  }, [reportingTask,user?.name]);
-  
-  
-    const submitReport = async () => {
-      
-      const { against, taskId, reason, details } = reportForm;
-  
-    if (!against || !taskId || !reason || !details) {
-      toast.error("Please fill in all fields before submitting the report.");
-      return;
-    }
-  
-      setIsProcessing(true);
-      try {
-      
-        const response = await raiseDispute(reportForm)
-        if (response.status ===200){
-        toast.success(`Issue reported for task: ${reportingTask.title}. Our Team Would Reach Out Soon.`);
-        setShowReportModal(false);
-        setReportingTask(null);
-       
-        }
-       
-      } catch (error) {
-        toast.error("Failed to submit report");
-      } finally {
-        setIsProcessing(false);
-      }
-    };
-  
-
   const handleTaskAcceptance = async(taskId) => {
     setIsProcessing(true);
     setActiveTaskId(taskId);
@@ -613,67 +564,16 @@ const MyMiniTaskApplications = () => {
 
 
     {showReportModal && (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-      <h3 className="text-lg font-semibold mb-4">Report Issue</h3>
-
-      <p className="text-gray-600 mb-2">
-        Report an issue with: <strong>{reportingTask?.title}</strong>
-      </p>
-      
-
-     
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Reason
-          </label>
-          <input
-            type="text"
-            value={reportForm.reason}
-            onChange={(e) =>
-              setReportForm((prev) => ({ ...prev, reason: e.target.value }))
-            }
-            placeholder="Enter a brief reason"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Details
-          </label>
-          <textarea
-            value={reportForm.details}
-            onChange={(e) =>
-              setReportForm((prev) => ({ ...prev, details: e.target.value }))
-            }
-            placeholder="Provide detailed explanation"
-            rows="4"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="flex justify-end space-x-3">
-          <button
-            type="button"
-            onClick={() => setShowReportModal(false)}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-             onClick={submitReport}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Submit Report
-          </button>
-        </div>
-      
-    </div>
-  </div>
+     <ReportForm
+     isOpen={showReportModal}
+     onClose={() => setShowReportModal(false)}
+     task={reportingTask}
+     currentUser={user}
+     onReportSubmitted={() => {
+      // Optional: Add any post-submission logic here
+      // For example, refresh data or show a confirmation
+    }}
+  />
 )}
   
       

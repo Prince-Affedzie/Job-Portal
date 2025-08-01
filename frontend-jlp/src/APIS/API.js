@@ -72,6 +72,7 @@ export const deleteWorkSubmission = (submissionId)=>API.delete(`/api/delete/subm
 export const clientgetTaskSubmissions = (taskId)=>API.get(`/api/view_task_submissions/${taskId}`)
 export const reviewSubmission = (submissionId,data)=>API.put(`/api/review_task_submission/${submissionId}`,data)
 export const getSignedUrl =(data)=>API.post('/api/submissions/upload-url',data)
+export const addReportingEvidence=(data)=>API.post('/api/create/reporting/evidence',data)
 export const getPreviewUrl =(fileKey,selectedSubmission)=> API.get(`/api/get_preview_url?fileKey=${encodeURIComponent(fileKey)}&selectedSubmission=${encodeURIComponent(selectedSubmission)}`);
 export const raiseDispute = (reportForm)=>API.post('/api/create_dispute',reportForm)
 export const sendFileToS3 = async (uploadURL, file,onProgress) => {

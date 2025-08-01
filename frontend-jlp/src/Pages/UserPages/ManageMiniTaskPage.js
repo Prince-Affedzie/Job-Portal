@@ -9,6 +9,8 @@ import ApplicantsPage from "../../Components/MiniTaskManagementComponents/Applic
 import AssignApplicantModal from "../../Components/MiniTaskManagementComponents/AssignApplicantsModal";
 import EditMiniTaskForm from "../../Components/MiniTaskManagementComponents/EditMiniTaskForm";
 import Navbar from "../../Components/Common/Navbar";
+import ReportForm from "../../Components/Common/ReportForm";
+
 import "../../Styles/ManageMiniTasks.css";
 import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 
@@ -33,14 +35,6 @@ const ManageMiniTasks = () => {
   const [showBulkActions, setShowBulkActions] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportingTask, setReportingTask] = useState(null);
- const [reportForm, setReportForm] = useState({
-  against: reportingTask?.assignedTo?._id || '',
-  taskId: reportingTask?._id || '',
-  tasktitle:reportingTask?.title || '',
-  reportedBy :user?.name || '',
-  reason: '',
-  details: ''
-});
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,90 +101,7 @@ const ManageMiniTasks = () => {
     setShowReportModal(true);
   };
 
-  useEffect(() => {
-  if (reportingTask) {
-    setReportForm((prev) => ({
-      ...prev,
-      against: reportingTask.assignedTo?._id || '',
-      taskId: reportingTask._id || '',
-      tasktitle:reportingTask.title,
-      reportedBy : user?.name
-    }));
-  }
-}, [reportingTask]);
-
-
-  const submitReport = async () => {
-    
-    const { against, taskId, reason, details } = reportForm;
-
-  if (!against || !taskId || !reason || !details) {
-    toast.error("Please fill in all fields before submitting the report.");
-    return;
-  }
-
-    setIsProcessing(true);
-    try {
-    
-      const response = await raiseDispute(reportForm)
-      if (response.status ===200){
-      toast.success(`Issue reported for task: ${reportingTask.title}. Our Team Would Reach Out Soon.`);
-      setShowReportModal(false);
-      setReportingTask(null);
-     
-      }
-     
-    } catch (error) {
-      toast.error("Failed to submit report");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  // Bulk action handlers
-  const handleBulkDelete = async () => {
-    if (!window.confirm(`Are you sure you want to delete ${selectedTasks.size} selected task(s)?`)) {
-      return;
-    }
-    
-    setIsProcessing(true);
-    try {
-      const deletePromises = Array.from(selectedTasks).map(taskId => deleteMiniTask(taskId));
-      await Promise.all(deletePromises);
-      
-      setTasks(prevTasks => prevTasks.filter(task => !selectedTasks.has(task._id)));
-      toast.success(`${selectedTasks.size} task(s) deleted successfully`);
-      handleClearSelection();
-    } catch (error) {
-      toast.error("Some tasks could not be deleted");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleBulkStatusChange = async (newStatus) => {
-    setIsProcessing(true);
-    try {
-      const updatePromises = Array.from(selectedTasks).map(taskId => 
-        updateMiniTask(taskId, { status: newStatus })
-      );
-      await Promise.all(updatePromises);
-      
-      setTasks(prevTasks => 
-        prevTasks.map(task => 
-          selectedTasks.has(task._id) ? { ...task, status: newStatus } : task
-        )
-      );
-      toast.success(`Status updated for ${selectedTasks.size} task(s)`);
-      handleClearSelection();
-    } catch (error) {
-      toast.error("Some tasks could not be updated");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  // Your existing handlers remain unchanged
+// Your existing handlers remain unchanged
   const handleDeleteTask = async (taskId) => {
     if (!window.confirm("Are you sure you want to delete this task?")) {
       return;
@@ -447,57 +358,6 @@ const ManageMiniTasks = () => {
             </div>
           </div>
         </div>
-
-        {/* Selection Controls 
-        {currentTasks.length > 0 && (
-          <div className="bg-white rounded-lg shadow p-4 mb-6">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={handleSelectAll}
-                  className="text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  {selectedTasks.size === currentTasks.length ? 'Deselect All' : 'Select All'}
-                </button>
-                {selectedTasks.size > 0 && (
-                  <span className="text-gray-600">
-                    {selectedTasks.size} task{selectedTasks.size !== 1 ? 's' : ''} selected
-                  </span>
-                )}
-              </div>
-              
-              {showBulkActions && (
-                <div className="flex items-center gap-2">
-                  <select
-                    onChange={(e) => e.target.value && handleBulkStatusChange(e.target.value)}
-                    className="border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    defaultValue=""
-                  >
-                    <option value="">Change Status...</option>
-                    <option value="Open">Open</option>
-                    <option value="Assigned">Assigned</option>
-                    <option value="In-progress">In-Progress</option>
-                    <option value="Closed">Closed</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                  <button
-                    onClick={handleBulkDelete}
-                    className="bg-red-600 text-white px-3 py-2 text-sm rounded hover:bg-red-700"
-                  >
-                    Delete Selected
-                  </button>
-                  <button
-                    onClick={handleClearSelection}
-                    className="bg-gray-300 text-gray-700 px-3 py-2 text-sm rounded hover:bg-gray-400"
-                  >
-                    Clear
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )} */}
-
         <div className="task-list">
           {filteredTasks.length === 0 ? (
             <div className="empty-tasks flex flex-col items-center justify-center text-center py-16 bg-white rounded-lg shadow">
@@ -667,69 +527,16 @@ const ManageMiniTasks = () => {
         </div>
 
         {showReportModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-        <h3 className="text-lg font-semibold mb-4">Report Issue</h3>
-
-      <p className="text-gray-600 mb-2">
-        Report an issue with: <strong>{reportingTask?.title}</strong>
-      </p>
-      <p className="text-gray-600 mb-4">
-        Assigned to: <strong>{reportingTask?.assignedTo?.name}</strong>
-      </p>
-
-     
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Reason
-          </label>
-          <input
-            type="text"
-            value={reportForm.reason}
-            onChange={(e) =>
-              setReportForm((prev) => ({ ...prev, reason: e.target.value }))
-            }
-            placeholder="Enter a brief reason"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Details
-          </label>
-          <textarea
-            value={reportForm.details}
-            onChange={(e) =>
-              setReportForm((prev) => ({ ...prev, details: e.target.value }))
-            }
-            placeholder="Provide detailed explanation"
-            rows="4"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="flex justify-end space-x-3">
-          <button
-            type="button"
-            onClick={() => setShowReportModal(false)}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-             onClick={submitReport}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Submit Report
-          </button>
-        </div>
-      
-    </div>
-  </div>
+        <ReportForm
+         isOpen={showReportModal}
+         onClose={() => setShowReportModal(false)}
+         task={reportingTask}
+         currentUser={user}
+         onReportSubmitted={() => {
+      // Optional: Add any post-submission logic here
+      // For example, refresh data or show a confirmation
+    }}
+  />
 )}
 
         {/* View Task Modal */}
