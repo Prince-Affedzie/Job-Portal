@@ -141,3 +141,7 @@ export const adminDeleteMiniTask =(Id)=>API.delete(`/api/admin/delete_mini_task/
 export const updateMiniTaskByAdmin =(Id,update) =>API.put(`/api/admin/modify_mini_task/${Id}`,update)
 export const getAllDisputes = ()=>API.get('/api/admin/get_disputes')
 export const resolveDispute =(disputeId,updatePayload)=>API.put(`/api/admin/disputes/${disputeId}/resolve`,updatePayload)
+
+export const fetchAllAlerts = ()=>API.get('/api/admin/all_alerts')
+export const markAllAlertAsRead = (alerts)=>API.put('/api/admin/alerts/mark-all-read',{ids:alerts})
+export const markAlertAsRead = (Id)=>API.put(`/api/admin/alerts/${Id}/read`)

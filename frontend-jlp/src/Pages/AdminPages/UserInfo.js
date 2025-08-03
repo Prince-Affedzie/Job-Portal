@@ -13,6 +13,7 @@ import { WorkExperience } from "../../Components/AdminComponents/UserDetails/Wor
 import { UserEducation } from "../../Components/AdminComponents/UserDetails/UserEducation";
 import { AppliedJobs } from "../../Components/AdminComponents/UserDetails/AppliedJobs";
 import { LoadingSpinner } from "../../Components/AdminComponents/UserDetails/LoadingSpinner";
+import NotificationCenter from "../../Services/alerts/NotificationCenter";
 import "../../Styles/UserDetails.css";
 
 const AdminUserDetails = () => {
@@ -45,6 +46,7 @@ const AdminUserDetails = () => {
     return (
       <div className="admin-container">
         <AdminSidebar />
+        <NotificationCenter/>
         <div className="admin-content">
           <LoadingSpinner />
         </div>

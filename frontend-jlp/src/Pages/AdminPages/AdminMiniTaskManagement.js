@@ -10,6 +10,7 @@ import {
 import { getAllMiniTasks, adminDeleteMiniTask } from "../../APIS/API";
 import AdminSidebar from "../../Components/AdminComponents/Adminsidebar";
 import AdminNavbar from "../../Components/AdminComponents/AdminNavbar";
+import NotificationCenter from "../../Services/alerts/NotificationCenter";
 import dayjs from "dayjs";
 import "../../Styles/AdminLayout.css"; // You can define layout styles here
 
@@ -141,6 +142,7 @@ const AdminManageMiniTasks = () => {
   return (
     <div className="admin-layout">
       <AdminSidebar />
+      <NotificationCenter/>
       <div className="main-content">
         
         <div className="content-area">

@@ -3,6 +3,7 @@ import { Eye, ExternalLink, Building, Mail, Phone, MapPin, Globe, CheckCircle, X
 import { getEmployersProfiles } from "../../APIS/API";
 import AdminNavbar from "../../Components/AdminComponents/AdminNavbar";
 import AdminSidebar from "../../Components/AdminComponents/Adminsidebar";
+import NotificationCenter from "../../Services/alerts/NotificationCenter";
  import { useNavigate } from "react-router-dom";
 
 const AdminEmployerList = () => {
@@ -82,6 +83,7 @@ const AdminEmployerList = () => {
     return (
       <tr className={`border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-purple-50/50 transition-all duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
         {/* Company Name */}
+        
         <td className="px-6 py-4">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -244,6 +246,7 @@ const AdminEmployerList = () => {
       <div className="flex flex-1">
        
           <AdminSidebar />
+          <NotificationCenter/>
        
         
         <main className="flex-1 p-6 overflow-auto">

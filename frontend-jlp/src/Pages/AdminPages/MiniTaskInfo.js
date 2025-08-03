@@ -23,6 +23,7 @@ import {
 import { getSingleMinitask, modifyMiniTaskStatus } from '../../APIS/API';
 import dayjs from "dayjs";
 import AdminSidebar from "../../Components/AdminComponents/Adminsidebar";
+import NotificationCenter from "../../Services/alerts/NotificationCenter";
 
 
 const AdminMiniTaskDetailPage = () => {
@@ -128,6 +129,7 @@ const AdminMiniTaskDetailPage = () => {
   return (
     <div className=" flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 ">
       <AdminSidebar/>
+      <NotificationCenter/>
       {/* Notification */}
       {showMessage.show && (
         <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${

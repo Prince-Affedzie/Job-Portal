@@ -62,6 +62,7 @@ import {EmployerProfileProvider} from './Context/EmployerProfileContext'
 import PostEligibilityGate from './Services/auth/MiniJobPostEligiblityGate'
 import EmployerPostEligibilityGate from './Services/auth/EmployerJobPostEligibilityGate'
 import AdminViewMiniTaskApplicants from './Pages/AdminPages/MiniTaskApplicants'
+import ActivityPage from './Pages/AdminPages/RecentActivities'
 import FreelancerSubmissions from  './Pages/UserPages/TaskSubmissions'
 import ClientViewSubmissions from './Pages/UserPages/ClientViewTaskSubmissions'
 import  ChatPage from './Pages/UserPages/ChatPage'
@@ -209,7 +210,7 @@ function App() {
       <Route path='/admin/add_new_user' element={<AdminRoutes><AdminProvider><AdminAddUserForm/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/minitask/:taskId/applicants' element={<AdminRoutes><AdminProvider><AdminViewMiniTaskApplicants/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/view_all_reports' element={<AdminRoutes><AdminProvider><DisputeAdminDashboard/></AdminProvider></AdminRoutes>}/>
-
+      <Route path='/admin/view_all_recent_activities' element={<AdminRoutes><AdminProvider><ActivityPage/></AdminProvider></AdminRoutes>}/>
     </Routes>
 
   </Router>

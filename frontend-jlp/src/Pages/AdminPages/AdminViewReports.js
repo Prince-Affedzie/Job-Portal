@@ -19,7 +19,7 @@ import {
 import {getAllDisputes,resolveDispute} from '../../APIS/API'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import NotificationCenter from "../../Services/alerts/NotificationCenter";
 const DisputeAdminDashboard = () => {
   const [disputes, setDisputes] = useState([]);
   const [filteredDisputes, setFilteredDisputes] = useState([]);
@@ -177,6 +177,7 @@ const DisputeAdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
         <ToastContainer/>
+        <NotificationCenter/>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">

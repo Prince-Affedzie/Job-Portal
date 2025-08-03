@@ -30,6 +30,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getSingleJobInfo, modifyJobStatus, deleteJob } from "../../APIS/API";
 import AdminNavbar from "../../Components/AdminComponents/AdminNavbar";
 import AdminSidebar from "../../Components/AdminComponents/Adminsidebar";
+import NotificationCenter from "../../Services/alerts/NotificationCenter";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -258,6 +259,7 @@ const JobDetailsAdminView = () => {
       <div className="flex flex-1">
        
           <AdminSidebar />
+          <NotificationCenter/>
         
 
         <main className="flex-1 overflow-auto">

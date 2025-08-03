@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Eye, Mail, Calendar, User, Filter, Search, Download, ChevronLeft, ChevronRight,PhoneCall } from "lucide-react";
 import AdminNavbar from "../../Components/AdminComponents/AdminNavbar";
 import AdminSidebar from "../../Components/AdminComponents/Adminsidebar";
+import NotificationCenter from "../../Services/alerts/NotificationCenter";
 
 // Uncomment and import your actual API
 // import { getJobApplicants } from "../APIS/API";
@@ -136,6 +137,7 @@ const ViewApplicantsAdmin = ({ jobId }) => {
       
       <div className="flex">
         <AdminSidebar />
+        <NotificationCenter/>
         <div className="flex-1 p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
             {/* Header Section */}

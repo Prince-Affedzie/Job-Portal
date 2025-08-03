@@ -22,6 +22,7 @@ import {
 import { useAdminContext } from "../../Context/AdminContext";
 import AdminNavbar from "../../Components/AdminComponents/AdminNavbar";
 import AdminSidebar from "../../Components/AdminComponents/Adminsidebar";
+import NotificationCenter from "../../Services/alerts/NotificationCenter";
 import "../../Styles/AdminLayout.css";
 
 const AdminJobManagementDashboard = () => {
@@ -192,6 +193,7 @@ const AdminJobManagementDashboard = () => {
         {/* Sidebar */}
        
           <AdminSidebar />
+          <NotificationCenter/>
        
 
         {/* Main Content */}
