@@ -79,7 +79,7 @@ const [socket, setSocket] = useState(null);
   return(
     <notificationContext.Provider value={{notifications,fetchNotifications,socket}}>
        {children}
-      <NotificationToast notifications={notifications} />
+     
     </notificationContext.Provider>
   )
 

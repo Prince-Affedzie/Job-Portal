@@ -1,31 +1,49 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBell, FaTimes } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { notificationContext } from "../../Context/NotificationContext";
 
-export const NotificationToast = ({ notifications }) => {
+export const NotificationToast = () => {
   const [visible, setVisible] = useState(false);
+  const { notifications, fetchNotifications } = useContext(notificationContext);
   const [currentNotification, setCurrentNotification] = useState(null);
+
+  useEffect(() => {
+    if (!notifications) {
+      fetchNotifications();
+    }
+  }, [notifications, fetchNotifications]);
 
   useEffect(() => {
     if (notifications && notifications.length > 0) {
       // Get the most recent unread notification
       const unread = notifications.filter(n => !n.read);
       if (unread.length > 0) {
-        setCurrentNotification(unread[0]);
-        setVisible(true);
+        const newestNotification = unread[0];
         
-        // Auto-hide after 5 seconds
-        const timer = setTimeout(() => {
-          setVisible(false);
-        }, 5000);
-        
-        return () => clearTimeout(timer);
+        // Only update if it's a different notification
+        if (!currentNotification || newestNotification.id !== currentNotification.id) {
+          setCurrentNotification(newestNotification);
+          setVisible(true);
+        }
+      } else {
+        setVisible(false);
       }
     }
-  }, [notifications]);
+  }, [notifications, currentNotification]);
 
-  if (!currentNotification) return null;
+  useEffect(() => {
+    let timer;
+    if (visible && currentNotification) {
+      timer = setTimeout(() => {
+        setVisible(false);
+      }, 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [visible, currentNotification]);
+
+  if (!currentNotification || !visible) return null;
 
   return (
     <AnimatePresence>

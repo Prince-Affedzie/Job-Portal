@@ -18,6 +18,7 @@ import { userContext } from "../../Context/FetchUser";
 import { notificationContext } from "../../Context/NotificationContext";
 import VerifyTooltip from "../../Components/Common/VerifyToolTip";
 import { UserGuide } from "../../Components/Common/NewUserGuide";
+import { NotificationToast } from "../../Components/Common/NotificationToast";
 
 const JobSeekerDashboard = () => {
   const navigate = useNavigate();
@@ -406,6 +407,7 @@ const JobSeekerDashboard = () => {
                 </div>
               )}
             </section>
+            <NotificationToast/>
           </div>
         </div>
       </main>

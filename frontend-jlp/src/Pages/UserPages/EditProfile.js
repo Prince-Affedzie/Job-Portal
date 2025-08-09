@@ -16,6 +16,7 @@ import WorkExperienceSection from "../../Components/ProfileEdit/WorkExperienceSe
 import PortfolioSection from "../../Components/ProfileEdit/PortfolioSection"
 import AddItemModal from "../../Components/ProfileEdit/AddItemModal";
 import DeleteConfirmationModal from "../../Components/ProfileEdit/DeleteConfirmationModal";
+import { NotificationToast } from "../../Components/Common/NotificationToast";
 
 
 const EditProfile = () => {
@@ -296,6 +297,7 @@ useEffect(() => {
       />
       
       <ProcessingOverlay show={isProcessing} message="Submitting your Changes..." />
+       <NotificationToast/>
       <Footer />
     </div>
   );

@@ -9,6 +9,7 @@ import '../../Styles/MiniTaskInfo.css';
 
 import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 import {FaCheckCircle,FaHandPointer,FaClock}  from "react-icons/fa"
+import { NotificationToast } from "../../Components/Common/NotificationToast";
 
 
 const MiniTaskInfo = () => {
@@ -301,7 +302,7 @@ const MiniTaskInfo = () => {
             </section>
           </div>
         </div>
-         
+         <NotificationToast/> 
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import { Loader2 } from 'lucide-react';
 import { userContext } from "../../Context/FetchUser";
 import { getAllChatRooms } from '../../APIS/API';
 import Navbar from '../../Components/Common/Navbar';
+import { NotificationToast } from '../../Components/Common/NotificationToast';
 
 const ChatPage = () => {
   const { roomId } = useParams();
@@ -209,6 +210,7 @@ const ChatPage = () => {
             </div>
           )}
         </div>
+         <NotificationToast/>
       </div>
     </div>
   );

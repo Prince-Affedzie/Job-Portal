@@ -10,6 +10,7 @@ import AssignApplicantModal from "../../Components/MiniTaskManagementComponents/
 import EditMiniTaskForm from "../../Components/MiniTaskManagementComponents/EditMiniTaskForm";
 import Navbar from "../../Components/Common/Navbar";
 import ReportForm from "../../Components/Common/ReportForm";
+import { NotificationToast } from "../../Components/Common/NotificationToast";
 
 import "../../Styles/ManageMiniTasks.css";
 import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
@@ -554,6 +555,7 @@ const ManageMiniTasks = () => {
       </div>
 
       <ProcessingOverlay show={isProcessing} message="Processing your request..." />
+       <NotificationToast/>
     </div>
   );
 };

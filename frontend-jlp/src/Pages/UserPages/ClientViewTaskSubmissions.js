@@ -21,6 +21,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from '../../Components/Common/Navbar';
 import SubmittedFiles from '../../Components/MiniTaskManagementComponents/SubmittedFiles';
+import { NotificationToast } from '../../Components/Common/NotificationToast';
 
 const ClientViewSubmissions = () => {
   const { taskId } = useParams();
@@ -539,6 +540,7 @@ const ClientViewSubmissions = () => {
                
               )}
             </div>
+             <NotificationToast/>
           </div>
         </div>
       )}

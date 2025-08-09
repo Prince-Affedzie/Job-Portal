@@ -8,6 +8,7 @@ import { getJobs } from "../../APIS/API"; // API function
 import moment from "moment";
 import debounce from "lodash.debounce"; // Optimize API calls
 import Pagination from "../../Components/Common/Pagination";
+import { NotificationToast } from "../../Components/Common/NotificationToast";
 
 const JobListings = () => {
   const [jobs, setJobs] = useState([]);
@@ -234,6 +235,7 @@ useEffect(() => {
               onPageChange={(page) => setCurrentPage(page)}
             />
       <Footer />
+       <NotificationToast/>
     </div>
     </div>
   );

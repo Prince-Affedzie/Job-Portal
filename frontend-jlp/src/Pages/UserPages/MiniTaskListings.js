@@ -17,6 +17,7 @@ import LoadingButton from "../../Components/Common/LoadingButton";
 import { useRequestStatus } from "../../hooks/useRequestStatus";
 import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 import Pagination from "../../Components/Common/Pagination";
+import { NotificationToast } from "../../Components/Common/NotificationToast";
 
 const MiniTaskPage = () => {
   const navigate = useNavigate()
@@ -313,7 +314,7 @@ const MiniTaskPage = () => {
           )}
           
         </section>
-        
+          <NotificationToast/>
       </div>
       <Pagination
         currentPage={currentPage}

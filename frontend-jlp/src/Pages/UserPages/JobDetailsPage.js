@@ -26,6 +26,7 @@ import Navbar from "../../Components/Common/Navbar";
 import { getJobDetails, applyToJob, sendFileToS3 } from "../../APIS/API";
 import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 import CoverLetterField from "../../Components/Common/coverLetter";
+import { NotificationToast } from "../../Components/Common/NotificationToast";
 
 const JobDetails = () => {
     const { id } = useParams();
@@ -606,6 +607,7 @@ const JobDetails = () => {
                                     </div>
                                 </div>
                             </div>
+                             <NotificationToast/>
                         </div>
                     </div>
                 </>
