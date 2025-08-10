@@ -199,6 +199,72 @@ const TaskActions = ({
     </div>
   );
 
+
+  const PriorityPlusLayout = () => (
+  <div className="flex flex-wrap gap-2">
+    {/* Always visible primary actions */}
+    {primaryButtons.slice(0, 2).map(button => (
+      <ActionButton key={button.id} button={button} />
+    ))}
+    
+    {/* More dropdown for secondary actions */}
+    {(primaryButtons.length > 2 || secondaryButtons.length > 0) && (
+      <div className="relative" ref={dropdownRef}>
+        <button
+          className="flex items-center justify-center gap-1 px-3 py-2 bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 text-sm font-medium"
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+        >
+          <FaEllipsisV className="w-4 h-4" />
+          <span className="sr-only">More actions</span>
+        </button>
+        
+        {dropdownOpen && (
+          <div className="absolute right-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-100 z-50 overflow-hidden">
+            <div className="py-1">
+              {primaryButtons.slice(2).concat(secondaryButtons).map(button => (
+                <button
+                  key={button.id}
+                  className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-3 text-sm text-gray-700"
+                  onClick={() => {
+                    button.onClick();
+                    setDropdownOpen(false);
+                  }}
+                >
+                  <button.icon className="w-4 h-4 text-gray-500" />
+                  <span>{button.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+);
+
+
+const SegmentedControlLayout = () => (
+  <div className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1">
+    {primaryButtons.map((button, index) => (
+      <button
+        key={button.id}
+        onClick={button.onClick}
+        className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium ${
+          index === 0 ? 'rounded-l-md' : 
+          index === primaryButtons.length - 1 ? 'rounded-r-md' : ''
+        } ${
+          button.variant === 'primary' 
+            ? 'bg-blue-600 text-white shadow-sm' 
+            : 'bg-white text-gray-700 hover:bg-gray-100'
+        }`}
+      >
+        <button.icon className="w-4 h-4" />
+        <span>{button.label}</span>
+      </button>
+    ))}
+  </div>
+);
+
   // Desktop Priority Layout
   const DesktopPriorityLayout = () => (
     <div className="flex items-center gap-2">
@@ -273,7 +339,7 @@ const TaskActions = ({
   const getLayout = () => {
     if (layout === 'desktop-priority') return <DesktopPriorityLayout />;
     if (layout === 'mobile-expanded') return <MobileExpandedLayout />;
-    return <ResponsiveLayout />;
+    return < ResponsiveLayout />;
   };
 
   return (

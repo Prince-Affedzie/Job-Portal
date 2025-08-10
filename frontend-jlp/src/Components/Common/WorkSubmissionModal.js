@@ -1,11 +1,13 @@
-import { DialogTitle, Dialog,Transition,TransitionChild,DialogPanel } from '@headlessui/react';
-import { Fragment, useState, useEffect } from 'react';
+import { DialogTitle, Dialog, Transition, TransitionChild, DialogPanel } from '@headlessui/react';
+import { Fragment, useState, useEffect, useRef } from 'react';
+import {useNavigate} from 'react-router-dom'
 import { toast } from 'react-toastify';
 import {
   getSignedUrl,
   submitWorkForReview,
   sendFileToS3,
 } from '../../APIS/API';
+import { X, Upload, FileText, Image, Video, Loader2, Check, AlertCircle, Trash2 } from 'lucide-react';
 
 const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
   const [message, setMessage] = useState('');
@@ -14,6 +16,8 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
   const [uploadProgress, setUploadProgress] = useState({});
   const [dragActive, setDragActive] = useState(false);
   const [errors, setErrors] = useState({});
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate()
 
   // File size limit (10MB)
   const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -29,16 +33,36 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
     }
   }, [isOpen]);
 
+  const getFileIconComponent = (fileName) => {
+    const extension = fileName.split('.').pop().toLowerCase();
+    const iconClass = "w-5 h-5 text-gray-500 flex-shrink-0";
+    
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+      return <Image className={iconClass} />;
+    } else if (['mp4', 'mov', 'avi', 'mkv'].includes(extension)) {
+      return <Video className={iconClass} />;
+    } else {
+      return <FileText className={iconClass} />;
+    }
+  };
+
   const validateFiles = (fileList) => {
     const validationErrors = {};
     const validFiles = [];
+    let totalSize = files.reduce((sum, file) => sum + file.size, 0);
 
     for (let i = 0; i < fileList.length; i++) {
       const file = fileList[i];
       
       // Check file size
       if (file.size > MAX_FILE_SIZE) {
-        validationErrors[file.name] = `File size exceeds 10MB limit (${(file.size / 1024 / 1024).toFixed(1)}MB)`;
+        validationErrors[file.name] = `File exceeds ${formatFileSize(MAX_FILE_SIZE)} limit`;
+        continue;
+      }
+
+      // Check total size won't exceed 50MB
+      if (totalSize + file.size > 50 * 1024 * 1024) {
+        validationErrors[file.name] = 'Total upload size would exceed 50MB';
         continue;
       }
 
@@ -49,6 +73,7 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
       }
 
       validFiles.push(file);
+      totalSize += file.size;
     }
 
     // Check total file count
@@ -62,6 +87,8 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
+    if (newFiles.length === 0) return;
+
     const { validFiles, errors: validationErrors } = validateFiles(newFiles);
 
     if (Object.keys(validationErrors).length > 0) {
@@ -76,7 +103,10 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
       }, 5000);
     }
 
-    setFiles(prev => [...prev, ...validFiles]);
+    if (validFiles.length > 0) {
+      setFiles(prev => [...prev, ...validFiles]);
+      toast.success(`Added ${validFiles.length} file(s)`);
+    }
   };
 
   const handleDrag = (e) => {
@@ -109,7 +139,10 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
         }, 5000);
       }
 
-      setFiles(prev => [...prev, ...validFiles]);
+      if (validFiles.length > 0) {
+        setFiles(prev => [...prev, ...validFiles]);
+        toast.success(`Added ${validFiles.length} file(s)`);
+      }
     }
   };
 
@@ -134,13 +167,13 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
     const newErrors = {};
     
     if (!message.trim()) {
-      newErrors.message = 'Submission message is required';
+      newErrors.message = 'Please describe your submission';
     } else if (message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters long';
+      newErrors.message = 'Description should be at least 10 characters';
     }
     
     if (files.length === 0) {
-      newErrors.files = 'Please select at least one file';
+      newErrors.files = 'Please add at least one file';
     }
 
     setErrors(newErrors);
@@ -157,58 +190,84 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
     setSubmitting(true);
     try {
       const fileKeys = [];
+      const failedUploads = [];
 
+      // Upload files sequentially
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         setUploadProgress(prev => ({ ...prev, [i]: 0 }));
 
         try {
+          // Get signed URL
           const { data } = await getSignedUrl({
             taskId,
             filename: file.name,
             contentType: file.type,
           });
+          
+          setUploadProgress(prev => ({ ...prev, [i]: 30 }));
 
-          setUploadProgress(prev => ({ ...prev, [i]: 50 }));
-
-          await sendFileToS3(data.uploadURL, file);
+          // Upload to S3 with progress tracking
+          await sendFileToS3(data.uploadURL, file, (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(prev => ({ 
+              ...prev, 
+              [i]: 30 + Math.floor(percentCompleted * 0.7) 
+            }));
+          });
 
           setUploadProgress(prev => ({ ...prev, [i]: 100 }));
-
-          fileKeys.push({
-            fileKey: data.fileKey,
-          });
+          fileKeys.push({ fileKey: data.fileKey });
         } catch (fileError) {
-          setUploadProgress(prev => ({ ...prev, [i]: -1 })); // -1 indicates error
-          throw new Error(`Failed to upload ${file.name}: ${fileError.message}`);
+          console.error(`Failed to upload ${file.name}:`, fileError);
+          setUploadProgress(prev => ({ ...prev, [i]: -1 }));
+          failedUploads.push(file.name);
         }
       }
 
+      // Check if we have any successfully uploaded files
+      if (fileKeys.length === 0) {
+        throw new Error('All file uploads failed');
+      }
+
+      // Submit work with successful uploads
       await submitWorkForReview(taskId, {
         message: message.trim(),
         fileKeys,
       });
 
-      toast.success('Work submitted successfully!');
+      if (failedUploads.length > 0) {
+        toast.success(
+          `Submitted with ${fileKeys.length} files (${failedUploads.length} failed)`,
+          { icon: '⚠️' }
+        );
+      } else {
+        toast.success('Submitted successfully!', { icon: '✅' });
+        navigate(`/freelancer/${taskId}/view_task_submissions`)
+
+      }
+      
       onClose();
     } catch (error) {
-      const errorMessage =
-        error.message ||
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        'An unexpected error occurred while submitting your work.';
-      toast.error(errorMessage);
+      console.error('Submission error:', error);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Submission failed. Please try again.';
+      toast.error(errorMessage, { icon: '❌' });
     } finally {
       setSubmitting(false);
     }
   };
 
- 
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
 
-  
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="fixed inset-0 z-50" onClose={onClose}>
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-200"
@@ -218,11 +277,11 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-none" />
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
         </TransitionChild>
 
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-start sm:items-center justify-center p-2 sm:p-4 pt-4 sm:pt-8">
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
             <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
@@ -232,16 +291,24 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <DialogPanel className="z-50 max-h-[80vh] mt-10 overflow-y-auto overflow-hidden rounded-2xl bg-white shadow-none border border-gray-200 transition-all">
-                <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-                  <DialogTitle className="text-xl font-semibold text-white flex items-center">
-                    <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                    Submit Work for Review
-                  </DialogTitle>
+              <DialogPanel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-5">
+                  <div className="flex items-center justify-between">
+                    <DialogTitle className="text-xl font-semibold text-white flex items-center">
+                      <Upload className="w-5 h-5 mr-2" />
+                      Submit Your Work
+                    </DialogTitle>
+                    <button
+                      onClick={onClose}
+                      className="text-white/80 hover:text-white focus:outline-none"
+                      disabled={submitting}
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
                   <p className="text-blue-100 text-sm mt-1">
-                    Upload your completed work and provide submission details
+                    Upload your completed files and provide details
                   </p>
                 </div>
 
@@ -249,13 +316,13 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
                   {/* Message Input */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Submission Message *
+                      Description <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       className={`w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.message ? 'border-red-500' : 'border-gray-300'
+                        errors.message ? 'border-red-500 bg-red-50' : 'border-gray-300'
                       }`}
-                      placeholder="Describe your completed work, any challenges faced, or additional notes..."
+                      placeholder="Describe what you're submitting..."
                       value={message}
                       onChange={(e) => {
                         setMessage(e.target.value);
@@ -266,52 +333,58 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
                       rows={4}
                       maxLength={1000}
                     />
-                    {errors.message && (
-                      <p className="text-red-500 text-sm mt-1">{errors.message}</p>
-                    )}
-                    <p className="text-gray-500 text-xs mt-1">
-                      {message.length}/1000 characters
-                    </p>
+                    <div className="flex justify-between mt-1">
+                      {errors.message ? (
+                        <p className="text-red-500 text-sm">{errors.message}</p>
+                      ) : (
+                        <p className="text-gray-500 text-xs">
+                          Minimum 10 characters
+                        </p>
+                      )}
+                      <p className="text-gray-500 text-xs">
+                        {message.length}/1000
+                      </p>
+                    </div>
                   </div>
 
                   {/* File Upload Area */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Upload Files * ({files.length}/{MAX_FILES})
+                      Files <span className="text-red-500">*</span> ({files.length}/{MAX_FILES})
                     </label>
                     
                     <div
-                      className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                      className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
                         dragActive
                           ? 'border-blue-500 bg-blue-50'
                           : errors.files
                           ? 'border-red-300 bg-red-50'
-                          : 'border-gray-300 hover:border-gray-400'
+                          : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
                       }`}
                       onDragEnter={handleDrag}
                       onDragLeave={handleDrag}
                       onDragOver={handleDrag}
                       onDrop={handleDrop}
+                      onClick={triggerFileInput}
                     >
                       <input
                         type="file"
                         multiple
-                        
+                        ref={fileInputRef}
                         onChange={handleFileChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        onClick={(e) => (e.target.value = null)}
+                        className="hidden"
                       />
                       
-                      <div className="space-y-2">
-                        <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                          <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+                      <div className="space-y-3">
+                        <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                          <Upload className="w-5 h-5 text-blue-600" />
+                        </div>
                         <div>
                           <p className="text-sm text-gray-600">
-                            <span className="font-medium text-blue-600 hover:text-blue-500">Click to upload</span> or drag and drop
+                            <span className="font-medium text-blue-600">Click to upload</span> or drag and drop
                           </p>
                           <p className="text-xs text-gray-500 mt-1">
-                             Max {formatFileSize(MAX_FILE_SIZE)} per file
+                            Max {formatFileSize(MAX_FILE_SIZE)} per file • 50MB total
                           </p>
                         </div>
                       </div>
@@ -324,40 +397,58 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
 
                   {/* File List */}
                   {files.length > 0 && (
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium text-gray-700">Selected Files:</h4>
-                      <div className="max-h-40 overflow-y-auto space-y-2">
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-medium text-gray-700">
+                        Selected Files
+                      </h4>
+                      <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
                         {files.map((file, index) => (
                           <div
                             key={index}
-                            className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-3"
+                            className={`flex items-center justify-between p-3 rounded-lg border ${
+                              uploadProgress[index] === -1
+                                ? 'bg-red-50 border-red-200'
+                                : uploadProgress[index] === 100
+                                ? 'bg-green-50 border-green-200'
+                                : 'bg-gray-50 border-gray-200'
+                            }`}
                           >
                             <div className="flex items-center space-x-3 flex-1 min-w-0">
-                             
+                              {getFileIconComponent(file.name)}
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-gray-900 truncate">
                                   {file.name}
                                 </p>
-                                <p className="text-xs text-gray-500">
-                                  {formatFileSize(file.size)}
-                                </p>
-                                {submitting && uploadProgress[index] !== undefined && (
-                                  <div className="mt-1">
-                                    {uploadProgress[index] === -1 ? (
-                                      <p className="text-xs text-red-500">Upload failed</p>
-                                    ) : (
-                                      <div className="flex items-center space-x-2">
-                                        <div className="flex-1 bg-gray-200 rounded-full h-1.5">
-                                          <div
-                                            className="bg-blue-600 h-1.5 rounded-full transition-all"
-                                            style={{ width: `${uploadProgress[index]}%` }}
-                                          />
-                                        </div>
-                                        <span className="text-xs text-gray-500">
+                                <div className="flex justify-between items-center">
+                                  <p className="text-xs text-gray-500">
+                                    {formatFileSize(file.size)}
+                                  </p>
+                                  {uploadProgress[index] !== undefined && (
+                                    <span className="text-xs font-medium">
+                                      {uploadProgress[index] === -1 ? (
+                                        <span className="text-red-500 flex items-center">
+                                          <AlertCircle className="w-3 h-3 mr-1" />
+                                          Failed
+                                        </span>
+                                      ) : uploadProgress[index] === 100 ? (
+                                        <span className="text-green-600 flex items-center">
+                                          <Check className="w-3 h-3 mr-1" />
+                                          Uploaded
+                                        </span>
+                                      ) : (
+                                        <span className="text-blue-600">
                                           {uploadProgress[index]}%
                                         </span>
-                                      </div>
-                                    )}
+                                      )}
+                                    </span>
+                                  )}
+                                </div>
+                                {uploadProgress[index] > 0 && uploadProgress[index] < 100 && (
+                                  <div className="mt-1.5 w-full bg-gray-200 rounded-full h-1.5">
+                                    <div
+                                      className="bg-blue-600 h-1.5 rounded-full transition-all"
+                                      style={{ width: `${uploadProgress[index]}%` }}
+                                    />
                                   </div>
                                 )}
                               </div>
@@ -366,12 +457,10 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
                               type="button"
                               onClick={() => removeFile(index)}
                               disabled={submitting}
-                              className="ml-3 text-gray-400 hover:text-red-500 focus:outline-none focus:text-red-500 disabled:opacity-50"
+                              className="ml-3 text-gray-400 hover:text-red-500 focus:outline-none disabled:opacity-50"
                               title="Remove file"
                             >
-                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                              </svg>
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
                         ))}
@@ -381,49 +470,58 @@ const WorkSubmissionModal = ({ isOpen, onClose, taskId, task }) => {
 
                   {/* Error Messages */}
                   {Object.keys(errors).filter(key => !['message', 'files'].includes(key)).length > 0 && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                      <h4 className="text-sm font-medium text-red-800 mb-1">File Upload Errors:</h4>
-                      <ul className="text-sm text-red-700 space-y-1">
-                        {Object.entries(errors)
-                          .filter(([key]) => !['message', 'files'].includes(key))
-                          .map(([fileName, error]) => (
-                            <li key={fileName} className="flex items-start">
-                              <span className="font-medium mr-2">{fileName}:</span>
-                              <span>{error}</span>
-                            </li>
-                          ))}
-                      </ul>
+                    <div className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <AlertCircle className="h-5 w-5 text-red-400" />
+                        </div>
+                        <div className="ml-3">
+                          <h3 className="text-sm font-medium text-red-800">
+                            Some files couldn't be added
+                          </h3>
+                          <div className="mt-2 text-sm text-red-700">
+                            <ul className="list-disc pl-5 space-y-1">
+                              {Object.entries(errors)
+                                .filter(([key]) => !['message', 'files'].includes(key))
+                                .map(([fileName, error]) => (
+                                  <li key={fileName}>
+                                    <span className="font-medium">{fileName}:</span> {error}
+                                  </li>
+                                ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
 
                   {/* Action Buttons */}
-                  <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                  <div className="flex justify-end space-x-3 pt-4">
                     <button
                       type="button"
                       onClick={onClose}
                       disabled={submitting}
-                      className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors"
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={submitting || files.length === 0}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+                      className={`px-5 py-2 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center ${
+                        submitting
+                          ? 'bg-blue-400 text-white'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                      }`}
                     >
                       {submitting ? (
                         <>
-                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Submitting...
+                          <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
+                          Uploading...
                         </>
                       ) : (
                         <>
-                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                          </svg>
+                          <Upload className="-ml-1 mr-2 h-4 w-4" />
                           Submit Work
                         </>
                       )}

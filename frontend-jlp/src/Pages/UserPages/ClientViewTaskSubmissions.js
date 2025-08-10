@@ -22,20 +22,28 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from '../../Components/Common/Navbar';
 import SubmittedFiles from '../../Components/MiniTaskManagementComponents/SubmittedFiles';
 import { NotificationToast } from '../../Components/Common/NotificationToast';
+import FilePreviewModal from '../../Components/MiniTaskManagementComponents/SubmissionsPreviewModal'
 
 const ClientViewSubmissions = () => {
   const { taskId } = useParams();
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [reviewLoading, setReviewLoading] = useState(null);
-  const [localpreviewUrl, setLocalPreviewUrl] = useState(null);
-  const [previewType, setPreviewType] = useState(null);
+  const [previewState, setPreviewState] = useState({
+  open: false,
+  url: null,
+  type: null,
+  name: null
+});
+
   const [feedbacks, setFeedbacks] = useState({});
   const [statuses, setStatuses] = useState({});
   const [filter, setFilter] = useState('all');
   const [taskDetails, setTaskDetails] = useState(null);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const detailsRef = React.useRef(null);
+
+  
 
   const fetchSubmissions = async () => {
     setLoading(true);
@@ -112,24 +120,23 @@ const ClientViewSubmissions = () => {
     }
   };
 
-  const handlePreview = async (fileKey,previewURL) => {
-    try {
-     
-      if (previewURL) {
-        const previewURL1 = previewURL;
-        const fileType = getFileType(fileKey);
-
-        setLocalPreviewUrl( previewURL1);
-        setPreviewType(fileType);
-      } else {
-        toast.error('Failed to get preview URL.');
-      }
-    } catch (error) {
-      toast.error('Error fetching preview URL.');
-      console.error(error);
+  const handlePreview = async (fileKey, previewURL) => {
+  try {
+    if (previewURL) {
+      setPreviewState({
+        open: true,
+        url: previewURL,
+        type: getFileType(fileKey),
+        name: fileKey.split('/').pop() // Extract filename from URL
+      });
+    } else {
+      toast.error('Failed to get preview URL.');
     }
-  };
-
+  } catch (error) {
+    toast.error('Error fetching preview URL.');
+    console.error(error);
+  }
+};
   const getFileType = (url) => {
     if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
       return 'image';
@@ -492,58 +499,16 @@ const ClientViewSubmissions = () => {
       </div>
 
       {/* File Preview Modal */}
-      {localpreviewUrl && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 mt-8">
-          <div className="relative bg-white rounded-lg overflow-hidden max-w-5xl w-full max-h-[90vh]">
-            <div className="flex justify-between items-center p-4 border-b border-gray-200">
-              <h3 className="font-medium text-gray-800">File Preview</h3>
-              <button
-                onClick={() => {
-                  setLocalPreviewUrl(null);
-                  setPreviewType(null);
-                }}
-                className="text-gray-600 hover:text-gray-900 focus:outline-none"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            <div className="p-4">
-              {previewType === 'image' ? (
-                <img 
-                  src={localpreviewUrl} 
-                  alt="Preview" 
-                  onContextMenu={(e) => e.preventDefault()} 
-                  className="max-h-[70vh] mx-auto" 
-                />
-              ) : previewType === 'video' ? (
-                <video 
-                src={localpreviewUrl} 
-                controls 
-                controlsList="nodownload"
-                className="max-h-[70vh] mx-auto"
-              />
-            ) :(
-                <div className="text-center py-10">
-                <p className="mb-4 text-sm text-gray-600">
-                 Preview not available. Click below to open in Google Docs Viewer.
-                </p>
-                 <a 
-                  href={`https://docs.google.com/gview?url=${encodeURIComponent(localpreviewUrl)}&embedded=true`} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-                   >
-                  View Document
-                </a>
-               </div>
-               
-              )}
-            </div>
-             <NotificationToast/>
-          </div>
-        </div>
-      )}
+     {previewState.open && (
+  <FilePreviewModal
+    previewUrl={previewState.url}
+    fileType={previewState.type}
+    fileName={previewState.name}
+    onClose={() => setPreviewState({...previewState, open: false})}
+    disableDownload={true}
+  />
+)}
+<NotificationToast/>
     </div>
   );
 };
