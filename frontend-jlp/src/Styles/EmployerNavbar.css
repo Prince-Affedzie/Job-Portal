@@ -213,10 +213,6 @@
     }
 }
 
-/* Add margin to body to account for fixed navbar */
-body {
-    margin-top: 70px; /* Adjust based on your navbar height */
-}
 
 /* Notification item styling (if you have dropdown notifications) */
 .notification-item:last-child {
