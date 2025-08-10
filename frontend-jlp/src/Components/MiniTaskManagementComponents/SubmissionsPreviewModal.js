@@ -189,9 +189,9 @@ const FilePreviewModal = ({
   if (!previewUrl) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 overflow-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 overflow-auto mt-20">
       {/* Modal Container */}
-      <div className={`relative bg-white rounded-lg overflow-hidden shadow-xl ${isFullscreen ? 'w-full h-full' : 'max-w-5xl w-full max-h-[90vh]'} my-8`}>
+      <div className={`relative bg-white rounded-lg overflow-hidden shadow-xl ${isFullscreen ? 'w-full h-full' : 'max-w-5xl w-full max-h-[90vh]'} my-8 mt-8`}>
         {/* Header - Sticky to ensure visibility */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50 sticky top-0 z-10">
           <div className="flex items-center min-w-0">
