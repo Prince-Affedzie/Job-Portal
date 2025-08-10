@@ -21,13 +21,18 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from '../../Components/Common/Navbar';
 import SubmittedFiles from '../../Components/MiniTaskManagementComponents/SubmittedFiles';
+import FilePreviewModal from '../../Components/MiniTaskManagementComponents/SubmissionsPreviewModal'
 
 
 const FreelancerSubmissions = () => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [localpreviewUrl, setLocalPreviewUrl] = useState(null);
-  const [previewType, setPreviewType] = useState(null);
+    const [previewState, setPreviewState] = useState({
+    open: false,
+    url: null,
+    type: null,
+    name: null
+  });
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [filter, setFilter] = useState('all');
   const [selectedSubmission, setSelectedSubmission] = useState(null);
@@ -64,24 +69,23 @@ const FreelancerSubmissions = () => {
     fetchSubmissions();
   }, [taskId]);
 
-  const handlePreview = async (fileKey,previewURL) => {
-      try {
-       
-        if (previewURL) {
-          const previewURL1 = previewURL;
-          const fileType = getFileType(fileKey);
-  
-          setLocalPreviewUrl( previewURL1);
-          setPreviewType(fileType);
-        } else {
-          toast.error('Failed to get preview URL.');
-        }
-      } catch (error) {
-        toast.error('Error fetching preview URL.');
-        console.error(error);
-      }
-    };
-  
+ const handlePreview = async (fileKey, previewURL) => {
+   try {
+     if (previewURL) {
+       setPreviewState({
+         open: true,
+         url: previewURL,
+         type: getFileType(fileKey),
+         name: fileKey.split('/').pop() // Extract filename from URL
+       });
+     } else {
+       toast.error('Failed to get preview URL.');
+     }
+   } catch (error) {
+     toast.error('Error fetching preview URL.');
+     console.error(error);
+   }
+ };
  
   const getStatusDetails = (status) => {
     switch (status) {
@@ -398,59 +402,15 @@ const FreelancerSubmissions = () => {
       </div>
 
       {/* Image/PDF Preview Modal */}
-      {localpreviewUrl && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 mt-8">
-          <div className="relative bg-white rounded-lg overflow-hidden max-w-5xl w-full max-h-[90vh]">
-            <div className="flex justify-between items-center p-4 border-b border-gray-200">
-              <h3 className="font-medium text-gray-800">File Preview</h3>
-              <button
-                onClick={() => {
-                  setLocalPreviewUrl(null);
-                  setPreviewType(null);
-                }}
-                className="text-gray-600 hover:text-gray-900 focus:outline-none"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            <div className="p-4">
-              {previewType === 'image' ? (
-                <img src={localpreviewUrl} 
-                alt="Preview" 
-                 onContextMenu={(e) => e.preventDefault()} 
-                className="max-h-[70vh] mx-auto" 
-                />
-              ) : previewType === 'video' ? (
-                <video 
-                src={localpreviewUrl} 
-                controls 
-                className="max-h-[70vh] mx-auto"
-              />
-              ) : previewType === 'pdf' ? (
-                <iframe
-                  src={localpreviewUrl}
-                  title="PDF Preview"
-                  className="w-full h-[70vh]"
-                ></iframe>
-              ) : (
-                <div className="text-center text-gray-600 py-20">
-                  <FileText size={48} className="mx-auto mb-4 text-gray-400" />
-                  <p>Preview not available for this file type.</p>
-                  <a 
-                    href={localpreviewUrl} 
-                    target="_blank" 
-                    rel="noreferrer" 
-                    className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-                  >
-                    Download File
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {previewState.open && (
+       <FilePreviewModal
+         previewUrl={previewState.url}
+         fileType={previewState.type}
+         fileName={previewState.name}
+         onClose={() => setPreviewState({...previewState, open: false})}
+         disableDownload={false}
+       />
+     )}
     </div>
   );
 };
