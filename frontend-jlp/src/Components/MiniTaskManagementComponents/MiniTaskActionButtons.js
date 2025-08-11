@@ -12,6 +12,7 @@ import {
   FaClock,
   FaUser
 } from 'react-icons/fa';
+import { Upload} from 'lucide-react'
 
 const TaskActions = ({
   task,
@@ -53,20 +54,13 @@ const TaskActions = ({
   const needsAcceptance = task.assignedTo === user?._id && !task.assignmentAccepted;
   
   // Mock task data for demo
-  const mockTask = {
-    _id: '1',
-    status: 'In-progress',
-    assignedTo: 'user123',
-    assignmentAccepted: true,
-    locationType: 'remote',
-    employer: { _id: 'emp1' }
-  };
+
   
-  const mockUser = { _id: 'user123' };
+  
   
   // Use mock data for demo
-  const currentTask = task || mockTask;
-  const currentUser = user || mockUser;
+  const currentTask = task 
+  const currentUser = user 
 
   // Action button configurations with contextual grouping
   const actionGroups = {
@@ -85,7 +79,7 @@ const TaskActions = ({
       {
         id: 'submitWork',
         label: currentTask.locationType === 'on-site' ? 'Submit Proof' : 'Submit Work',
-        icon: FaUpload,
+        icon:  Upload,
         onClick: () => onSubmitWork?.(currentTask._id),
         variant: 'primary',
         show: canSubmitWork,
