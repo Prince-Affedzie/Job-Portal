@@ -270,7 +270,7 @@ const Navbar = () => {
                 aria-label={`Notifications (${unreadCount} unread)`}
               >
                 <div className="mobile-notification-icon">
-                <FaBell size={18} />
+                {/*<FaBell size={18} />*/}
                 <span>Notifications</span>
                 {unreadCount > 0 && (
                   <span className="mobile-notification-badge">{unreadCount}</span>
