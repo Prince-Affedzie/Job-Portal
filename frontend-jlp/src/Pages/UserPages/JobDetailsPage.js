@@ -348,36 +348,38 @@ const JobDetails = () => {
                                         </div>
                                     </div>
                                     
-                                        <div className="px-6 pb-6">
-                                            {job.skillsRequired.length > 0 ? (
-                                                <div className="flex flex-wrap gap-2">
-                                                    {job.skillsRequired.map((skill, index) => (
-                                                        <span 
-                                                            key={index} 
-                                                            className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-sm font-medium"
-                                                        >
-                                                            <FaCheckCircle className="mr-1.5 text-blue-600" /> {skill}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                                                    <div className="flex">
-                                                        <div className="flex-shrink-0">
-                                                            <FaInfoCircle className="h-5 w-5 text-yellow-400" />
-                                                        </div>
-                                                        <div className="ml-3">
-                                                            <p className="text-sm text-yellow-700">
-                                                                No specific skills highlighted for this position. 
-                                                                General qualifications may be discussed during the interview process.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
+                        <div className="px-6 pb-6">
+                        <ul className="space-y-3">
+                     {job.skillsRequired.length > 0 ? (
+                    job.skillsRequired.map((skill, index) => (
+                   <li key={index} className="flex items-center">
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-full  text-gray-700 text-sm font-medium">
+                       <FaCheckCircle className="mr-2 text-blue-600" /> 
+                      {skill}
+                     </span>
+                   </li>
+                 ))
+                ) : (
+                <li>
+               <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                 <div className="flex">
+                  <div className="flex-shrink-0">
+                  <FaInfoCircle className="h-5 w-5 text-yellow-400" />
+                  </div>
+               <div className="ml-3">
+                     <p className="text-sm text-yellow-700">
+                No specific skills highlighted for this position. 
+                General qualifications may be discussed during the interview process.
+                   </p>
+                   </div>
+                   </div>
+                </div>
+             </li>
+             )}
+              </ul>
+                 </div>
                                     
-                                </div>
+                        </div>
                             </div>
 
                             {/* Right Column - Application */}
