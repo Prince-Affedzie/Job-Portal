@@ -126,57 +126,130 @@ useEffect(() => {
 
       <div className="content-container">
         {/* Sidebar (Filters) */}
-        <aside
-     className={`
-     job-listings-sidebar 
-     transform transition-transform duration-300 ease-in-out
-      ${showFilters ? "show translate-y-0" : "-translate-y-full"}
-       md:transform-none md:${showFilters ? "show-sidebar" : ""}
-     `} >
-          <button className="close-button" onClick={() => setShowFilters(false)}>
-            <FaTimes style={{ color: "#6b7280" }} />
-          </button>
-          <h2 style={{ color: "#fff" }}>Filters</h2>
+<aside
+  className={`
+    fixed inset-y-0 left-0 z-50 w-72 h-full
+    transform transition-transform duration-300 ease-in-out
+    ${showFilters ? "translate-x-0" : "-translate-x-full"}
+    md:relative md:z-auto md:translate-x-0 md:w-64 md:h-120
+    bg-slate-800 shadow-xl md:shadow-none 
+  `}
+>
+  {/* Sidebar content */}
+  <div className="
+    relative h-full md:h-auto w-full
+    p-6 overflow-y-auto
+    flex flex-col space-y-6
+  ">
+    {/* Header */}
+    <div className="flex items-center justify-between border-b border-slate-700 pb-4">
+      <h2 className="text-xl font-bold text-slate-100">Filters</h2>
+      <button 
+        onClick={() => setShowFilters(false)}
+        className="
+          md:hidden p-1 rounded-full hover:bg-slate-700
+          text-slate-300 hover:text-white
+          transition-colors
+        "
+      >
+        <FaTimes className="h-5 w-5" />
+      </button>
+    </div>
 
-          <label style={{ color: "#fff" }}>Category</label>
-          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-            <option>All Categories</option>
-            <option>Development</option>
-            <option>Design</option>
-            <option>Marketing</option>
-          </select>
+    {/* Filter sections */}
+    <div className="space-y-6">
+      {/* Category filter */}
+      <div>
+        <label className="block text-sm font-medium text-slate-200 mb-1">
+          Category
+        </label>
+        <select 
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="
+            w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            text-slate-100
+          "
+        >
+          <option className="bg-slate-800">All Categories</option>
+          <option className="bg-slate-800">Development</option>
+          <option className="bg-slate-800">Design</option>
+          <option className="bg-slate-800">Marketing</option>
+        </select>
+      </div>
 
-          <label style={{ color: "#fff" }}>Job Type</label>
-          <select value={selectedJobType} onChange={(e) => setSelectedJobType(e.target.value)}>
-            <option>All Types</option>
-            <option>Full-Time</option>
-            <option>Part-Time</option>
-            <option>Contract</option>
-            <option>Freelance</option>
-          </select>
-          
-          <label style={{ color: "#fff" }}>Location</label>
-          <select value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
-          <option>All Regions</option>
-           <option>Greater Accra</option>
-            <option>Ashanti</option>
-            <option>Central</option>
-            <option>Western</option>
-            <option>Northern</option>
-            <option>Eastern</option>
-            <option>Upper East</option>
-            <option>Upper West</option>
-            <option>Volta</option>
-            <option>Oti</option>
-            <option>North East</option>
-            <option>Bono</option>
-            <option>Bono East</option>
-            <option>Ahafo</option>
-            <option>Savannah</option>
-            <option>Western North</option>
-         </select>
+      {/* Job Type filter */}
+      <div>
+        <label className="block text-sm font-medium text-slate-200 mb-1">
+          Job Type
+        </label>
+        <select 
+          value={selectedJobType}
+          onChange={(e) => setSelectedJobType(e.target.value)}
+          className="
+            w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            text-slate-100
+          "
+        >
+          <option className="bg-slate-800">All Types</option>
+          <option className="bg-slate-800">Full-Time</option>
+          <option className="bg-slate-800">Part-Time</option>
+          <option className="bg-slate-800">Contract</option>
+          <option className="bg-slate-800">Freelance</option>
+        </select>
+      </div>
 
-        </aside>
+      {/* Location filter */}
+      <div>
+        <label className="block text-sm font-medium text-slate-200 mb-1">
+          Location
+        </label>
+        <select 
+          value={selectedRegion}
+          onChange={(e) => setSelectedRegion(e.target.value)}
+          className="
+            w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            text-slate-100
+          "
+        >
+          <option className="bg-slate-800">All Regions</option>
+          <option className="bg-slate-800">Greater Accra</option>
+          <option className="bg-slate-800">Ashanti</option>
+          <option className="bg-slate-800">Central</option>
+          <option className="bg-slate-800">Western</option>
+          <option className="bg-slate-800">Northern</option>
+          <option className="bg-slate-800">Eastern</option>
+          <option className="bg-slate-800">Upper East</option>
+          <option className="bg-slate-800">Upper West</option>
+          <option className="bg-slate-800">Volta</option>
+          <option className="bg-slate-800">Oti</option>
+          <option className="bg-slate-800">North East</option>
+          <option className="bg-slate-800">Bono</option>
+          <option className="bg-slate-800">Bono East</option>
+          <option className="bg-slate-800">Ahafo</option>
+          <option className="bg-slate-800">Savannah</option>
+          <option className="bg-slate-800">Western North</option>
+        </select>
+      </div>
+    </div>
+
+    {/* Apply button for mobile */}
+    <button
+      onClick={() => setShowFilters(false)}
+      className="
+        md:hidden w-full py-2 px-4 border border-transparent rounded-md shadow-sm
+        text-sm font-medium text-white bg-blue-600 hover:bg-blue-700
+        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+        mt-auto
+      "
+    >
+      Apply Filters
+    </button>
+  </div>
+</aside>
 
        
 

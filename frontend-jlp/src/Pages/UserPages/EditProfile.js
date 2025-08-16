@@ -205,7 +205,7 @@ useEffect(() => {
       <Navbar />
 
       <div className="flex-1 container mx-auto px-4 py-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8">Edit Profile</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-8">My Profile</h2>
 
         <ProfileImageSection 
           previewImage={previewImage}
