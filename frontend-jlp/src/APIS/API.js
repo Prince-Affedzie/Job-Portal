@@ -85,6 +85,7 @@ export const sendFileToS3 = async (uploadURL, file,onProgress) => {
     onUploadProgress: onProgress
   });
 };
+export const getMicroTaskApplicants=(Id)=>API.get(`/api/h1/v2/get_applicants/my_micro_task/${Id}`)
 
 
 //Chat Mesaging APIs

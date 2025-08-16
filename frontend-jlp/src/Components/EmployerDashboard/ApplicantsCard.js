@@ -7,21 +7,11 @@ import {
   FaCheckCircle,
   FaTimesCircle,
   FaUser,
+  FaStar,
 } from "react-icons/fa";
 import { formatDate } from "./Utils";
 import { useNavigate } from "react-router-dom";
 
-/**
- * ApplicantCard – individual applicant tile.
- * ApplicantActionBar – sticky bulk‑action bar that appears when ≥1 applicant is selected.
- *
- * NOTE: The parent list page should:
- *   1. Keep `selectedApplicants` state (array of userIds).
- *   2. Pass `selectedApplicants`, `toggleApplicant`, and required callbacks to both
- *      ApplicantCard instances and the ApplicantActionBar.
- */
-
-// ---------------- ApplicantCard ---------------- //
 const ApplicantCard = ({
   applicant,
   selectedApplicants,
@@ -44,6 +34,55 @@ const ApplicantCard = ({
       default:
         return "bg-slate-50 text-slate-700 border-slate-200";
     }
+  };
+
+  // Render star rating (if available)
+  const renderRating = (rating) => {
+    if (!rating) return null;
+    return (
+      <div className="flex items-center gap-1 mt-1">
+        <FaStar className="text-amber-400 text-xs" />
+        <span className="text-xs font-medium text-slate-600">{rating.toFixed(1)}</span>
+      </div>
+    );
+  };
+
+  // Circular progress component
+  const CircularProgress = ({ percentage, size = 40, strokeWidth = 4 }) => {
+    const radius = (size - strokeWidth) / 2;
+    const circumference = radius * 2 * Math.PI;
+    const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+    return (
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg className="w-full h-full" viewBox={`0 0 ${size} ${size}`}>
+          <circle
+            className="text-slate-200"
+            strokeWidth={strokeWidth}
+            stroke="currentColor"
+            fill="transparent"
+            r={radius}
+            cx={size / 2}
+            cy={size / 2}
+          />
+          <circle
+            className="text-blue-500 transform -rotate-90 origin-center"
+            strokeWidth={strokeWidth}
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            stroke="currentColor"
+            fill="transparent"
+            r={radius}
+            cx={size / 2}
+            cy={size / 2}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs font-semibold text-blue-600">{percentage}%</span>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -77,17 +116,17 @@ const ApplicantCard = ({
               <h4 className="text-base font-semibold text-slate-900 truncate">
                 {applicant.name}
               </h4>
-             { /*<p className="text-sm text-slate-600 mt-0.5 truncate">
-                {applicant.experience}
-              </p> */}
+              {renderRating(applicant.rating)}
             </div>
             
-            <div
-              className={`text-xs font-medium px-3 py-1 rounded-full border ${getStatusColor(
-                applicant.status,
-              )} flex-shrink-0`}
-            >
-              {applicant.status || "Unknown"}
+            <div className="flex flex-col items-end gap-1">
+              <div
+                className={`text-xs font-medium px-3 py-1 rounded-full border ${getStatusColor(
+                  applicant.status,
+                )} flex-shrink-0`}
+              >
+                {applicant.status || "Unknown"}
+              </div>
             </div>
           </div>
 
@@ -97,6 +136,27 @@ const ApplicantCard = ({
             <span className="truncate">{applicant.location}</span>
           </div>
         </div>
+      </div>
+
+      {/* Score Indicators - New Design */}
+      <div className="flex items-center justify-between bg-slate-50 rounded-lg p-3">
+        {applicant.totalScore && (
+          <div className="flex flex-col items-center">
+            <span className="text-xs text-slate-500 mb-1">Total Match</span>
+            <div className="text-lg font-semibold text-blue-600">
+              {applicant.totalScore}%
+            </div>
+          </div>
+        )}
+        
+        {applicant.skillsScore && (
+          <div className="flex flex-col items-center">
+            <span className="text-xs text-slate-500 mb-1">Skills Match</span>
+            <CircularProgress percentage={applicant.skillsScore} size={36} />
+          </div>
+        )}
+        
+        {/* Add other score indicators here if needed */}
       </div>
 
       {/* Contact Information */}
@@ -162,6 +222,8 @@ const ApplicantCard = ({
     </div>
   );
 };
+
+
 
 // ---------------- Sticky Action Bar ---------------- //
 export const ApplicantActionBar = ({

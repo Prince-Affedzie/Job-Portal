@@ -73,7 +73,8 @@ const useApplicantsManager = (jobId) => {
           dateApplied: app.createdAt,
           lastActivity: app.updatedAt,
           resume: app.resume || null,
-          matchScore: Math.floor(Math.random() * 40) + 60, // Placeholder for real scoring
+          totalScore: app.totalScore,
+          skillsScore: app.skillsScore,
           workPortfolio: app.user.workPortfolio,
           linkedIn: app.user.linkedIn || ""
         }));
