@@ -10,7 +10,6 @@ import EmployerNavbar from "../../Components/EmployerDashboard/EmployerNavbar";
 
 import InterviewInviteModal from "../../Components/EmployerDashboard/InterviewInviteModal";
 import BulkStatusModal from "../../Components/EmployerDashboard/BulkStatusUpdateModal";
-import { getSpecificJobApplications, modifyApplication } from "../../APIS/API";
 
 // Import components
 import JobDetailsSummary from "../../Components/EmployerDashboard/JobSummary";
@@ -19,221 +18,8 @@ import ApplicantsControls from "../../Components/EmployerDashboard//ApplicantsCo
 import StatusStats from "../../Components/EmployerDashboard/StatusStats";
 import ApplicantCard from "../../Components/EmployerDashboard/ApplicantsCard";
 import Pagination from "../../Components/EmployerDashboard/Pagination";
-
-// Custom hook for applicants management
-const useApplicantsManager = (jobId) => {
-  const [loading, setLoading] = useState(true);
-  const [jobDetails, setJobDetails] = useState(null);
-  const [applicants, setApplicants] = useState([]);
-  const [selectedApplicant, setSelectedApplicant] = useState(null);
-  const [selectedApplicants, setSelectedApplicants] = useState([]);
-
-  // Fetch data on mount
-  useEffect(() => {
-    fetchApplicantsData();
-  }, [jobId]);
-
-  const fetchApplicantsData = async () => {
-    try {
-      setLoading(true);
-      const response = await getSpecificJobApplications(jobId);
-      
-      if (response.status === 200) {
-        // Set job details
-        if (response.data.length > 0) {
-          const firstApp = response.data[0];
-          setJobDetails({
-            id: firstApp.job._id,
-            title: firstApp.job.title,
-            status: firstApp.job.status, 
-            location: firstApp.job.deliveryMode, 
-            salary: firstApp.job.salary, 
-            createdAt: firstApp.job.createdAt, 
-            noOfApplicants: firstApp.job.noOfApplicants || response.data.length
-          });
-        }
-
-        // Transform applications data
-        const transformedApplicants = response.data.map(app => ({
-          id: app._id,
-          userId: app.user._id,
-          name: app.user.name,
-          email: app.user.email || "Email not provided",
-          phone: app.user.phone || "Phone not provided",
-          profileImage: app.user.profileImage || "https://via.placeholder.com/150",
-          skills: app.user.skills || [],
-          workExperience: app.user.workExperience || [],
-          experience: app.user.workExperience?.length > 0 
-            ? `${app.user.workExperience.length} years` 
-            : "No experience listed",
-          location: app.user.location?.city || "Location not specified",
-          educationList: app.user.education || [],
-          coverLetter: app.coverLetter || "No cover letter provided",
-          status: app.status || "New",
-          dateApplied: app.createdAt,
-          lastActivity: app.updatedAt,
-          resume: app.resume || null,
-          totalScore: app.totalScore,
-          skillsScore: app.skillsScore,
-          workPortfolio: app.user.workPortfolio,
-          linkedIn: app.user.linkedIn || ""
-        }));
-        
-        setApplicants(transformedApplicants);
-      } else {
-        toast.error("Failed to load applicants data");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("An error occurred while loading applicants");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-      window.scrollTo(0, 0);
-    }, []);
-
-  // Status change handler
-  const handleAppStatusChange = async (payload) => {
-    try {
-      const response = await modifyApplication(payload);
-      
-      if (response.status === 200) {
-        toast.success(`Application state modified successfully`);
-       /* setApplicants(prev => prev.map(app => 
-         Ids.includes(app.id) ? { ...app, status: status.status } : app
-        ));
-        
-        if (selectedApplicant && Ids.includes(selectedApplicant.id)) {
-          setSelectedApplicant(prev => ({ ...prev, status: status.status }));
-        }*/
-      } else {
-        toast.error("Failed to update application status");
-      }
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || "An unexpected error occurred";
-      toast.error(errorMessage);
-    }
-  };
-
-  // Toggle applicant selection
-  const toggleApplicant = (userId, applicationId) => {
-  setSelectedApplicants((prev) => {
-    const exists = prev.some(a => a.userId === userId);
-    if (exists) {
-      return prev.filter(a => a.userId !== userId);
-    } else {
-      return [...prev, { userId, applicationId }];
-    }
-  });
-};
-
-
-  // Handle profile view
-  const handleViewProfile = (applicant) => {
-    setSelectedApplicant(applicant);
-  };
-
-  return {
-    loading,
-    jobDetails,
-    applicants,
-    selectedApplicant,
-    setSelectedApplicant,
-    setSelectedApplicants, 
-    selectedApplicants,
-    handleAppStatusChange,
-    toggleApplicant,
-    handleViewProfile
-  };
-};
-
-
-
-// Custom hook for filtering and pagination
-const useApplicantsFiltering = (applicants) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("dateApplied");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [currentPage, setCurrentPage] = useState(1);
-  const applicantsPerPage = 10;
-
-  // Get status counts for the filter tabs
-  const getStatusCounts = () => {
-    const statusMap = {
-      all: applicants.length,
-      new: 0,
-      reviewing: 0,
-      shortlisted: 0, 
-      interviewing: 0,
-      offered: 0,
-      rejected: 0
-    };
-    
-    applicants.forEach(applicant => {
-      const normalizedStatus = applicant.status.toLowerCase();
-      if (normalizedStatus === "new") statusMap.new++;
-      else if (normalizedStatus.includes("review")) statusMap.reviewing++;
-      else if (normalizedStatus.includes("shortlist")) statusMap.shortlisted++;
-      else if (normalizedStatus.includes("interview")) statusMap.interviewing++;
-      else if (normalizedStatus.includes("offer")) statusMap.offered++;
-      else if (normalizedStatus.includes("reject")) statusMap.rejected++;
-    });
-    
-    return statusMap;
-  };
-
-  // Filter and sort applicants
-  const filteredApplicants = applicants
-    .filter(applicant => 
-      (filterStatus === "all" || applicant.status.toLowerCase() === filterStatus.toLowerCase()) &&
-      (applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-       applicant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       applicant.skills?.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())))
-    )
-    .sort((a, b) => {
-      let comparison = 0;
-      if (sortBy === "dateApplied") {
-        comparison = new Date(a.dateApplied) - new Date(b.dateApplied);
-      } else if (sortBy === "name") {
-        comparison = a.name.localeCompare(b.name);
-      } else if (sortBy === "matchScore") {
-        comparison = a.matchScore - b.matchScore;
-      }
-      return sortOrder === "asc" ? comparison : -comparison;
-    });
-
-  // Pagination
-  const indexOfLastApplicant = currentPage * applicantsPerPage;
-  const indexOfFirstApplicant = indexOfLastApplicant - applicantsPerPage;
-  const currentApplicants = filteredApplicants.slice(indexOfFirstApplicant, indexOfLastApplicant);
-  const totalPages = Math.ceil(filteredApplicants.length / applicantsPerPage);
-
-  // Scroll to top on page change
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPage]);
-
-  return {
-    searchTerm,
-    setSearchTerm,
-    filterStatus,
-    setFilterStatus,
-    sortBy,
-    setSortBy,
-    sortOrder,
-    setSortOrder,
-    currentPage,
-    setCurrentPage,
-    statusCounts: getStatusCounts(),
-    filteredApplicants,
-    currentApplicants,
-    totalPages
-  };
-};
+import { useApplicantsFiltering } from "../../Components/EmployerDashboard/ApplicantFiltering";
+import { useApplicantsManager } from "../../Components/EmployerDashboard/useApplicantsManager";
 
 
 // Main component
@@ -244,7 +30,7 @@ const JobApplicantsPage = () => {
   const [isBulkStatusModalOpen, setIsBulkStatusModalOpen] = useState(false);
   const [notes, setNotes] = useState("");
   
-  // Use custom hooks
+  // custom hooks
   const {
     loading,
     jobDetails,
@@ -266,6 +52,8 @@ const JobApplicantsPage = () => {
     setSortBy,
     sortOrder,
     setSortOrder,
+    scoreFilters, 
+    setScoreFilters,
     currentPage,
     setCurrentPage,
     statusCounts,
@@ -295,7 +83,7 @@ const JobApplicantsPage = () => {
     toast.warning("Select at least one applicant");
     return;
   }
-  console.log(selectedApplicants)
+  
   setIsBulkStatusModalOpen(true);
 };
 
@@ -332,12 +120,7 @@ const handleBulkStatusChange = async (newStatus) => {
         <div className="employer-dashboard-content job-applicants-page">
           <div className="applicants-page-header">
             <h2>Applicants for This {jobDetails?.title} Job</h2>
-            <button
-              onClick={openInviteModal}
-              className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-            >
-              Send Interview Invite
-            </button>
+           
           </div>
 
           {loading ? (
@@ -366,6 +149,8 @@ const handleBulkStatusChange = async (newStatus) => {
                 setSortBy={setSortBy}
                 sortOrder={sortOrder}
                 setSortOrder={setSortOrder}
+                scoreFilters={ scoreFilters}
+                setScoreFilters={setScoreFilters}
               />
               
               <StatusStats 
