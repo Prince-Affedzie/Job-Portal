@@ -114,7 +114,9 @@ const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
           <EmployerNavbar />
           <div className="flex flex-1">
             <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
-            <div className="flex-1 p-8 flex items-center justify-center">
+            <div className={`flex-1 p-8 flex items-center justify-center transition-all duration-300 ${
+              sidebarCollapsed ? 'ml-16' : 'ml-64'
+            }`}>
               <div className="bg-white rounded-xl shadow-md p-8 max-w-md text-center">
                 <FaExclamationCircle className="text-red-500 text-5xl mx-auto mb-4" />
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">Applicant Not Found</h2>
@@ -143,7 +145,9 @@ const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
         <div className="flex flex-1">
           <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
           
-          <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'} p-6 lg:p-8 bg-gray-50`}>
+          <main className={`flex-1 transition-all duration-300 ${
+            sidebarCollapsed ? 'ml-5' : 'md:ml-64'
+          } p-6 lg:p-8 bg-gray-50`}>
             <ToastContainer
               position="top-right"
               autoClose={3000}
@@ -571,7 +575,7 @@ const ProfileLoadingSkeleton = () => (
     <EmployerNavbar />
     <div className="flex flex-1">
       <Sidebar />
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-8 ml-64">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Header Skeleton */}
           <div className="flex items-center gap-4">

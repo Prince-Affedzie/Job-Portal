@@ -121,9 +121,9 @@ const useApplicantsManager = (jobId) => {
   // Toggle applicant selection
   const toggleApplicant = (userId, applicationId) => {
   setSelectedApplicants((prev) => {
-    const exists = prev.find((a) => a.userId === userId);
+    const exists = prev.some(a => a.userId === userId);
     if (exists) {
-      return prev.filter((a) => a.userId !== userId);
+      return prev.filter(a => a.userId !== userId);
     } else {
       return [...prev, { userId, applicationId }];
     }

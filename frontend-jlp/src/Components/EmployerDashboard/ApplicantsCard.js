@@ -208,7 +208,7 @@ const ApplicantCard = ({
         </button>
 
         <label className="inline-flex items-center gap-2 cursor-pointer select-none group/checkbox">
-          <input
+           <input
             type="checkbox"
             checked={selectedApplicants.some((a) => a.userId === applicant.userId)}
             onChange={() => toggleApplicant(applicant.userId, applicant.id)}
@@ -270,12 +270,12 @@ export const ApplicantActionBar = ({
 
             {/* Send Interview Invite Button - Primary Action */}
            <button 
-  onClick={() => onSendInvite(selectedApplicants)}
-  className="inline-flex items-center gap-1 sm:gap-2 px-2 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-xs sm:text-sm font-semibold text-white transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 group"
->
-  <FaEnvelope className="text-xs sm:text-sm group-hover:scale-110 transition-transform duration-200" />
-  <span>Send Interview Invite</span>
-</button>
+            onClick={() => onSendInvite(selectedApplicants)}
+            className="inline-flex items-center gap-1 sm:gap-2 px-2 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-xs sm:text-sm font-semibold text-white transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 group"
+            >
+            <FaEnvelope className="text-xs sm:text-sm group-hover:scale-110 transition-transform duration-200" />
+          <span>Send Interview Invite</span>
+        </button>
             {/* Clear Selection Button */}
             <button
               onClick={clearSelection}
