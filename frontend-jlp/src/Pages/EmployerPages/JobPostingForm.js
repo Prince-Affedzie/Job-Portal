@@ -2,11 +2,25 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../Styles/PostJobForm.css";
 import { addJob } from "../../APIS/API";
 import EmployerNavbar from "../../Components/EmployerDashboard/EmployerNavbar";
 import Footer from "../../Components/Common/Footer";
 import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
+import { 
+  FaArrowLeft, 
+  FaBriefcase, 
+  FaBuilding, 
+  FaEnvelope, 
+  FaMapMarkerAlt, 
+  FaMoneyBillWave, 
+  FaClock,
+  FaGraduationCap,
+  FaTag,
+  FaCheckCircle,
+  FaGlobe,
+  FaLaptop,
+  FaHandshake
+} from "react-icons/fa";
 
 const PostJobForm = () => {
     const navigate = useNavigate();
@@ -48,10 +62,10 @@ const PostJobForm = () => {
 
     // Form sections for multi-step form
     const formSections = [
-        { id: 1, title: "Basic Information" },
-        { id: 2, title: "Job Details" },
-        { id: 3, title: "Location & Compensation" },
-        { id: 4, title: "Skills & Requirements" }
+        { id: 1, title: "Basic Information", icon: <FaBriefcase /> },
+        { id: 2, title: "Job Details", icon: <FaCheckCircle /> },
+        { id: 3, title: "Location & Compensation", icon: <FaMoneyBillWave /> },
+        { id: 4, title: "Skills & Requirements", icon: <FaGraduationCap /> }
     ];
 
     // Handle text and select input changes
@@ -227,21 +241,32 @@ const PostJobForm = () => {
     // Render progress bar
     const renderProgressBar = () => {
         return (
-            <div className="progress-container">
-                <div className="progress-bar">
-                    <div className="progress" style={{ width: `${(activeSection / formSections.length) * 100}%` }}></div>
-                </div>
-                <div className="progress-steps">
-                    {formSections.map((section) => (
-                        <div 
-                            key={section.id}
-                            className={`progress-step ${activeSection >= section.id ? 'active' : ''}`}
-                            onClick={() => setActiveSection(section.id)}
-                        >
-                            <div className="step-number">{section.id}</div>
-                            <div className="step-title">{section.title}</div>
-                        </div>
+            <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                    {formSections.map((section, index) => (
+                        <React.Fragment key={section.id}>
+                            <div 
+                                className={`flex flex-col items-center cursor-pointer transition-all duration-300 ${activeSection >= section.id ? 'text-blue-600' : 'text-gray-400'}`}
+                                onClick={() => setActiveSection(section.id)}
+                            >
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${activeSection >= section.id ? 'bg-blue-100 border-2 border-blue-600' : 'bg-gray-100 border-2 border-gray-300'}`}>
+                                    <span className={`text-sm ${activeSection >= section.id ? 'text-blue-600' : 'text-gray-500'}`}>
+                                        {section.icon}
+                                    </span>
+                                </div>
+                                <span className="text-xs font-medium hidden md:block">{section.title}</span>
+                            </div>
+                            {index < formSections.length - 1 && (
+                                <div className={`flex-1 h-1 mx-2 ${activeSection > section.id ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
+                            )}
+                        </React.Fragment>
                     ))}
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-500" 
+                        style={{ width: `${((activeSection - 1) / (formSections.length - 1)) * 100}%` }}
+                    ></div>
                 </div>
             </div>
         );
@@ -250,48 +275,75 @@ const PostJobForm = () => {
     // Page loading indicator
     if (isPageLoading) {
         return (
-           <div className="flex flex-col items-center justify-center py-16 text-gray-500">
-           <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mb-4" />
-             <p className="text-sm">Loading  job posting forms...</p>
-        </div>
+           <div className="flex flex-col items-center justify-center min-h-screen text-gray-500">
+               <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mb-4" />
+               <p className="text-sm">Loading job posting forms...</p>
+           </div>
         );
     }
 
     return (
-        <div>
+        <div className="min-h-screen bg-gray-50">
             <EmployerNavbar />
-            <div className="post-job-container">
+            <div className="max-w-6xl mx-auto px-4 py-8">
                 <ToastContainer />
-                <div className="form-header">
-                    <h2>Post a New Job</h2>
-                    <p className="form-subtitle">Find the perfect candidate for your position</p>
+                
+                <div className="mb-6">
+                    <button 
+                        onClick={() => navigate(-1)}
+                        className="flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium mb-4"
+                    >
+                        <FaArrowLeft className="mr-2" />
+                        Back to Dashboard
+                    </button>
+                    
+                    <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Post a New Job</h2>
+                        <p className="text-gray-600">Find the perfect candidate for your position</p>
+                    </div>
                 </div>
 
                 {renderProgressBar()}
 
-                <div className="form-wrapper">
+                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                     <form onSubmit={activeSection === formSections.length ? handleSubmit : (e) => e.preventDefault()}>
                         {/* Section 1: Basic Information */}
                         {activeSection === 1 && (
-                            <div className="form-section">
-                                <h3 className="section-title">Basic Information</h3>
+                            <div className="p-6 md:p-8">
+                                <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                        <FaBriefcase className="text-blue-600" />
+                                    </div>
+                                    Basic Information
+                                </h3>
                                 
-                                <div className="form-row">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div className="form-group">
-                                        <label>Job Title <span className="required">*</span></label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Job Title <span className="text-red-500">*</span>
+                                        </label>
                                         <input 
                                             type="text" 
                                             name="title" 
                                             value={formData.title} 
                                             onChange={handleChange} 
                                             required 
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                             placeholder="e.g. Senior Frontend Developer"
                                         />
                                     </div>
 
                                     <div className="form-group">
-                                        <label>Job Type <span className="required">*</span></label>
-                                        <select name="jobType" value={formData.jobType} onChange={handleChange} required>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Job Type <span className="text-red-500">*</span>
+                                        </label>
+                                        <select 
+                                            name="jobType" 
+                                            value={formData.jobType} 
+                                            onChange={handleChange} 
+                                            required
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        >
                                             {["Full-Time", "Part-Time", "Mini-Task", "Errands", "Contract", "Freelance", "Volunteer"].map((type) => (
                                                 <option key={type} value={type}>{type}</option>
                                             ))}
@@ -299,45 +351,61 @@ const PostJobForm = () => {
                                     </div>
                                 </div>
 
-                                <div className="form-row">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div className="form-group">
-                                        <label>Company <span className="optional">(Optional)</span></label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Company
+                                        </label>
                                         <input 
                                             type="text" 
                                             name="company" 
                                             value={formData.company} 
                                             onChange={handleChange} 
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                             placeholder="e.g. Acme Inc."
                                         />
                                     </div>
 
                                     <div className="form-group">
-                                        <label>Company Email <span className="optional">(Optional)</span></label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Company Email
+                                        </label>
                                         <input 
                                             type="email" 
                                             name="companyEmail" 
                                             value={formData.companyEmail} 
                                             onChange={handleChange} 
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                             placeholder="e.g. info@company.com"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="form-row">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div className="form-group">
-                                        <label>Industry <span className="optional">(Optional)</span></label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Industry
+                                        </label>
                                         <input 
                                             type="text" 
                                             name="industry" 
                                             value={formData.industry} 
                                             onChange={handleChange} 
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                             placeholder="e.g. Information Technology"
                                         />
                                     </div>
 
                                     <div className="form-group">
-                                        <label>Category <span className="optional">(Optional)</span></label>
-                                        <select name="category" value={formData.category} onChange={handleChange}>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Category
+                                        </label>
+                                        <select 
+                                            name="category" 
+                                            value={formData.category} 
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        >
                                             <option value="">Select a category</option>
                                             <option value="Administration">Administration</option>
                                             <option value="Administrative Assistance">Administrative Assistance</option>
@@ -368,92 +436,135 @@ const PostJobForm = () => {
                                     </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label>Delivery Mode <span className="optional">(Optional)</span></label>
-                                    <div className="radio-group">
-                                        <label className="radio-label">
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                                        Delivery Mode
+                                    </label>
+                                    <div className="flex flex-wrap gap-4">
+                                        <label className="flex items-center cursor-pointer">
                                             <input 
                                                 type="radio" 
                                                 name="deliveryMode" 
                                                 value="In-Person" 
                                                 checked={formData.deliveryMode === "In-Person"}
                                                 onChange={handleChange}
+                                                className="sr-only"
                                             />
-                                            <span className="radio-custom"></span>
-                                            In-Person
+                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-2 border-2 ${formData.deliveryMode === "In-Person" ? 'bg-blue-100 border-blue-600 text-blue-600' : 'bg-gray-100 border-gray-300 text-gray-500'}`}>
+                                                <FaBuilding />
+                                            </div>
+                                            <span className="text-sm font-medium">In-Person</span>
                                         </label>
-                                        <label className="radio-label">
+                                        <label className="flex items-center cursor-pointer">
                                             <input 
                                                 type="radio" 
                                                 name="deliveryMode" 
                                                 value="Remote" 
                                                 checked={formData.deliveryMode === "Remote"}
                                                 onChange={handleChange}
+                                                className="sr-only"
                                             />
-                                            <span className="radio-custom"></span>
-                                            Remote
+                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-2 border-2 ${formData.deliveryMode === "Remote" ? 'bg-blue-100 border-blue-600 text-blue-600' : 'bg-gray-100 border-gray-300 text-gray-500'}`}>
+                                                <FaLaptop />
+                                            </div>
+                                            <span className="text-sm font-medium">Remote</span>
                                         </label>
-                                        <label className="radio-label">
+                                        <label className="flex items-center cursor-pointer">
                                             <input 
                                                 type="radio" 
                                                 name="deliveryMode" 
                                                 value="Hybrid" 
                                                 checked={formData.deliveryMode === "Hybrid"}
                                                 onChange={handleChange}
+                                                className="sr-only"
                                             />
-                                            <span className="radio-custom"></span>
-                                            Hybrid
+                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-2 border-2 ${formData.deliveryMode === "Hybrid" ? 'bg-blue-100 border-blue-600 text-blue-600' : 'bg-gray-100 border-gray-300 text-gray-500'}`}>
+                                                <FaHandshake />
+                                            </div>
+                                            <span className="text-sm font-medium">Hybrid</span>
                                         </label>
                                     </div>
                                 </div>
 
-                                <div className="form-navigation">
-                                    <button type="button" className="next-btn" onClick={nextSection}>Next</button>
+                                <div className="flex justify-end pt-6 border-t border-gray-200">
+                                    <button 
+                                        type="button" 
+                                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                                        onClick={nextSection}
+                                    >
+                                        Next: Job Details
+                                    </button>
                                 </div>
                             </div>
                         )}
 
                         {/* Section 2: Job Details */}
                         {activeSection === 2 && (
-                            <div className="form-section">
-                                <h3 className="section-title">Job Details</h3>
+                            <div className="p-6 md:p-8">
+                                <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                        <FaCheckCircle className="text-blue-600" />
+                                    </div>
+                                    Job Details
+                                </h3>
                                 
-                                <div className="form-group">
-                                    <label>Description <span className="required">*</span></label>
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Description <span className="text-red-500">*</span>
+                                    </label>
                                     <textarea 
                                         name="description" 
                                         value={formData.description} 
                                         onChange={handleChange} 
                                         required 
                                         rows="6"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                         placeholder="Provide a detailed description of the job..."
                                     />
                                 </div>
 
-                                <div className="form-group">
-                                    <label>Job Responsibilities <span className="optional">(Optional)</span></label>
-                                    <div className="responsibilities-container">
-                                        {formData.responsibilities.map((responsibility, index) => (
-                                            <span key={index} className="responsibility-tag">
-                                                {responsibility}
-                                                <button type="button" onClick={() => handleRemoveResponsibility(index)}>×</button>
-                                            </span>
-                                        ))}
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Job Responsibilities
+                                    </label>
+                                    <div className="border border-gray-300 rounded-lg p-3">
+                                        <div className="flex flex-wrap gap-2 mb-3">
+                                            {formData.responsibilities.map((responsibility, index) => (
+                                                <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                                    {responsibility}
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => handleRemoveResponsibility(index)}
+                                                        className="ml-2 text-blue-600 hover:text-blue-800"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </span>
+                                            ))}
+                                        </div>
                                         <input
                                             type="text"
                                             value={responsibilityInput}
                                             onChange={(e) => setResponsibilityInput(e.target.value)}
                                             onKeyDown={handleAddResponsibility}
+                                            className="w-full px-3 py-2 border-0 focus:ring-0 focus:outline-none"
                                             placeholder="Type a responsibility and press Enter"
                                         />
                                     </div>
-                                    <div className="hint-text">Press Enter to add each responsibility</div>
+                                    <div className="text-xs text-gray-500 mt-1">Press Enter to add each responsibility</div>
                                 </div>
 
-                                <div className="form-row">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div className="form-group">
-                                        <label>Experience Level <span className="optional">(Optional)</span></label>
-                                        <select name="experienceLevel" value={formData.experienceLevel} onChange={handleChange}>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Experience Level
+                                        </label>
+                                        <select 
+                                            name="experienceLevel" 
+                                            value={formData.experienceLevel} 
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        >
                                             <option value="">Select experience level</option>
                                             <option value="Entry">Entry</option>
                                             <option value="Intermediate">Intermediate</option>
@@ -462,68 +573,104 @@ const PostJobForm = () => {
                                     </div>
 
                                     <div className="form-group">
-                                        <label>Application Deadline <span className="optional">(Optional)</span></label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Application Deadline
+                                        </label>
                                         <input 
                                             type="date" 
                                             name="deadLine" 
                                             value={formData.deadLine} 
                                             onChange={handleChange} 
                                             min={new Date().toISOString().split('T')[0]}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="form-navigation">
-                                    <button type="button" className="prev-btn" onClick={prevSection}>Previous</button>
-                                    <button type="button" className="next-btn" onClick={nextSection}>Next</button>
+                                <div className="flex justify-between pt-6 border-t border-gray-200">
+                                    <button 
+                                        type="button" 
+                                        className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                                        onClick={prevSection}
+                                    >
+                                        Previous
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                                        onClick={nextSection}
+                                    >
+                                        Next: Location & Compensation
+                                    </button>
                                 </div>
                             </div>
                         )}
 
                         {/* Section 3: Location & Compensation */}
                         {activeSection === 3 && (
-                            <div className="form-section">
-                                <h3 className="section-title">Location & Compensation</h3>
+                            <div className="p-6 md:p-8">
+                                <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                        <FaMoneyBillWave className="text-blue-600" />
+                                    </div>
+                                    Location & Compensation
+                                </h3>
                                 
-                                <div className="form-row">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div className="form-group">
-                                        <label>Region <span className="optional">(Optional)</span></label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Region
+                                        </label>
                                         <input 
                                             type="text" 
                                             name="region" 
                                             value={formData.location.region} 
                                             onChange={handleLocationChange} 
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                             placeholder="e.g. Greater Accra"
                                         />
                                     </div>
 
                                     <div className="form-group">
-                                        <label>City <span className="optional">(Optional)</span></label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            City
+                                        </label>
                                         <input 
                                             type="text" 
                                             name="city" 
                                             value={formData.location.city} 
                                             onChange={handleLocationChange} 
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                             placeholder="e.g. Tema, Accra, Cape coast"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label>Street <span className="optional">(Optional)</span></label>
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Street
+                                    </label>
                                     <input 
                                         type="text" 
                                         name="street" 
                                         value={formData.location.street} 
                                         onChange={handleLocationChange} 
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                         placeholder="e.g. Lapaz, kokomelemele, Haatso"
                                     />
                                 </div>
 
-                                <div className="form-row">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div className="form-group">
-                                        <label>Payment Style <span className="optional">(Optional)</span></label>
-                                        <select name="paymentStyle" value={formData.paymentStyle} onChange={handleChange}>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Payment Style
+                                        </label>
+                                        <select 
+                                            name="paymentStyle" 
+                                            value={formData.paymentStyle} 
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        >
                                             <option value="">Select payment style</option>
                                             <option value="Fixed">Fixed</option>
                                             <option value="Range">Range</option>
@@ -534,99 +681,158 @@ const PostJobForm = () => {
                                     </div>
 
                                     <div className="form-group">
-                                        <label>Salary <span className="optional">(Optional)</span></label>
-                                        <div className="salary-input">
-                                            <span className="currency-symbol">₵</span>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Salary
+                                        </label>
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₵</span>
                                             <input 
                                                 type="text" 
                                                 name="salary" 
                                                 value={formData.salary} 
                                                 onChange={handleChange} 
+                                                className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                                 placeholder="e.g. 75,000 or 70-90K"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="form-navigation">
-                                    <button type="button" className="prev-btn" onClick={prevSection}>Previous</button>
-                                    <button type="button" className="next-btn" onClick={nextSection}>Next</button>
+                                <div className="flex justify-between pt-6 border-t border-gray-200">
+                                    <button 
+                                        type="button" 
+                                        className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                                        onClick={prevSection}
+                                    >
+                                        Previous
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                                        onClick={nextSection}
+                                    >
+                                        Next: Skills & Requirements
+                                    </button>
                                 </div>
                             </div>
                         )}
 
                         {/* Section 4: Skills & Requirements */}
                         {activeSection === 4 && (
-                            <div className="form-section">
-                                <h3 className="section-title">Skills & Requirements</h3>
+                            <div className="p-6 md:p-8">
+                                <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                        <FaGraduationCap className="text-blue-600" />
+                                    </div>
+                                    Skills & Requirements
+                                </h3>
                                 
-                                <div className="form-group">
-                                    <label>Skills Required & Qualifications <span className="optional">(Optional)</span></label>
-                                    <div className="skills-container">
-                                        {formData.skillsRequired.map((skill, index) => (
-                                            <span key={index} className="skill-tag">
-                                                {skill} <button type="button" onClick={() => handleRemoveSkill(index)}>×</button>
-                                            </span>
-                                        ))}
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Skills Required & Qualifications
+                                    </label>
+                                    <div className="border border-gray-300 rounded-lg p-3">
+                                        <div className="flex flex-wrap gap-2 mb-3">
+                                            {formData.skillsRequired.map((skill, index) => (
+                                                <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                                    {skill}
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => handleRemoveSkill(index)}
+                                                        className="ml-2 text-blue-600 hover:text-blue-800"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </span>
+                                            ))}
+                                        </div>
                                         <input
                                             type="text"
                                             value={inputValue}
                                             onChange={(e) => setInputValue(e.target.value)}
                                             onKeyDown={handleAddSkill}
+                                            className="w-full px-3 py-2 border-0 focus:ring-0 focus:outline-none"
                                             placeholder="Type a skill and press Enter"
                                         />
                                     </div>
-                                    <div className="hint-text">Press Enter to add each skill</div>
+                                    <div className="text-xs text-gray-500 mt-1">Press Enter to add each skill</div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label>Job Tags <span className="optional">(Optional)</span></label>
-                                    <div className="tags-container">
-                                        {formData.tags.map((tag, index) => (
-                                            <span key={index} className="tag">
-                                                {tag}
-                                                <button type="button" onClick={() => handleRemoveTag(index)}>×</button>
-                                            </span>
-                                        ))}
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Job Tags
+                                    </label>
+                                    <div className="border border-gray-300 rounded-lg p-3">
+                                        <div className="flex flex-wrap gap-2 mb-3">
+                                            {formData.tags.map((tag, index) => (
+                                                <span key={index} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                                    <FaTag className="text-xs mr-1" />
+                                                    {tag}
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => handleRemoveTag(index)}
+                                                        className="ml-2 text-gray-600 hover:text-gray-800"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </span>
+                                            ))}
+                                        </div>
                                         <input
                                             type="text"
                                             placeholder="Press Enter to add a tag"
                                             value={tagInput}
                                             onChange={(e) => setTagInput(e.target.value)}
                                             onKeyDown={handleAddTag}
+                                            className="w-full px-3 py-2 border-0 focus:ring-0 focus:outline-none"
                                         />
                                     </div>
-                                    <div className="hint-text">Add relevant tags to improve discoverability</div>
+                                    <div className="text-xs text-gray-500 mt-1">Add relevant tags to improve discoverability</div>
                                 </div>
 
-                                <div className="form-group form-summary">
-                                    <h4>Job Posting Summary</h4>
-                                    <div className="summary-grid">
-                                        <div className="summary-item">
+                                <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <h4 className="font-semibold text-gray-900 mb-3">Job Posting Summary</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="text-sm">
                                             <strong>Job Title:</strong> {formData.title || "Not specified"}
                                         </div>
-                                        <div className="summary-item">
+                                        <div className="text-sm">
                                             <strong>Company:</strong> {formData.company || "Not specified"}
                                         </div>
-                                        <div className="summary-item">
+                                        <div className="text-sm">
                                             <strong>Job Type:</strong> {formData.jobType || "Not specified"}
                                         </div>
-                                        <div className="summary-item">
+                                        <div className="text-sm">
                                             <strong>Location:</strong> {formData.location.city ? `${formData.location.city}, ${formData.location.region}` : "Not specified"}
                                         </div>
-                                        <div className="summary-item">
+                                        <div className="text-sm">
                                             <strong>Salary:</strong> {formData.salary ? `₵${formData.salary} (${formData.paymentStyle})` : "Not specified"}
                                         </div>
-                                        <div className="summary-item">
+                                        <div className="text-sm">
                                             <strong>Application Deadline:</strong> {formData.deadLine || "Not specified"}
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="form-navigation">
-                                    <button type="button" className="prev-btn" onClick={prevSection}>Previous</button>
-                                    <button type="submit" className="submit-btn" disabled={isProcessing}>
-                                        {isProcessing ? "Posting..." : "Post Job"}
+                                <div className="flex justify-between pt-6 border-t border-gray-200">
+                                    <button 
+                                        type="button" 
+                                        className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                                        onClick={prevSection}
+                                    >
+                                        Previous
+                                    </button>
+                                    <button 
+                                        type="submit" 
+                                        className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center"
+                                        disabled={isProcessing}
+                                    >
+                                        {isProcessing ? (
+                                            <>
+                                                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                                                Posting...
+                                            </>
+                                        ) : "Post Job"}
                                     </button>
                                 </div>
                             </div>

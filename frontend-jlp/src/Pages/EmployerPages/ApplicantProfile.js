@@ -42,7 +42,7 @@ const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { handlePrint, printableRef } = usePrint();
   const applicant = location.state?.applicant;
-  console.log(applicant)
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -113,10 +113,10 @@ const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
         <div className="min-h-screen bg-gray-50 flex flex-col">
           <EmployerNavbar />
           <div className="flex flex-1">
-            <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
-            <div className={`flex-1 p-8 flex items-center justify-center transition-all duration-300 ${
-              sidebarCollapsed ? 'ml-16' : 'ml-64'
-            }`}>
+            <div className=" lg:block sm:hidden">
+            <Sidebar />
+            </div>
+            <div className={`lg:ml-64 flex-1 p-8 flex items-center justify-center transition-all duration-300`}>
               <div className="bg-white rounded-xl shadow-md p-8 max-w-md text-center">
                 <FaExclamationCircle className="text-red-500 text-5xl mx-auto mb-4" />
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">Applicant Not Found</h2>
@@ -143,11 +143,11 @@ const ApplicantProfilePage = ({ applicants, onStatusChange }) => {
       <div className="min-h-screen bg-gray-50 flex flex-col" ref={printableRef}>
         <EmployerNavbar />
         <div className="flex flex-1">
-          <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+          <div className="lg:block sm:hidden">
+            <Sidebar />
+            </div>
           
-          <main className={`flex-1 transition-all duration-300 ${
-            sidebarCollapsed ? 'ml-5' : 'md:ml-64'
-          } p-6 lg:p-8 bg-gray-50`}>
+          <main className="lg:ml-64 flex-1 transition-all duration-300 p-6 lg:p-8 bg-gray-50">
             <ToastContainer
               position="top-right"
               autoClose={3000}

@@ -12,6 +12,7 @@ import JobSeekerDashboard from './Pages/UserPages/JobSeekerDashboard';
 import JobListings from './Pages/UserPages/RegularJobListings';
 import EmployerDashboard from './Pages/EmployerPages/EmployerDashboard';
 import EmployerJobs from './Pages/EmployerPages/EmployerJobs';
+import JobDetailPage from './Pages/EmployerPages/JobDetailPage'
 import Applicants from './Pages/EmployerPages/Applicants';
 import PostJobForm from './Pages/EmployerPages/JobPostingForm';
 import JobDetails from './Pages/UserPages/JobDetailsPage';
@@ -153,6 +154,7 @@ function App() {
          }/>
 
       <Route path="/employer/edit_job/:Id" element={<NotificationProvider><EditJob/></NotificationProvider>}/>
+       <Route path="/employer/view_job/:Id" element={<NotificationProvider><JobDetailPage/></NotificationProvider>}/>
       <Route path='/employer/applicant-profile' element={<PrivateRoutes><NotificationProvider><ApplicantProfilePage/></NotificationProvider></PrivateRoutes>}/>
       
       

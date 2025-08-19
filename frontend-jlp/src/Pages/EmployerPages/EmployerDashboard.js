@@ -146,6 +146,7 @@ const EmployerDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Sidebar - Hidden on small screens */}
+       <EmployerNavbar/>
       <div className=" lg:block sm:hidden">
         <Sidebar />
       </div>
@@ -153,10 +154,10 @@ const EmployerDashboard = () => {
       {/* Main Content Area */}
       <div className="lg:ml-64 transition-all duration-300">
         {/* Navbar */}
-        <EmployerNavbar/>
+       
        
         {/* Dashboard Content */}
-        <main className="p-4 sm:p-6 lg:p-8 pt-20 sm:pt-10 lg:pt-28">
+        <main className="p-4 sm:p-6 lg:p-8 pt-10 sm:pt-10 lg:pt-10 mt-0">
           {/* Welcome Banner */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 sm:p-8 text-white mb-8 shadow-lg">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -500,7 +501,7 @@ const EmployerDashboard = () => {
                               <FaEdit className="text-sm" />
                             </Link>
                             <Link
-                              to={`/employer/job/applicants/${job._id}`}
+                              to={`/employer/view_job/${job._id}`}
                               className="flex items-center gap-1 px-3 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors text-sm font-medium"
                             >
                               <FaEye className="text-xs" />

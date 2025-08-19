@@ -144,7 +144,7 @@ const EmployerJobs = () => {
       <EmployerNavbar />
       <Sidebar />
 
-      <div className="lg:ml-64 pt-20 px-4 md:px-8 pb-8">
+      <div className="lg:ml-64 pt-10 px-4 md:px-8 pb-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -283,7 +283,7 @@ const EmployerJobs = () => {
                         <tr key={job._id} className="hover:bg-gray-50">
                           <td className="px-6 py-4">
                             <div>
-                              <div className="font-medium text-gray-900">{job.title}</div>
+                              <Link to={`/employer/view_job/${job._id}`} className="font-medium text-gray-900">{job.title}</Link>
                               <div className="text-sm text-gray-500 flex items-center mt-1">
                                 <Calendar className="w-4 h-4 mr-1" />
                                 Posted on {new Date().toLocaleDateString()}
@@ -364,7 +364,7 @@ const EmployerJobs = () => {
                     <div key={job._id} className="p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
-                          <h3 className="font-medium text-gray-900 mb-1">{job.title}</h3>
+                          <Link to={`/employer/view_job/${job._id}`} className="font-medium text-gray-900">{job.title}</Link>
                           <div className="text-sm text-gray-500 flex items-center">
                             <Calendar className="w-4 h-4 mr-1" />
                             Posted on {new Date().toLocaleDateString()}
