@@ -68,7 +68,7 @@ export const ClientNavbar = ({ toggleSidebar }) => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex lg:items-center lg:space-x-8">
+          <div className="hidden md:flex md:items-center lg:space-x-8">
             <div className="flex space-x-8">
               <Link 
                 to="/messages" 
