@@ -9,6 +9,8 @@ import { Loader2 } from 'lucide-react';
 import { userContext } from "../../Context/FetchUser";
 import { getAllChatRooms } from '../../APIS/API';
 import Navbar from '../../Components/Common/Navbar';
+import { ClientNavbar } from '../../Components/ClientComponents/ClientNavbar';
+
 import { NotificationToast } from '../../Components/Common/NotificationToast';
 
 const ChatPage = () => {
@@ -24,6 +26,8 @@ const ChatPage = () => {
   const [showRoomList, setShowRoomList] = useState(true);
   const [onlineUserIds, setOnlineUserIds] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  
 
   // Handle browser back button
   useEffect(() => {
@@ -161,7 +165,12 @@ const ChatPage = () => {
   return (
     <div>
       <ToastContainer />
-      <Navbar />
+      {user?.role === 'job_seeker'?(
+         <Navbar />
+      ):(
+        <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
+      )}
+     
       <div className="flex h-screen overflow-x-hidden  overflow-hidden">
         {/* Room List */}
         <div style={{
