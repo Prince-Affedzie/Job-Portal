@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { postMiniTask } from "../../APIS/API";
-import Navbar from "../../Components/Common/Navbar";
+import { ClientNavbar } from '../../Components/ClientComponents/ClientNavbar';
+import { ClientSidebar } from '../../Components/ClientComponents/ClientSidebar';
 import Footer from "../../Components/Common/Footer";
 import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 import VerifyTooltip from "../../Components/Common/VerifyToolTip";
@@ -27,6 +28,8 @@ const PostMiniTask = () => {
   const [skillInput, setSkillInput] = useState("");
   const [charCount, setCharCount] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  
 
   const categories = {
     "Creative Tasks": ["Graphic Design", "Video Editing", "Flyer Design", "Poster Design", "Logo Design", "Voice Over"],
@@ -117,12 +120,18 @@ const PostMiniTask = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <ToastContainer position="top-center" autoClose={3000} />
-      <Navbar />
-      {user && <VerifyTooltip isVerified={user.isVerified} />}
+    <div className="flex h-screen bg-gray-50">
+    <ClientSidebar toggleSidebar={() => setIsOpen(!isOpen)} isOpen={isOpen} />
+
+    <div className="flex-1 overflow-auto">
+     
+       <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
+     
       
-      <main className="flex-1 py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-8">
+      <main className=" py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-8">
+       <ToastContainer position="top-center" autoClose={3000} />
+        {user && <VerifyTooltip isVerified={user.isVerified} />}
+       
         <div className="max-w-4xl mx-auto">
           {/* Enhanced Header Section */}
           <div className="text-center mb-8 lg:mb-12">
@@ -156,11 +165,7 @@ const PostMiniTask = () => {
                       onChange={handleChange}
                       required
                     />
-                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-gray-400 group-hover:text-gray-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                    </div>
+                   
                   </div>
                   <p className="text-sm text-gray-600">Be specific and descriptive about what you need</p>
                 </div>
@@ -640,6 +645,7 @@ const PostMiniTask = () => {
           background-color: rgb(219 234 254);
         }
       `}</style>
+    </div>
     </div>
   );
 };

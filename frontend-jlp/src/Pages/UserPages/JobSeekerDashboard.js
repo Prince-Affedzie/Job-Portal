@@ -241,13 +241,13 @@ const JobSeekerDashboard = () => {
                   <span className="text-sm text-gray-700 font-medium">Micro Job Applications</span>
                 </button>
 
-                <button 
+                {/*<button 
                   onClick={() => navigate('/manage/mini_tasks')}
                   className="flex flex-col items-center justify-center p-3 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors col-span-2 border-2 border-indigo-200"
                 >
                   <MdOutlineRecommend className="text-indigo-600 text-xl mb-2" />
                   <span className="text-sm text-gray-700 font-medium">Manage My Micro Jobs</span>
-                </button>
+                </button>*/}
               </div>
             </section>
           </div>

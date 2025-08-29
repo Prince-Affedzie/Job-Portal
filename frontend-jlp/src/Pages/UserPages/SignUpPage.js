@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { signUp } from "../../APIS/API";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { FiUser, FiMail, FiLock, FiBriefcase, FiSearch } from "react-icons/fi";
+import { FiUser, FiMail, FiLock, FiBriefcase, FiSearch, FiPlusSquare } from "react-icons/fi";
 import { useAuth } from "../../Context/AuthContext";
 import RequestStatusIndicator from "../../Components/Common/RequestStatusIndicator";
 
@@ -75,12 +75,17 @@ const Signup = () => {
         toast.success("Welcome aboard!");
         const { role } = response.data;
         login(role);
+        
+        // Redirect based on role
+        let redirectPath = "/complete_profile";
+        if (role === "employer") {
+          redirectPath = "/employer/onboarding";
+        } else if (role === "client") {
+          redirectPath = "/task_poster/onboarding";
+        }
+        
         setTimeout(() => {
-          navigate(role === "employer" 
-            ? "/employer/onboarding" 
-            : "/complete_profile", 
-            { state: { role } }
-          );
+          navigate(redirectPath, { state: { role } });
         }, 1500);
       }
     } catch (error) {
@@ -101,7 +106,7 @@ const Signup = () => {
           <div className="md:w-1/2 bg-blue-600 text-white p-8 flex flex-col justify-center">
             <div className="mb-8">
               <h1 className="text-3xl font-bold mb-2">Join Our Community</h1>
-              <p className="opacity-90">Find your perfect opportunity or talent</p>
+              <p className="opacity-90">Find your perfect opportunity or post micro tasks</p>
             </div>
             
             <div className="space-y-6">
@@ -125,6 +130,18 @@ const Signup = () => {
                   <h3 className="font-semibold">For Job Seekers</h3>
                   <p className="text-sm opacity-80 mt-1">
                     Discover opportunities that match your skills and aspirations.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start">
+                <div className="bg-blue-500 p-2 rounded-full mr-4 mt-1">
+                  <FiPlusSquare className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">For Task Posters</h3>
+                  <p className="text-sm opacity-80 mt-1">
+                    Post micro tasks and find skilled professionals to complete them.
                   </p>
                 </div>
               </div>
@@ -257,7 +274,7 @@ const Signup = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   I am signing up as:
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, role: "job_seeker" }))}
@@ -268,7 +285,7 @@ const Signup = () => {
                     }`}
                   >
                     <FiSearch className="h-5 w-5 mx-auto mb-2" />
-                    <span>Job Seeker</span>
+                    <span className="text-sm">Job Seeker</span>
                   </button>
                   <button
                     type="button"
@@ -280,10 +297,37 @@ const Signup = () => {
                     }`}
                   >
                     <FiBriefcase className="h-5 w-5 mx-auto mb-2" />
-                    <span>Employer</span>
+                    <span className="text-sm">Employer</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, role: "client" }))}
+                    className={`p-3 border rounded-lg text-center transition-colors ${
+                      formData.role === "client"
+                        ? "border-blue-500 bg-blue-50 text-blue-700"
+                        : "border-gray-300 hover:border-blue-300"
+                    }`}
+                  >
+                    <FiPlusSquare className="h-5 w-5 mx-auto mb-2" />
+                    <span className="text-sm">Task Poster</span>
                   </button>
                 </div>
               </div>
+
+              {/* Role Descriptions */}
+              {formData.role && (
+                <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600">
+                  {formData.role === "job_seeker" && (
+                    <p>Perfect for individuals looking for job opportunities and full-time positions.</p>
+                  )}
+                  {formData.role === "employer" && (
+                    <p>Ideal for companies and recruiters looking to hire full-time employees.</p>
+                  )}
+                  {formData.role === "client" && (
+                    <p>Great for posting micro tasks and finding skilled professionals for short-term projects.</p>
+                  )}
+                </div>
+              )}
 
               {/* Submit Button */}
               <button

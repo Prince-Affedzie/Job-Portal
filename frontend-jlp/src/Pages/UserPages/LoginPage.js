@@ -48,11 +48,17 @@ const Login = () => {
         const { role } = response.data;
         login(role);
 
-        setTimeout(() => {
-          navigate(role === "job_seeker" || role === "admin" 
-            ? "/mini_task/listings" 
-            : '/employer/dashboard');
-        }, 1000);
+       setTimeout(() => {
+       
+        if (role === "job_seeker" || role === "admin") {
+          navigate("/mini_task/listings");
+        } else if (role === "employer") {
+          navigate('/employer/dashboard');
+        } else {
+          
+          navigate('/client/microtask_dashboard');
+        }
+      }, 1000);
       } else {
         setStatus('error');
         setStatusMessage('Invalid email or password');

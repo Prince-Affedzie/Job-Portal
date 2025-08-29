@@ -13,7 +13,8 @@ import {
   FaExternalLinkAlt
 } from 'react-icons/fa';
 import PortfolioPreview from '../ProfileEdit/PortfolioPreview';
-import Navbar from "../Common/Navbar";
+import { ClientNavbar } from '../../Components/ClientComponents/ClientNavbar';
+import { ClientSidebar } from '../../Components/ClientComponents/ClientSidebar';
 import LoadingSkeleton from '../Common/LoadingSkeleton';
 import ErrorBoundary from '../Common/ErrorBoundary';
 import usePrint from '../../hooks/usePrint'
@@ -23,6 +24,7 @@ const ApplicantProfilePage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { handlePrint } = usePrint();
+  const [isOpen, setIsOpen] = useState(false);
   const applicant = state?.applicant;
 
   // Loading state simulation (replace with actual data fetching)
@@ -42,7 +44,7 @@ const ApplicantProfilePage = () => {
   if (!applicant) {
     return (
       <div className="flex flex-col min-h-screen">
-        <Navbar />
+        <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
         <div className="flex-grow flex items-center justify-center p-6">
           <div className="text-center max-w-md">
             <h2 className="text-2xl font-bold text-red-600 mb-3">Applicant Not Found</h2>
@@ -63,8 +65,10 @@ const ApplicantProfilePage = () => {
 
   return (
     <ErrorBoundary>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
+      <div className="flex h-screen bg-gray-50">
+        <ClientSidebar toggleSidebar={() => setIsOpen(!isOpen)} isOpen={isOpen} />
+      <div className="flex-1 overflow-auto">
+        <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
         
         <main className="flex-grow bg-gray-50 py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -313,6 +317,7 @@ const ApplicantProfilePage = () => {
           </div>
         </main>
       </div>
+      </div>
     </ErrorBoundary>
   );
 };
@@ -343,7 +348,7 @@ const InfoItem = ({ label, value }) => (
 // Loading Skeleton Component
 const ProfileLoadingSkeleton = () => (
   <div className="flex flex-col min-h-screen">
-    <Navbar />
+    <ClientNavbar  />
     <div className="flex-grow bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Header Skeleton */}

@@ -7,7 +7,8 @@ import ApplicantScoreTable from './ApplicantScoreTable';
 import { getMicroTaskApplicants, assignApplicantToTask } from '../../APIS/API';
 import StartChatButton from "../MessagingComponents/StartChatButton";
 
-import Navbar from '../Common/Navbar';
+import { ClientNavbar } from '../../Components/ClientComponents/ClientNavbar';
+import { ClientSidebar } from '../../Components/ClientComponents/ClientSidebar';
 import ProcessingOverlay from '../Common/ProcessingOverLay';
 import { FaBars, FaTh, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
@@ -27,6 +28,8 @@ const ApplicantsPage = () => {
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = windowWidth < 768 ? 8 : 12; // Fewer items on mobile
+
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -216,15 +219,17 @@ const ApplicantsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
+         <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
         <ProcessingOverlay message="Loading applicants..." />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
+    <div className="flex h-screen bg-gray-50">
+     <ClientSidebar toggleSidebar={() => setIsOpen(!isOpen)} isOpen={isOpen} />
+    <div className="flex-1 overflow-auto">
+      <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
       <ToastContainer 
         position={windowWidth < 768 ? 'top-center' : 'top-right'}
         autoClose={5000}
@@ -321,6 +326,7 @@ const ApplicantsPage = () => {
       </main>
 
       <ProcessingOverlay show={isProcessing} message="Processing assignment..." />
+    </div>
     </div>
   );
 };

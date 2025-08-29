@@ -1,6 +1,10 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaBars, FaTimes, FaBell, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { 
+  FaBars, FaTimes, FaBell, FaChevronDown, FaChevronUp,
+  FaBriefcase, FaComments, FaUser, FaHome, FaListAlt,
+  FaEnvelope, FaUserCircle, FaTasks
+} from "react-icons/fa";
 import { TbLayoutDashboard } from "react-icons/tb";
 import { notificationContext } from '../../Context/NotificationContext';
 import "../../Styles/Navbar.css";
@@ -124,14 +128,6 @@ const Navbar = () => {
                 Chats
               </Link>
             </li>
-            <li>
-              <Link 
-                to="/post/mini_task" 
-                className="cta-link"
-              >
-                Post Micro Job
-              </Link>
-            </li>
           </ul>
 
           <div className="nav-icons">
@@ -165,15 +161,17 @@ const Navbar = () => {
                     className="dropdown-item"
                     onClick={() => setDashboardDropdownOpen(false)}
                   >
+                    <FaHome className="dropdown-icon" />
                     Dashboard
                   </Link>
                   
                   <Link 
-                    to="/manage/mini_tasks" 
+                    to="/mini_task/applications" 
                     className="dropdown-item"
                     onClick={() => setDashboardDropdownOpen(false)}
                   >
-                    My Micro Jobs
+                    <FaListAlt className="dropdown-icon" />
+                    Applications (Micro)
                   </Link>
 
                   <Link 
@@ -181,8 +179,8 @@ const Navbar = () => {
                     className="dropdown-item"
                     onClick={() => setDashboardDropdownOpen(false)}
                   >
+                    <FaUserCircle className="dropdown-icon" />
                     My Profile
-
                   </Link>
                 </div>
               )}
@@ -220,6 +218,7 @@ const Navbar = () => {
                   onClick={closeMenu}
                   className={`mobile-nav-link ${isActive('mini_task') ? 'active' : ''}`}
                 >
+                  <FaBriefcase className="mobile-nav-icon" />
                   Micro Jobs
                 </Link>
               </li>
@@ -229,6 +228,7 @@ const Navbar = () => {
                   onClick={closeMenu}
                   className={`mobile-nav-link ${isActive('job/listings') ? 'active' : ''}`}
                 >
+                  <FaTasks className="mobile-nav-icon" />
                   Regular Jobs
                 </Link>
               </li>
@@ -238,52 +238,47 @@ const Navbar = () => {
                   onClick={closeMenu}
                   className={`mobile-nav-link ${isActive('messages') ? 'active' : ''}`}
                 >
+                  <FaComments className="mobile-nav-icon" />
                   Chats
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/post/mini_task" 
-                  onClick={closeMenu}
-                  className="mobile-cta-link"
-                >
-                  Post Micro Job
                 </Link>
               </li>
               
               {/* Mobile Dashboard Dropdown Items */}
               <li>
                 <Link 
-                  to="/manage/mini_tasks" 
+                  to="/mini_task/applications" 
                   onClick={closeMenu}
                   className="mobile-nav-link"
                 >
-                  My Micro Jobs
+                  <FaListAlt className="mobile-nav-icon" />
+                  Applications (Micro)
                 </Link>
               </li>
 
               <li>
-              <Link 
-                to="/view/all_notifications" 
-                onClick={closeMenu}
-                className="mobile-nav-link"
-                aria-label={`Notifications (${unreadCount} unread)`}
-              >
-                <div className="mobile-notification-icon">
-                {/*<FaBell size={18} />*/}
-                <span>Notifications</span>
-                {unreadCount > 0 && (
-                  <span className="mobile-notification-badge">{unreadCount}</span>
-                )}
-                </div>
-              </Link>
-            </li>
-            <li>
+                <Link 
+                  to="/view/all_notifications" 
+                  onClick={closeMenu}
+                  className="mobile-nav-link"
+                  aria-label={`Notifications (${unreadCount} unread)`}
+                >
+                  <div >
+                    <FaBell className="mobile-nav-icon" />
+                    <span>Notifications</span>
+                    {unreadCount > 0 && (
+                      <span className="mobile-notification-badge">{unreadCount}</span>
+                    )}
+                  </div>
+                </Link>
+              </li>
+              
+              <li>
                 <Link 
                   to="/h1/dashboard" 
                   onClick={closeMenu}
                   className="mobile-nav-link"
                 >
+                  <FaHome className="mobile-nav-icon" />
                   Dashboard
                 </Link>
               </li>
@@ -294,14 +289,11 @@ const Navbar = () => {
                   onClick={closeMenu}
                   className="mobile-nav-link"
                 >
+                  <FaUserCircle className="mobile-nav-icon" />
                   My Profile
                 </Link>
               </li>
-              
-              
             </ul>
-
-            
           </div>
         </div>
       )}

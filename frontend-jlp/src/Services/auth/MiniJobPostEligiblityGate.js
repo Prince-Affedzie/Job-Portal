@@ -7,7 +7,7 @@ import { Button } from "antd";
 
 const PostEligibilityGate = ({
   children,
-  fallbackMessage = "Only verified job seekers can post micro-tasks. Verification typically takes 24-48 hours after document submission.",
+  fallbackMessage = "Only verified Task Posters can post micro-tasks. Verification typically takes 24-48 hours after document submission.",
   customAction,
   className = ""
 }) => {
@@ -75,7 +75,7 @@ const PostEligibilityGate = ({
               <Button
                 type="default"
                 icon={<ArrowLeftOutlined />}
-                onClick={() => navigate("/h1/dashboard")}
+                onClick={() => navigate("/client/microtask_dashboard")}
                 className="flex-1"
                 size="large"
               >

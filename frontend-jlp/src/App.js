@@ -18,11 +18,11 @@ import PostJobForm from './Pages/EmployerPages/JobPostingForm';
 import JobDetails from './Pages/UserPages/JobDetailsPage';
 import { UserProvider } from './Context/FetchUser';
 import { JobsContextProvider } from './Context/EmployerContext1';
-import PostMiniTask from './Pages/UserPages/MiniTaskForm';
+import PostMiniTask from './Pages/ClientPages/MiniTaskForm';
 import MiniTaskPage from './Pages/UserPages/MiniTaskListings';
 import ViewApplications from './Pages/UserPages/ViewApplications';
 import EditProfile from './Pages/UserPages/EditProfile';
-import ManageMiniTasks from './Pages/UserPages/ManageMiniTaskPage';
+import ManageMiniTasks from './Pages/ClientPages/ManageMiniTaskPage';
 import EditJob from './Pages/EmployerPages/EditJob';
 import  ApplicantProfilePage from './Pages/EmployerPages/ApplicantProfile';
 import EmployerProfile from './Pages/EmployerPages/EmployerProfile';
@@ -38,9 +38,17 @@ import EmployerOnboarding from './Pages/EmployerPages/EmployerOnboarding';
 import MyMiniTaskApplications from './Pages/UserPages/UserAppliedMiniTask';
 import ApplicantsPage from './Components/MiniTaskManagementComponents/ApplicantsPage';
 import MiniTaskApplicantProfilePage from './Components/MiniTaskManagementComponents/ApplicantProfilePage'
+import EditTaskForm from './Components/MiniTaskManagementComponents/EditMiniTaskForm'
 import MiniTaskInfo from './Pages/UserPages/MiniTaskInfo';
 
+
+
+import  MicroTaskDashboard from './Pages/ClientPages/MiniTaskDashboard'
+import MicroTaskDetailPageForClient from './Pages/ClientPages/MicroTaskDetail'
+import TaskPosterOnboarding from './Pages/ClientPages/TaskPosterOnboarding'
+
 import { AdminProvider } from './Context/AdminContext';
+import { ClientMicroJobsProvider} from './Context/ClientMicroJobsContext'
 
 
 import AdminDashboard from './Pages/AdminPages/AdminDashboard';
@@ -65,7 +73,7 @@ import EmployerPostEligibilityGate from './Services/auth/EmployerJobPostEligibil
 import AdminViewMiniTaskApplicants from './Pages/AdminPages/MiniTaskApplicants'
 import ActivityPage from './Pages/AdminPages/RecentActivities'
 import FreelancerSubmissions from  './Pages/UserPages/TaskSubmissions'
-import ClientViewSubmissions from './Pages/UserPages/ClientViewTaskSubmissions'
+import ClientViewSubmissions from './Pages/ClientPages/ClientViewTaskSubmissions'
 import  ChatPage from './Pages/UserPages/ChatPage'
 
 
@@ -110,6 +118,9 @@ function App() {
       <Route  path='/client/:taskId/view_task_submissions' element={<UserProvider><NotificationProvider><ClientViewSubmissions/></NotificationProvider></UserProvider>}/>
       <Route path='/messages/:roomId' element={<UserProvider><NotificationProvider>< ChatPage/></NotificationProvider></UserProvider>}/>
       <Route path='/messages' element={<UserProvider><NotificationProvider>< ChatPage/></NotificationProvider></UserProvider>}/>
+       <Route path='/edit_task/:Id' element={<UserProvider><NotificationProvider><EditTaskForm/></NotificationProvider></UserProvider>}/>
+      
+
       
 
       <Route 
@@ -213,6 +224,10 @@ function App() {
       <Route path='/admin/minitask/:taskId/applicants' element={<AdminRoutes><AdminProvider><AdminViewMiniTaskApplicants/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/view_all_reports' element={<AdminRoutes><AdminProvider><DisputeAdminDashboard/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/view_all_recent_activities' element={<AdminRoutes><AdminProvider><ActivityPage/></AdminProvider></AdminRoutes>}/>
+    
+    <Route path='/task_poster/onboarding' element ={<TaskPosterOnboarding/>}/>
+    <Route path='/client/microtask_dashboard'element={  <UserProvider><NotificationProvider>< ClientMicroJobsProvider><MicroTaskDashboard/></ClientMicroJobsProvider></NotificationProvider></UserProvider>}/>
+    <Route path='/client_view/task/:Id' element={<UserProvider><NotificationProvider><MicroTaskDetailPageForClient/></NotificationProvider></UserProvider>} />
     </Routes>
 
   </Router>
@@ -221,3 +236,4 @@ function App() {
 }
 
 export default App;
+ 

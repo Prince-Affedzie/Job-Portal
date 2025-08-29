@@ -19,7 +19,7 @@ import { clientgetTaskSubmissions, reviewSubmission, getPreviewUrl } from '../..
 import { useParams, Link } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Navbar from '../../Components/Common/Navbar';
+import { ClientNavbar } from '../../Components/ClientComponents/ClientNavbar';
 import SubmittedFiles from '../../Components/MiniTaskManagementComponents/SubmittedFiles';
 import { NotificationToast } from '../../Components/Common/NotificationToast';
 import FilePreviewModal from '../../Components/MiniTaskManagementComponents/SubmissionsPreviewModal'
@@ -42,6 +42,7 @@ const ClientViewSubmissions = () => {
   const [taskDetails, setTaskDetails] = useState(null);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const detailsRef = React.useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   
 
@@ -232,7 +233,7 @@ const ClientViewSubmissions = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+       <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <ToastContainer position="top-right" autoClose={3000} />
         

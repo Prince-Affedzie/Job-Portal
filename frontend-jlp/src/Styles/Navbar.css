@@ -480,6 +480,71 @@
   background-color: #f5f5f5;
 }
 
+/* Icon styles for mobile navigation */
+.mobile-nav-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+/* Dropdown icon styles */
+.dropdown-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+/* Mobile notification icon alignment */
+.mobile-notification-icon {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Ensure proper spacing for mobile nav items with icons */
+.mobile-nav-links .mobile-nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+/* Desktop dropdown items with icons */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+/* Adjust mobile menu for icons */
+.mobile-menu-content {
+  padding: 20px 0;
+}
+
+.mobile-nav-links {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.mobile-nav-links li {
+  margin: 0;
+}
+
+.mobile-nav-links .mobile-nav-link {
+  border-bottom: 1px solid #f1f1f1;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-nav-links .mobile-nav-link:hover {
+  background-color: #f8f9fa;
+}
+
+.mobile-nav-links .mobile-nav-link.active {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border-left: 4px solid #1976d2;
+}
 /* Mobile-specific styles */
 @media (max-width: 768px) {
   .dashboard-dropdown-container {
