@@ -1,12 +1,18 @@
 // src/pages/NotificationsPage.jsx
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect,useState } from 'react';
 import { notificationContext } from '../../Context/NotificationContext';
 import { FaBell, FaClock } from 'react-icons/fa';
 import Navbar from '../../Components/Common/Navbar';
+import { ClientNavbar } from '../../Components/ClientComponents/ClientNavbar';
 import { markNotificationAsRead } from '../../APIS/API';
+import { userContext } from "../../Context/FetchUser";
+
 
 const NotificationsPage = () => {
   const { notifications } = useContext(notificationContext);
+    const [isOpen, setIsOpen] = useState(false);
+    const { user } = useContext(userContext);
+  
 
   const markAllNotificationAsRead = async (ids) => {
     try {
@@ -28,7 +34,12 @@ const NotificationsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      {user?.role === 'job_seeker'?(
+         <Navbar />
+      ):(
+        <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
+      )}
+     
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">

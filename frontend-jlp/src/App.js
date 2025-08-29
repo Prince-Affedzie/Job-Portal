@@ -107,7 +107,7 @@ function App() {
       <Route path='/view/applied/jobs'element={<UserProvider><NotificationProvider><ViewApplications/></NotificationProvider></UserProvider>}/>
       <Route path='/user/modify/profile' element={<UserProvider><RouteProtection><NotificationProvider><EditProfile/></NotificationProvider></RouteProtection></UserProvider>}/>
       <Route path="/chat/all_chats" element={<ChatProvider><FullChatPage/></ChatProvider>}/>
-      <Route path='/view/all_notifications' element={<NotificationProvider><NotificationsPage/></NotificationProvider>}/>
+      <Route path='/view/all_notifications' element={<UserProvider><NotificationProvider><NotificationsPage/></NotificationProvider></UserProvider>}/>
       <Route path='/mini_task/applications' element={<UserProvider><NotificationProvider><MyMiniTaskApplications/></NotificationProvider></UserProvider>}/>
       <Route
         path="/manage-mini-tasks/:taskId/applicants"
