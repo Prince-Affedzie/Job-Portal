@@ -14,12 +14,16 @@ import {
   FaSignOutAlt
 } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { logoutUser } from '../../APIS/API';
+import { useAuth } from '../../Context/AuthContext';
+
 
 // Sidebar Component
 export const ClientSidebar = ({ isOpen, toggleSidebar }) => {
   const [activeItem, setActiveItem] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
   
   const menuItems = [
     { path: '/client/microtask_dashboard', id: 'dashboard', label: 'Dashboard', icon: <FaHome /> },
@@ -59,11 +63,17 @@ export const ClientSidebar = ({ isOpen, toggleSidebar }) => {
     }
   };
 
-  const handleSignOut = () => {
-    // Add your sign out logic here
-    console.log('Signing out...');
-    // navigate('/login');
-  };
+    const handleLogout = async () => {
+      try {
+        const res = await logoutUser();
+        if (res.status === 200) {
+          logout();
+          navigate('/login');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
   return (
     <>
@@ -128,7 +138,7 @@ export const ClientSidebar = ({ isOpen, toggleSidebar }) => {
           </div>
           
           <button 
-            onClick={handleSignOut}
+            onClick={handleLogout}
             className="flex items-center mt-4 text-gray-600 hover:text-gray-800 text-sm w-full"
           >
             <FaSignOutAlt className="mr-2" />

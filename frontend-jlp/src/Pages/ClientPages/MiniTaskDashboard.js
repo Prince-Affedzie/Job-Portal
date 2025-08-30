@@ -321,7 +321,9 @@ const MicroTaskDashboard = () => {
                               <FaBriefcase className="text-sm" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <h4 className="font-medium text-gray-800 truncate">{job.title || 'Untitled Job'}</h4>
+                             <h4 className="font-medium text-gray-800 truncate max-w-[200px] sm:max-w-xs md:max-w-sm">
+                                {job.title || 'Untitled Job'}
+                            </h4>
                               <div className="flex flex-wrap items-center text-xs text-gray-500 mt-1 gap-2">
                                 <span>{job.budget || job.price || '$0'}</span>
                                 <span>•</span>

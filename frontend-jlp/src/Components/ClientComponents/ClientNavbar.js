@@ -28,7 +28,14 @@ export const ClientNavbar = ({ toggleSidebar }) => {
   const { notifications, fetchNotifications } = useContext(notificationContext);
   const location = useLocation();
   const unreadCount = notifications?.filter(n => !n.read).length || 0;
-  
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
@@ -68,7 +75,10 @@ export const ClientNavbar = ({ toggleSidebar }) => {
           </div>
 
           {/* Desktop Navigation */}
-         <div className="hidden md:flex md:items-center md:space-x-6 lg:space-x-8">
+         <div style={{
+             display: windowWidth >= 768 ? 'flex' : 'none',
+            }} className="md:items-center md:space-x-6 lg:space-x-8">
+
             <div className="flex space-x-8">
               <Link 
                 to="/messages" 

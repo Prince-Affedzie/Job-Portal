@@ -458,7 +458,7 @@
 
 .dashboard-dropdown-menu {
   position: absolute;
-  right: 0;
+  left: 1;
   top: 100%;
   background: white;
   border-radius: 8px;

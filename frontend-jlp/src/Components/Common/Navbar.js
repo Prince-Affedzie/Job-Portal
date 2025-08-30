@@ -1,13 +1,15 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation,useNavigate } from "react-router-dom";
 import { 
   FaBars, FaTimes, FaBell, FaChevronDown, FaChevronUp,
   FaBriefcase, FaComments, FaUser, FaHome, FaListAlt,
-  FaEnvelope, FaUserCircle, FaTasks
+  FaEnvelope, FaUserCircle, FaTasks,FaSignOutAlt
 } from "react-icons/fa";
 import { TbLayoutDashboard } from "react-icons/tb";
 import { notificationContext } from '../../Context/NotificationContext';
 import "../../Styles/Navbar.css";
+import { logoutUser } from '../../APIS/API';
+import { useAuth } from '../../Context/AuthContext';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,7 +18,10 @@ const Navbar = () => {
   const location = useLocation();
   const unreadCount = notifications?.filter(n => !n.read).length || 0;
   const dropdownRef = useRef(null);
-  
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
@@ -91,6 +96,19 @@ const Navbar = () => {
   }, [menuOpen, dashboardDropdownOpen]);
 
   const isActive = (path) => location.pathname.includes(path);
+
+
+  const handleLogout = async () => {
+        try {
+          const res = await logoutUser();
+          if (res.status === 200) {
+            logout();
+            navigate('/login');
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
 
   return (
     <nav className="navbar">
@@ -174,6 +192,16 @@ const Navbar = () => {
                     Applications (Micro)
                   </Link>
 
+
+                  <Link 
+                    to="/view/applied/jobs" 
+                    className="dropdown-item"
+                    onClick={() => setDashboardDropdownOpen(false)}
+                  >
+                    <FaListAlt className="dropdown-icon" />
+                    Applications (Regular)
+                  </Link>
+
                   <Link 
                     to="/user/modify/profile" 
                     className="dropdown-item"
@@ -182,6 +210,16 @@ const Navbar = () => {
                     <FaUserCircle className="dropdown-icon" />
                     My Profile
                   </Link>
+
+                 
+                  <Link
+                  onClick={handleLogout}
+                   className="dropdown-item"
+                    >
+                    <FaSignOutAlt className="dropdown-icon" />
+                     Sign Out
+                  </Link>
+             
                 </div>
               )}
             </div>
@@ -257,6 +295,17 @@ const Navbar = () => {
 
               <li>
                 <Link 
+                  to="/view/applied/jobs" 
+                  onClick={closeMenu}
+                  className="mobile-nav-link"
+                >
+                  <FaListAlt className="mobile-nav-icon" />
+                  Applications (Regular)
+                </Link>
+              </li>
+
+              <li>
+                <Link 
                   to="/view/all_notifications" 
                   onClick={closeMenu}
                   className="mobile-nav-link"
@@ -292,6 +341,15 @@ const Navbar = () => {
                   <FaUserCircle className="mobile-nav-icon" />
                   My Profile
                 </Link>
+              </li>
+              <li>
+                  <Link
+                  onClick={handleLogout}
+                   className="mobile-nav-link"
+                    >
+                    <FaSignOutAlt className="mobile-nav-icon" />
+                     Sign Out
+                  </Link>
               </li>
             </ul>
           </div>
