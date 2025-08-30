@@ -46,6 +46,7 @@ import MiniTaskInfo from './Pages/UserPages/MiniTaskInfo';
 import  MicroTaskDashboard from './Pages/ClientPages/MiniTaskDashboard'
 import MicroTaskDetailPageForClient from './Pages/ClientPages/MicroTaskDetail'
 import TaskPosterOnboarding from './Pages/ClientPages/TaskPosterOnboarding'
+import TaskPosterProfile from './Pages/ClientPages/ClientProfilePage'
 
 import { AdminProvider } from './Context/AdminContext';
 import { ClientMicroJobsProvider} from './Context/ClientMicroJobsContext'
@@ -228,6 +229,8 @@ function App() {
     <Route path='/task_poster/onboarding' element ={<TaskPosterOnboarding/>}/>
     <Route path='/client/microtask_dashboard'element={  <UserProvider><NotificationProvider>< ClientMicroJobsProvider><MicroTaskDashboard/></ClientMicroJobsProvider></NotificationProvider></UserProvider>}/>
     <Route path='/client_view/task/:Id' element={<UserProvider><NotificationProvider><MicroTaskDetailPageForClient/></NotificationProvider></UserProvider>} />
+    <Route path='/client/profile' element={<UserProvider><RouteProtection><NotificationProvider><TaskPosterProfile/></NotificationProvider></RouteProtection></UserProvider>}/>
+
     </Routes>
 
   </Router>

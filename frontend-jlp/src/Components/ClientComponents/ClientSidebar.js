@@ -32,7 +32,7 @@ export const ClientSidebar = ({ isOpen, toggleSidebar }) => {
     { path: '/view/all_notifications', id: 'messages', label: 'Notifications', icon: < FaBell /> },
     { path: '/client/payments', id: 'payments', label: 'Payments', icon: <FaMoneyBillWave /> },
     { path: '/post/mini_task', id: 'post', label: 'Post Task', icon: <FaPlus /> },
-    { path: '/client/settings', id: 'settings', label: 'Settings', icon: <FaCog /> },
+    { path: '/client/profile', id: 'settings', label: 'Settings', icon: <FaCog /> },
   ];
 
   // Set active item based on current path
