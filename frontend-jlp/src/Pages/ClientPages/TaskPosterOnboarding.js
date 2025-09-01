@@ -370,7 +370,7 @@ const TaskPosterOnboarding = () => {
                   <div>
                     <h3 className="text-lg font-medium text-gray-900 mb-4">Add a Profile Photo</h3>
                     <p className="text-sm text-gray-600 mb-6">
-                      Adding a profile photo helps build trust with task seekers (optional but recommended).
+                      Adding a profile photo helps build trust with task seekers and makes your verification quick (optional but recommended).
                     </p>
                     
                     <div className="mb-6">

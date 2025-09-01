@@ -275,9 +275,9 @@ useEffect(() => {
                 <Link to={`/job/details/${job._id}`}>
                   <div className="job-header">
                     <h3>{job.title}</h3>
-                    <span className="job-type">{job.type}</span>
+                    <span className="job-type">{job.jobType}</span>
                   </div>
-                  <p className="company-name">{job.company || 'N/A'}</p>
+                  <p className="company-name">Company: {job.company || 'Anonymous'}</p>
                   <p className="job-listing-description">{job.description.slice(0,400)+"..."}</p>
                   
                   <div className="job-meta">

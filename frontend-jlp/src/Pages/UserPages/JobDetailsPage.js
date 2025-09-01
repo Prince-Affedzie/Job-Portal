@@ -353,7 +353,7 @@ const JobDetails = () => {
                      {job.skillsRequired.length > 0 ? (
                     job.skillsRequired.map((skill, index) => (
                    <li key={index} className="flex items-center">
-                      <span className="inline-flex items-center px-3 py-1.5 rounded-full  text-gray-700 text-sm font-medium">
+                      <span className="inline-flex items-center px-3 py-1.5 text-gray-700 text-sm font-medium">
                        <FaCheckCircle className="mr-2 text-blue-600" /> 
                       {skill}
                      </span>

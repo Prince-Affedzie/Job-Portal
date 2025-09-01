@@ -204,7 +204,7 @@
 .mobile-menu-content {
   background-color: var(--mobile-menu-bg);
   width: 85%;
-  max-width: 320px;
+  max-width: 270px;
   height: 100vh; /* Full height */
   padding: 80px 1.5rem 2rem 1.5rem; /* Top padding to account for navbar height */
   display: flex;
