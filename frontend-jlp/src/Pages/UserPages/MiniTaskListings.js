@@ -11,13 +11,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SkeletonLoader from "../../Components/Common/SkeletonLoader";
 import MiniTaskDetailsModal from "../../Components/Common/MiniTaskDetailsModal";
-import { applyToMiniTask } from "../../APIS/API";
-import RequestStatusIndicator from "../../Components/Common/RequestStatusIndicator";
-import LoadingButton from "../../Components/Common/LoadingButton";
-import { useRequestStatus } from "../../hooks/useRequestStatus";
 import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 import Pagination from "../../Components/Common/Pagination";
 import { NotificationToast } from "../../Components/Common/NotificationToast";
+import MicroJobBanner from "../../Components/Ui/MicroJobBanner"
 
 const MiniTaskPage = () => {
   const navigate = useNavigate()
@@ -34,6 +31,7 @@ const MiniTaskPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const tasksPerPage = 30;
   const [currentPage, setCurrentPage] = useState(1);
+  
 
 
   const totalPages = Math.ceil(tasks.length / tasksPerPage);
@@ -90,36 +88,7 @@ const MiniTaskPage = () => {
       fetchTasks();
     },[searchQuery])
 
-   
-  const applyToTask =async(Id)=>{
-    
-    setIsProcessing(true);
-    try{
-       
-       const response = await applyToMiniTask(Id)
-       if(response.status ===200){
-       
-        toast.success("You’ve shown interest in this job! Stay Tuned — the client might reach out soon.")
-       }else{
-        
-        toast.error("An Error Occured. Please try again Later")
-       }
-    }catch(error){
-      
-       const errorMessage =
-                 error.response?.data?.message ||
-                error.response?.data?.error ||
-                 "An unexpected error occurred. Please try again.";
-                
-                  toast.error(errorMessage);
-                 
-    }finally{
-      setIsProcessing(false);
-    }
-  }
-
   
-
   // Handle Search
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
@@ -139,6 +108,9 @@ const MiniTaskPage = () => {
       return () => debouncedFetchJobs.cancel(); // Cleanup function
     }, [selectedCategory,selectedSubCategory,selectedRegion,selectedmodeofDelivery]);
 
+     
+
+
   // Format time ago
    const timeAgo = (deadline) => {
      return deadline ? moment(deadline).fromNow() : "N/A";
@@ -153,14 +125,20 @@ const MiniTaskPage = () => {
       <ToastContainer/>
 
       {/* Hero Section */}
-      <div className="mini-task-banner">
-        <h1>Find Mini Tasks & Earn</h1>
-        <p>Browse through short-term gigs and apply for tasks that match your skills.</p>
-        {/*<button className="mini-task-browse-btn">Browse Tasks</button>*/}
-      </div>
+     
+       <MicroJobBanner 
+       searchQuery={searchQuery}
+       onSearchChange={setSearchQuery}
+       categoryQuery={selectedCategory}
+       onCategoryChange={setSelectedCategory}
+       onSearchSubmit={fetchTasks} // Changed to call your fetch function directly
+      title="Find Quick Gigs & Earn Fast"
+      subtitle="Complete micro tasks in your spare time and get paid quickly."
+      theme="blue"
+      categoryOptions={categoryOptions}
+      />
 
-      {/* Category Cards Section */}
-    {/* Category Cards Section */}
+    
         <div className="mini-task-category-cards">
           <div
             className={`mini-task-category-card ${selectedCategory === "" ? "active" : ""}`}
@@ -187,15 +165,6 @@ const MiniTaskPage = () => {
 
       {/* Header */}
       <header className="mini-task-header">
-        <div className="mini-task-search-bar">
-          <FaSearch className="mini-task-search-icon" />
-          <input
-            type="text"
-            placeholder="Search for mini tasks..."
-            value={searchQuery}
-            onChange={handleSearch}
-          />
-        </div>
         <button
           className="mini-task-filter-toggle"
           onClick={() => setShowFilters(!showFilters)}
@@ -288,22 +257,6 @@ const MiniTaskPage = () => {
                   
                   </div>
                 </div>
-
-                {/*<button
-                    className="mini-task-view-btn"
-                    onClick={() => navigate(`/view/mini_task/info/${task._id}`)}
-                  >
-                    View Details
-                  </button>*/}
-               
-              {/* <button className="mini-task-apply-btn" onClick={() => applyToTask(task._id)} disabled={isProcessing}>
-                  I’m Interested
-                 </button>*/}
-
-               
-                
-                
-               
               </div>
             ))
           ):(

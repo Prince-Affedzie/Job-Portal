@@ -9,6 +9,7 @@ import moment from "moment";
 import debounce from "lodash.debounce"; // Optimize API calls
 import Pagination from "../../Components/Common/Pagination";
 import { NotificationToast } from "../../Components/Common/NotificationToast";
+import JobBanner from "../../Components/Ui/Banner"
 
 const JobListings = () => {
   const [jobs, setJobs] = useState([]);
@@ -32,6 +33,7 @@ const categories = ["Administration",'Banking','Development','Marketing','Softwa
   
   // Filters
   const [searchTerm, setSearchTerm] = useState("");
+  const [locationTerm,setLocationTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedJobType, setSelectedJobType] = useState("All Types");
   const [selectedRegion, setSelectedRegion] = useState("All Regions");
@@ -73,7 +75,12 @@ useEffect(() => {
   useEffect(() => {
     debouncedFetchJobs();
     return () => debouncedFetchJobs.cancel(); // Cleanup function
-  }, [searchTerm, selectedCategory, selectedJobType, minSalary, maxSalary,selectedRegion]);
+  }, [selectedCategory, selectedJobType, minSalary, maxSalary,selectedRegion]);
+
+  const handleSearchSubmit = () => {
+    // Trigger search when submit button is clicked
+    debouncedFetchJobs();
+  };
 
   return (
     <div>
@@ -82,14 +89,17 @@ useEffect(() => {
      
 
       {/* Banner */}
-      <div className="banner">
-        <h1>Find Your Next Job Opportunity</h1>
-        <p>Explore thousands of jobs tailored for you.</p>
-      </div>
+    <JobBanner 
+          searchQuery={searchTerm}
+          onSearchChange={setSearchTerm}
+          onSearchSubmit={handleSearchSubmit}
+          locationQuery={locationTerm}
+          onLocationChange={setLocationTerm}
+        />
 
       {/* Header Section */}
       <header className="job-header">
-        <div className="search-bar">
+       {/* <div className="search-bar">
           <FaSearch className="search-icon-jl" />
           <input 
             type="text" 
@@ -97,7 +107,7 @@ useEffect(() => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-        </div>
+        </div>*/}
 
         <div className ="category-scroll-wrapper">
         <div className="category-scroll-bar">
