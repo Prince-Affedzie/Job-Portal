@@ -113,7 +113,7 @@ export const ClientNavbar = ({ toggleSidebar }) => {
                 >
                   <FaBell className="h-5 w-5" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs min-w-[16px] h-4 flex items-center justify-center px-1 transform translate-x-1/2 -translate-y-1/2">
+                    <span className="absolute top-2 right-2 bg-red-500 text-white rounded-full text-xs min-w-[16px] h-4 flex items-center justify-center px-1 transform translate-x-1/2 -translate-y-1/2">
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
