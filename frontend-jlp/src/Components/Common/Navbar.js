@@ -305,22 +305,25 @@ const Navbar = () => {
               </li>
 
               <li>
-                <Link 
-                  to="/view/all_notifications" 
-                  onClick={closeMenu}
-                  className="mobile-nav-link"
-                  aria-label={`Notifications (${unreadCount} unread)`}
-                >
-                  <div >
-                    <FaBell className="mobile-nav-icon" />
-                    <span>Notifications</span>
-                    {unreadCount > 0 && (
-                      <span className="mobile-notification-badge">{unreadCount}</span>
-                    )}
-                  </div>
-                </Link>
-              </li>
-              
+             <Link 
+              to="/view/all_notifications" 
+              onClick={closeMenu}
+              className="mobile-nav-link"
+               aria-label={`Notifications (${unreadCount} unread)`}
+            >
+              <div className="flex items-center">
+              <div className="relative">
+             <FaBell className="mobile-nav-icon" />
+             {unreadCount > 0 && (
+              <span className="absolute -top-2 right-2 bg-red-500 text-white rounded-full text-xs min-w-[16px] h-4 flex items-center justify-center px-1">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+             )}
+           </div>
+            <span className="ml-3">Notifications</span>
+           </div>
+           </Link>
+           </li>
               <li>
                 <Link 
                   to="/h1/dashboard" 
