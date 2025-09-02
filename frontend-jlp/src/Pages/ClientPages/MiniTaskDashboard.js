@@ -18,7 +18,7 @@ const MicroTaskDashboard = () => {
   const { notifications, fetchNotifications } = useContext(notificationContext);
   const { 
     microJobs, loading, error, refetch, 
-    getActiveJobs, getPendingJobs, getCompletedJobs,getInProgressJobs, getDraftJobs 
+    getActiveJobs, getPendingJobs, getCompletedJobs,getInProgressJobs, getDraftJobs,getAssignedJobs 
   } = useClientMicroJobs();
 
     const { user } = useContext(userContext);
@@ -33,6 +33,7 @@ const MicroTaskDashboard = () => {
   const activeJobs = getActiveJobs();
   const pendingJobs = getPendingJobs();
   const completedJobs = getCompletedJobs();
+  const assignedJobs = getAssignedJobs()
   const draftJobs = getDraftJobs();
   const inProgressJobs =getInProgressJobs();
 
@@ -130,6 +131,8 @@ const MicroTaskDashboard = () => {
          return { bg: 'bg-orange-100', text: 'text-orange-800', icon: <FaPlayCircle className="mr-1" />, label: 'In Progress' };
       case 'Review':
         return { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: <FaExclamationTriangle className="mr-1" />, label: 'Review' };
+      case 'Assigned':
+        return { bg: 'bg-green-100', text: 'text-green-800', icon: <FaCheckCircle className="mr-1" />, label: 'Assigned' };
       case 'Completed':
         return { bg: 'bg-blue-100', text: 'text-blue-800', icon: <FaCheckCircle className="mr-1" />, label: 'Completed' };
       case 'Closed':
@@ -315,7 +318,7 @@ const MicroTaskDashboard = () => {
                     {filteredJobs.slice(0,5).map(job => {
                       const statusBadge = getStatusBadge(job.status);
                       return (
-                        <div key={job.id || job._id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <Link to={`/client_view/task/${job._id}`}   key={job.id || job._id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                           <div className="flex items-start space-x-3 flex-1 min-w-0">
                             <div className={`p-2 rounded-full flex-shrink-0 ${statusBadge.bg} ${statusBadge.text}`}>
                               <FaBriefcase className="text-sm" />
@@ -353,7 +356,7 @@ const MicroTaskDashboard = () => {
                               </button>*/}
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       );
                     })}
                   </div>

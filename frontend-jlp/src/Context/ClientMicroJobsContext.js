@@ -53,6 +53,7 @@ export const ClientMicroJobsProvider = ({ children }) => {
     getPendingJobs: () => microJobs.filter(job => job.status === 'Review' || job.status === 'review'),
     getCompletedJobs: () => microJobs.filter(job => job.status === 'Completed'),
     getInProgressJobs: () => microJobs.filter(job => job.status === 'In-progress'),
+    getAssignedJobs: () => microJobs.filter(job => job.status === 'Assigned'),
     getDraftJobs: () => microJobs.filter(job => job.status === 'Closed'),
     
   };

@@ -108,13 +108,13 @@ export const ClientNavbar = ({ toggleSidebar }) => {
                     setShowProfileMenu(false);
                     setDashboardDropdownOpen(false);
                   }}
-                  className="p-2 rounded-full text-white hover:text-gray-100 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="p-2 rounded-full text-white hover:text-gray-100 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 relative"
                   aria-label={`Notifications (${unreadCount} unread)`}
                 >
                   <FaBell className="h-5 w-5" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">
-                      {unreadCount}
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs min-w-[16px] h-4 flex items-center justify-center px-1 transform translate-x-1/2 -translate-y-1/2">
+                      {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
                 </button>
@@ -210,23 +210,25 @@ export const ClientNavbar = ({ toggleSidebar }) => {
           {/* Mobile menu button (for right side) */}
           <div className="lg:hidden flex items-center">
             {/* Notifications for mobile */}
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowNotifications(!showNotifications);
-                setShowProfileMenu(false);
-                setDashboardDropdownOpen(false);
-              }}
-              className="p-2 rounded-full text-white hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mr-2"
-              aria-label={`Notifications (${unreadCount} unread)`}
-            >
-              <FaBell className="h-5 w-5" />
-              {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">
-                  {unreadCount}
-                </span>
-              )}
-            </button>
+            <div className="relative mr-2">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowNotifications(!showNotifications);
+                  setShowProfileMenu(false);
+                  setDashboardDropdownOpen(false);
+                }}
+                className="p-2 rounded-full text-white hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 relative"
+                aria-label={`Notifications (${unreadCount} unread)`}
+              >
+                <FaBell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-2 right-2 bg-red-500 text-white rounded-full text-xs min-w-[16px] h-4 flex items-center justify-center px-1 transform translate-x-1/2 -translate-y-1/2">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+            </div>
             
             {/* Dashboard dropdown for mobile */}
             <div className="relative">

@@ -104,6 +104,7 @@ const EditMiniTaskForm = ({ onUpdate, onClose }) => {
     locationType: "",
     address: { region: "", city: "", suburb: "" },
     skillsRequired: [],
+    biddingType: "fixed", // Added biddingType with default value
   });
 
   const [errors, setErrors] = useState({});
@@ -124,6 +125,7 @@ const EditMiniTaskForm = ({ onUpdate, onClose }) => {
         locationType: task.locationType || "",
         address: task.address || { region: "", city: "", suburb: "" },
         skillsRequired: task.skillsRequired || [],
+        biddingType: task.biddingType || "fixed", // Initialize biddingType
       });
     }
   }, [task]);
@@ -160,6 +162,7 @@ const EditMiniTaskForm = ({ onUpdate, onClose }) => {
     if (!formData.category) newErrors.category = "Category is required";
     if (!formData.subcategory) newErrors.subcategory = "Subcategory is required";
     if (!formData.locationType) newErrors.locationType = "Location type is required";
+    if (!formData.biddingType) newErrors.biddingType = "Pricing type is required";
     
     if (formData.locationType === "on-site") {
       if (!formData.address?.region?.trim()) newErrors.region = "Region is required for on-site tasks";
@@ -289,6 +292,60 @@ const EditMiniTaskForm = ({ onUpdate, onClose }) => {
               </div>
             </div>
 
+            {/* Pricing Type Section */}
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <FaTags className="w-5 h-5 mr-2 text-purple-500" />
+                Pricing Type
+              </h2>
+              
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-4">
+                  Pricing Type *
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                    formData.biddingType === "fixed" 
+                      ? "border-green-500 bg-green-50" 
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}>
+                    <input
+                      type="radio"
+                      name="biddingType"
+                      value="fixed"
+                      checked={formData.biddingType === "fixed"}
+                      onChange={handleChange}
+                      className="mr-4"
+                    />
+                    <div>
+                      <span className="font-medium block">Fixed Budget</span>
+                      <span className="text-sm text-gray-600">Set a fixed price for your task</span>
+                    </div>
+                  </label>
+
+                  <label className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                    formData.biddingType === "open-bid" 
+                      ? "border-blue-500 bg-blue-50" 
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}>
+                    <input
+                      type="radio"
+                      name="biddingType"
+                      value="open-bid"
+                      checked={formData.biddingType === "open-bid"}
+                      onChange={handleChange}
+                      className="mr-4"
+                    />
+                    <div>
+                      <span className="font-medium block">Open for Bids</span>
+                      <span className="text-sm text-gray-600">Receive bids from freelancers</span>
+                    </div>
+                  </label>
+                </div>
+                {errors.biddingType && <p className="mt-2 text-sm text-red-600">{errors.biddingType}</p>}
+              </div>
+            </div>
+
             {/* Budget & Deadline Section */}
             <div className="border-b border-gray-200 pb-8">
               <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
@@ -299,7 +356,7 @@ const EditMiniTaskForm = ({ onUpdate, onClose }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Budget (₵) *
+                    {formData.biddingType === "fixed" ? "Budget (₵)" : "Expected Budget (₵)"} *
                   </label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
@@ -319,7 +376,11 @@ const EditMiniTaskForm = ({ onUpdate, onClose }) => {
                     />
                   </div>
                   {errors.budget && <p className="mt-2 text-sm text-red-600">{errors.budget}</p>}
-                  <p className="mt-2 text-sm text-gray-500">Fair pricing attracts more qualified applicants</p>
+                  <p className="mt-2 text-sm text-gray-500">
+                    {formData.biddingType === "fixed" 
+                      ? "Fair pricing attracts more qualified applicants" 
+                      : "Provide a budget range to guide bidders"}
+                  </p>
                 </div>
 
                 <div>

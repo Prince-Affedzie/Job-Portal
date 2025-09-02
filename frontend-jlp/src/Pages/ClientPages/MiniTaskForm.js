@@ -23,6 +23,7 @@ const PostMiniTask = () => {
     subcategory: "",
     address: { region: "", city: "", suburb: "" },
     skillsRequired: [],
+    biddingType: "fixed", // Default to fixed bidding
   });
 
   const [skillInput, setSkillInput] = useState("");
@@ -132,7 +133,7 @@ const PostMiniTask = () => {
        <ToastContainer position="top-center" autoClose={3000} />
         {user && <VerifyTooltip isVerified={user.isVerified} />}
        
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Enhanced Header Section */}
           <div className="text-center mb-8 lg:mb-12">
 
@@ -145,7 +146,7 @@ const PostMiniTask = () => {
           </div>
           
           {/* Enhanced Form Container */}
-          <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl border border-white/20 overflow-hidden">
+          <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl max-w-5xl mx-auto  border border-white/20 overflow-hidden">
             <div className="p-6 sm:p-8 lg:p-12">
               <form onSubmit={handleSubmit} className="space-y-8">
                 
@@ -199,11 +200,87 @@ const PostMiniTask = () => {
                   <p className="text-sm text-gray-600">The more details you provide, the better matches you'll receive</p>
                 </div>
 
+                {/* Bidding Type Section */}
+                <div className="space-y-4">
+                  <label className="block text-sm font-semibold text-gray-800 mb-4">
+                    Pricing Type <span className="text-red-500">*</span>
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div
+                      onClick={() => setFormData({...formData, biddingType: "fixed"})}
+                      className={`group relative p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 hover:scale-105 ${
+                        formData.biddingType === "fixed"
+                          ? "border-green-500 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg ring-4 ring-green-100"
+                          : "border-gray-200 bg-white/70 hover:border-green-300 hover:bg-green-50/50"
+                      }`}
+                    >
+                      <div className="flex items-start space-x-4">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 transition-colors ${
+                          formData.biddingType === "fixed"
+                            ? "border-green-500 bg-green-500"
+                            : "border-gray-400 group-hover:border-green-400"
+                        }`}>
+                          {formData.biddingType === "fixed" && (
+                            <div className="w-3 h-3 rounded-full bg-white animate-pulse"></div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                            <h3 className="font-semibold text-gray-900">Fixed Budget</h3>
+                          </div>
+                          <p className="text-sm text-gray-600 leading-relaxed">Set a fixed budget for your task</p>
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">Predictable</span>
+                            <span className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">Quick hiring</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div
+                      onClick={() => setFormData({...formData, biddingType: "open-bid"})}
+                      className={`group relative p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 hover:scale-105 ${
+                        formData.biddingType === "open-bid"
+                          ? "border-blue-500 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-lg ring-4 ring-blue-100"
+                          : "border-gray-200 bg-white/70 hover:border-blue-300 hover:bg-blue-50/50"
+                      }`}
+                    >
+                      <div className="flex items-start space-x-4">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 transition-colors ${
+                          formData.biddingType === "open-bid"
+                            ? "border-blue-500 bg-blue-500"
+                            : "border-gray-400 group-hover:border-blue-400"
+                        }`}>
+                          {formData.biddingType === "open-bid" && (
+                            <div className="w-3 h-3 rounded-full bg-white animate-pulse"></div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            <h3 className="font-semibold text-gray-900">Open for Bids</h3>
+                          </div>
+                          <p className="text-sm text-gray-600 leading-relaxed">Receive bids from freelancers</p>
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            <span className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">Competitive</span>
+                            <span className="inline-block px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">More options</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Budget & Deadline Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label htmlFor="budget" className="block text-sm font-semibold text-gray-800 mb-2">
-                      Budget (₵) <span className="text-red-500">*</span>
+                      {formData.biddingType === "fixed" ? "Budget (₵)" : "Expected Budget (₵)"} <span className="text-red-500">*</span>
                     </label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -222,7 +299,11 @@ const PostMiniTask = () => {
                         required
                       />
                     </div>
-                    <p className="text-sm text-gray-600">Set a fair budget to attract quality candidates</p>
+                    <p className="text-sm text-gray-600">
+                      {formData.biddingType === "fixed" 
+                        ? "Set a fixed price for your task" 
+                        : "Provide a budget range to guide bidders"}
+                    </p>
                   </div>
                   
                   <div className="space-y-2">

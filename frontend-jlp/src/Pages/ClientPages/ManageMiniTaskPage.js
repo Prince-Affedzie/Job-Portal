@@ -237,7 +237,10 @@ const ManageMiniTasks = () => {
     
     if (task.status === 'Assigned' || task.status === 'In-progress') {
       if (task.assignedTo) {
-        actions.push({ id: 'report', label: 'Report Issue', icon: 'flag', color: 'text-red-700' });
+        actions.push(
+          { id: 'report', label: 'Report Issue', icon: 'flag', color: 'text-red-700' },
+          { id: 'applicants', label: 'View Applicants', icon: 'users', color: 'text-purple-700' }
+        );
       }
     }
     

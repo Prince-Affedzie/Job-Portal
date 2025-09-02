@@ -28,8 +28,8 @@ export const ClientSidebar = ({ isOpen, toggleSidebar }) => {
   const menuItems = [
     { path: '/client/microtask_dashboard', id: 'dashboard', label: 'Dashboard', icon: <FaHome /> },
     { path: '/manage/mini_tasks', id: 'tasks', label: 'My Tasks', icon: <FaBriefcase /> },
-    { path: '/messages', id: 'messages', label: 'Messages', icon: <FaComments /> },
-    { path: '/view/all_notifications', id: 'messages', label: 'Notifications', icon: < FaBell /> },
+    { path: '/messages', id: 'chats', label: 'Chats', icon: <FaComments /> },
+    { path: '/view/all_notifications', id: 'notifications', label: 'Notifications', icon: < FaBell /> },
     { path: '/client/payments', id: 'payments', label: 'Payments', icon: <FaMoneyBillWave /> },
     { path: '/post/mini_task', id: 'post', label: 'Post Task', icon: <FaPlus /> },
     { path: '/client/profile', id: 'settings', label: 'Settings', icon: <FaCog /> },

@@ -57,6 +57,7 @@ export const getRecentApplications =()=>API.get("/api/h1/v2/get/recent_applicati
 export const postMiniTask =(data)=>API.post("/api/h1/v2/post_mini_task",data)
 export const getMiniTasks = (filters)=>API.get('/api/h1/v2/get/mini_tasks',{params:filters})
 export const applyToMiniTask =(Id)=>API.post(`/api/h1/v2/mini_task/apply/${Id}`)
+export const bidOnMiniTask =(Id,bidData)=>API.post(`/api/h1/v2/mini_task/apply/${Id}`,bidData)
 export const getMiniTasksposted =()=>API.get("/api/h1/v2/get_created/mini_tasks")
 export const deleteMiniTask=(Id)=>API.delete(`/api/h1/v2/delete/mini_task/${Id}`)
 export const updateMiniTask =(Id,data) =>API.put(`/api/h1/v2/edit/mini_task/${Id}`,{body:data})
@@ -86,6 +87,8 @@ export const sendFileToS3 = async (uploadURL, file,onProgress) => {
   });
 };
 export const getMicroTaskApplicants=(Id)=>API.get(`/api/h1/v2/get_applicants/my_micro_task/${Id}`)
+export const getMicroTaskBids=(Id)=>API.get(`/api/h1/v2/get_bids/my_micro_task/${Id}`)
+export const acceptBidForTask =(taskId,bidId)=>API.put(`/api/h1/v2/accept_bid/mini_task/${taskId}/${bidId}`)
 
 
 //Chat Mesaging APIs

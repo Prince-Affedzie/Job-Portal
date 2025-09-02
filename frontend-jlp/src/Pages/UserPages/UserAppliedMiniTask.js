@@ -13,6 +13,7 @@ import StartChatButton from '../../Components/MessagingComponents/StartChatButto
 import  TaskActions from '../../Components/MiniTaskManagementComponents/MiniTaskActionButtons';
 import Pagination from "../../Components/Common/Pagination";
 import ReportForm from "../../Components/Common/ReportForm";
+import {useFreelancerGuide} from '../../Components/MiniTaskManagementComponents/UseFreelancerAcceptanceGuide'
 
 
 const MyMiniTaskApplications = () => {
@@ -31,6 +32,7 @@ const MyMiniTaskApplications = () => {
   const applicationsPerPage = 5;
    const [showReportModal, setShowReportModal] = useState(false);
    const [reportingTask, setReportingTask] = useState(null);
+   const { showFreelancerGuide, hideFreelancerGuide, FreelancerGuide } = useFreelancerGuide();
    
   // Use a more efficient debounced fetch
   const debouncedFetch = useCallback(() => {
@@ -109,7 +111,7 @@ const MyMiniTaskApplications = () => {
       setShowReportModal(true);
     };
   
-  const handleTaskAcceptance = async(taskId) => {
+  const handleTaskAcceptance = async(task,taskId) => {
     setIsProcessing(true);
     setActiveTaskId(taskId);
     
@@ -117,6 +119,11 @@ const MyMiniTaskApplications = () => {
       const res = await acceptMiniTaskAssignment(taskId);
       if (res.status === 200) {
         toast.success("Task accepted successfully! You can now start working on it.");
+        showFreelancerGuide(
+          task.title, 
+          task.employer.name, 
+          task.deadline
+        );
         fetchAppliedMiniTasks();
       } else {
         toast.error("Failed to accept task. Please try again later.");
@@ -155,12 +162,6 @@ const MyMiniTaskApplications = () => {
     }
   };
 
-  const handleTaskSelection = (taskId) => {
-    setSelectedTasks(prev => ({
-      ...prev,
-      [taskId]: !prev[taskId]
-    }));
-  };
 
   const handleSelectAll = () => {
     const allTasks = {};
@@ -237,10 +238,6 @@ const MyMiniTaskApplications = () => {
     return !(isAssigned && task.status === "In-progress");
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo(0, 0);
-  };
 
   const openSubmitModal = (taskId) => {
     setActiveTaskId(taskId);
@@ -534,8 +531,8 @@ const MyMiniTaskApplications = () => {
     <WorkSubmissionModal
       isOpen={modalOpen}
       onClose={() => {
-        setModalOpen(false);
-        setActiveTaskId(null);
+      setModalOpen(false);
+      setActiveTaskId(null);
       }}
       taskId={activeTaskId}
       task={task}
@@ -545,7 +542,7 @@ const MyMiniTaskApplications = () => {
 );
 
 
-              })}
+       })}
             </div>
 
             {/* Pagination */}
@@ -570,14 +567,11 @@ const MyMiniTaskApplications = () => {
      task={reportingTask}
      currentUser={user}
      onReportSubmitted={() => {
-      // Optional: Add any post-submission logic here
-      // For example, refresh data or show a confirmation
+     
     }}
   />
 )}
   
-      
-   {/* Confirmation dialog for deleting tasks */}
       {showConfirmation && (
         <div className="confirmation-overlay">
           <div className="confirmation-dialog">
@@ -598,9 +592,11 @@ const MyMiniTaskApplications = () => {
                 {isProcessing ? "Removing..." : "Yes, Remove"}
               </button>
             </div>
+           
           </div>
         </div>
       )}
+       <FreelancerGuide/>
     </div>
   );
 };

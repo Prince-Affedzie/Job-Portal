@@ -60,7 +60,7 @@ const TaskActions = ({
   
   // Use mock data for demo
   const currentTask = task 
-  const currentUser = user 
+  
 
   // Action button configurations with contextual grouping
   const actionGroups = {
@@ -89,7 +89,7 @@ const TaskActions = ({
         id: 'acceptTask',
         label: isProcessing ? 'Accepting...' : 'Accept',
         icon: FaCheck,
-        onClick: () => onAcceptTask?.(currentTask._id),
+        onClick: () => onAcceptTask?.(currentTask,currentTask._id),
         variant: 'success',
         show: needsAcceptance,
         description: 'Accept this task assignment'
