@@ -93,21 +93,13 @@ useEffect(() => {
           searchQuery={searchTerm}
           onSearchChange={setSearchTerm}
           onSearchSubmit={handleSearchSubmit}
-          locationQuery={locationTerm}
-          onLocationChange={setLocationTerm}
+          locationQuery={selectedRegion}
+          onLocationChange={setSelectedRegion}
         />
 
-      {/* Header Section */}
+  
       <header className="job-header">
-       {/* <div className="search-bar">
-          <FaSearch className="search-icon-jl" />
-          <input 
-            type="text" 
-            placeholder="Search for jobs..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>*/}
+       
 
         <div className ="category-scroll-wrapper">
         <div className="category-scroll-bar">
