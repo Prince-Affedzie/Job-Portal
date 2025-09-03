@@ -217,7 +217,7 @@ const JobBanner = ({
                         <input
                           type="text"
                           placeholder="Search regions..."
-                          className="w-full pl-8 pr-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          className="w-full pl-8 pr-3 py-2 text-sm text-gray-800 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                           value={locationSearch}
                           onChange={(e) => setLocationSearch(e.target.value)}
                           onClick={(e) => e.stopPropagation()}
