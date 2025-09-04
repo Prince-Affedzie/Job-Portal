@@ -211,6 +211,11 @@ const MiniTaskInfo = () => {
     }
   };
 
+
+  useEffect(() => {
+        window.scrollTo(0, 0);
+  }, []);
+  
   // Skeleton Loader
   const renderSkeleton = () => (
     <div className="skeleton-loader">

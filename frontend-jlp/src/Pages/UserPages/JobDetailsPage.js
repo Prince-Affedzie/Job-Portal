@@ -99,6 +99,10 @@ const JobDetails = () => {
         }
     };
 
+    useEffect(() => {
+          window.scrollTo(0, 0);
+     }, []);
+
     const nextStep = () => {
         if (formStep === 1 && (!applicationData.fullName || !applicationData.email)) {
             toast.warning("Please fill out all required fields");
