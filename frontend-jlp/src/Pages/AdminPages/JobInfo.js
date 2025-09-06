@@ -41,6 +41,8 @@ const JobDetailsAdminView = () => {
   const [job, setJob] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -210,7 +212,10 @@ const JobDetailsAdminView = () => {
       
         <div className="flex flex-1">
          
-            <AdminSidebar />
+           <AdminSidebar 
+                  isOpen={isSidebarOpen} 
+                 onClose={() => setIsSidebarOpen(false)}
+                  />
           
           <main className="flex-1 p-6">
             <LoadingSkeleton />
@@ -227,7 +232,10 @@ const JobDetailsAdminView = () => {
       
         <div className="flex flex-1">
          
-            <AdminSidebar />
+          <AdminSidebar 
+                 isOpen={isSidebarOpen} 
+                onClose={() => setIsSidebarOpen(false)}
+                 />
          
           <main className="flex-1 p-6">
             <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
@@ -258,11 +266,18 @@ const JobDetailsAdminView = () => {
       
       <div className="flex flex-1">
        
-          <AdminSidebar />
+          <AdminSidebar 
+                 isOpen={isSidebarOpen} 
+                onClose={() => setIsSidebarOpen(false)}
+                 />
           <NotificationCenter/>
         
 
         <main className="flex-1 overflow-auto">
+            <AdminNavbar 
+                  onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+                   isSidebarOpen={isSidebarOpen} 
+                   />
           <div className="p-6 space-y-6">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">

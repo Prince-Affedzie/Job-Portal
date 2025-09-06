@@ -95,11 +95,11 @@ function App() {
       <Route path='/job/details/:id' element={<UserProvider><NotificationProvider><JobDetails/></NotificationProvider></UserProvider>}/>
       <Route path='/post/mini_task' 
       element={<UserProvider>
-        <PostEligibilityGate>
+        
         <NotificationProvider><RouteProtection>
         <PostMiniTask/>
       </RouteProtection></NotificationProvider>
-      </PostEligibilityGate>
+     
       </UserProvider>
       }/>
       <Route path='/manage/mini_tasks' element={<UserProvider><NotificationProvider><ManageMiniTasks/></NotificationProvider></UserProvider>}/>

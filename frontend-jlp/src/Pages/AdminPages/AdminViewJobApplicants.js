@@ -1,12 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Eye, Mail, Calendar, User, Filter, Search, Download, ChevronLeft, ChevronRight,PhoneCall } from "lucide-react";
+import { Eye, Mail, Calendar, User, Filter, Search, Download, ChevronLeft, ChevronRight, PhoneCall, Image } from "lucide-react";
 import AdminNavbar from "../../Components/AdminComponents/AdminNavbar";
 import AdminSidebar from "../../Components/AdminComponents/Adminsidebar";
 import NotificationCenter from "../../Services/alerts/NotificationCenter";
 
-// Uncomment and import your actual API
-// import { getJobApplicants } from "../APIS/API";
+// Profile Image Component
+const ProfileImage = ({ applicant, size = 10, className = "" }) => {
+  const [imageError, setImageError] = useState(false);
+  
+  // If applicant has a profile image and no error loading it
+  if (applicant.profileImage && !imageError) {
+    return (
+      <img
+        src={applicant.profileImage}
+        alt={applicant.name || 'Applicant'}
+        className={`w-${size} h-${size} rounded-full object-cover border-2 border-white shadow-sm ${className}`}
+        onError={() => setImageError(true)}
+      />
+    );
+  }
+  
+  // Fallback to initial avatar
+  return (
+    <div className={`w-${size} h-${size} bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold ${className}`}>
+      {applicant.name?.charAt(0)?.toUpperCase() || 'A'}
+    </div>
+  );
+};
+
+// Enhanced Profile Image with status indicator
+const ProfileImageWithStatus = ({ applicant, size = 10, showStatus = false, status = "active" }) => {
+  const statusColors = {
+    active: 'bg-green-500',
+    inactive: 'bg-gray-400'
+  };
+
+  return (
+    <div className="relative inline-block">
+      <ProfileImage applicant={applicant} size={size} />
+      {showStatus && (
+        <div className={`absolute bottom-0 right-0 w-3 h-3 ${statusColors[status]} rounded-full border-2 border-white`}></div>
+      )}
+    </div>
+  );
+};
 
 const ViewApplicantsAdmin = ({ jobId }) => {
   const location = useLocation();
@@ -18,37 +56,17 @@ const ViewApplicantsAdmin = ({ jobId }) => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(8);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  
   const job = location.state;
-  
 
-   useEffect(() => {
+  useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-
-  // Your original API call - uncomment when ready to use
-  /* useEffect(() => {
-    const fetchApplicants = async () => {
-      setLoading(true);
-      try {
-        const response = await getJobApplicants(jobId);
-        if (response.status === 200) {
-          setApplicants(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching applicants:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-     
-    fetchApplicants();
-  }, [jobId]); */
 
   useEffect(() => {
     // Use your actual job data from location.state
@@ -114,9 +132,11 @@ const ViewApplicantsAdmin = ({ jobId }) => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50">
-       
         <div className="flex">
-          <AdminSidebar />
+         <AdminSidebar 
+                 isOpen={isSidebarOpen} 
+                onClose={() => setIsSidebarOpen(false)}
+                 />
           <div className="flex-1 p-8">
             <div className="flex items-center justify-center h-96">
               <div className="relative">
@@ -134,12 +154,19 @@ const ViewApplicantsAdmin = ({ jobId }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50">
-      
       <div className="flex">
-        <AdminSidebar />
+      <AdminSidebar 
+              isOpen={isSidebarOpen} 
+             onClose={() => setIsSidebarOpen(false)}
+              />
         <NotificationCenter/>
-        <div className="flex-1 p-4 md:p-8">
-          <div className="max-w-7xl mx-auto">
+
+        <div className="flex-1 overflow-y-auto">
+          <AdminNavbar 
+                  onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+                   isSidebarOpen={isSidebarOpen} 
+                   />
+          <div className="mt-7 max-w-7xl mx-auto">
             {/* Header Section */}
             <div className="mb-8">
               <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/20">
@@ -236,9 +263,12 @@ const ViewApplicantsAdmin = ({ jobId }) => {
                             >
                               <td className="py-4 px-6">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
-                                    {applicant.name?.charAt(0)?.toUpperCase() || 'A'}
-                                  </div>
+                                  <ProfileImageWithStatus 
+                                    applicant={applicant} 
+                                    size={10} 
+                                    showStatus={true} 
+                                    status={applicant.status ? "active" : "inactive"}
+                                  />
                                   <div>
                                     <div className="font-semibold text-gray-900">{applicant.name}</div>
                                     <div className="text-sm text-gray-500">{applicant.email}</div>
@@ -286,9 +316,12 @@ const ViewApplicantsAdmin = ({ jobId }) => {
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                              {applicant.name?.charAt(0)?.toUpperCase() || 'A'}
-                            </div>
+                            <ProfileImageWithStatus 
+                              applicant={applicant} 
+                              size={12} 
+                              showStatus={true} 
+                              status={applicant.status ? "active" : "inactive"}
+                            />
                             <div>
                               <div className="font-semibold text-gray-900">{applicant.name}</div>
                               <div className="text-sm text-gray-500">ID: {applicant._id.slice(-6)}</div>

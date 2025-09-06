@@ -25,8 +25,7 @@ const sidebarItems = [
   { path: "/admin/settings", icon: Settings, label: "Settings", color: "from-gray-500 to-slate-500" },
 ];
 
-export default function AdminSidebar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+export default function AdminSidebar({ isOpen = false, onClose = () => {} }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [screenSize, setScreenSize] = useState('desktop');
   const navigate = useNavigate();
@@ -47,13 +46,6 @@ export default function AdminSidebar() {
     return () => window.removeEventListener('resize', updateScreenSize);
   }, []);
 
-  // Auto-close mobile menu on larger screens
-  useEffect(() => {
-    if (screenSize !== 'mobile' && isMobileMenuOpen) {
-      setIsMobileMenuOpen(false);
-    }
-  }, [screenSize, isMobileMenuOpen]);
-
   // Auto-collapse on medium screens
   useEffect(() => {
     if (screenSize === 'laptop') {
@@ -63,26 +55,17 @@ export default function AdminSidebar() {
     }
   }, [screenSize]);
 
-  // Prevent body scroll when mobile menu is open
+  // Close sidebar when isOpen prop changes to false
   useEffect(() => {
-    if (isMobileMenuOpen && screenSize === 'mobile') {
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-    } else {
-      document.body.style.overflow = 'auto';
-      document.body.style.position = 'static';
+    if (!isOpen && screenSize === 'mobile') {
+      // Ensure sidebar is closed on mobile when isOpen is false
     }
-    return () => {
-      document.body.style.overflow = 'auto';
-      document.body.style.position = 'static';
-    };
-  }, [isMobileMenuOpen, screenSize]);
+  }, [isOpen, screenSize]);
 
   const handleItemClick = (path) => {
     navigate(path);
     if (screenSize === 'mobile') {
-      setIsMobileMenuOpen(false);
+      onClose(); // Close sidebar on mobile after navigation
     }
   };
 
@@ -97,9 +80,8 @@ export default function AdminSidebar() {
     return isCollapsed ? 'w-20' : 'w-64';
   };
 
-  const getContentPadding = () => {
-    if (screenSize === 'mobile') return 'pl-0';
-    return isCollapsed ? 'pl-20' : 'pl-64';
+  const handleMobileClose = () => {
+    onClose(); // Use the provided onClose function
   };
 
   const SidebarContent = () => (
@@ -129,14 +111,14 @@ export default function AdminSidebar() {
           </button>
         )}
         
-        {/* Mobile close button - Now more prominent */}
+        {/* Mobile close button */}
         {screenSize === 'mobile' && (
           <button
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="p-2 rounded-lg bg-red-500 hover:bg-red-600 transition-all text-white flex-shrink-0"
+            onClick={handleMobileClose}
+            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all text-white flex-shrink-0"
             aria-label="Close menu"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
         )}
       </div>
@@ -214,21 +196,6 @@ export default function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      {screenSize === 'mobile' && (
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className={`fixed z-50 top-4 left-4 p-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-all
-            ${!isMobileMenuOpen ? 'animate-pulse' : ''}`}
-          style={{
-            top: 'env(safe-area-inset-top)',
-            left: 'env(safe-area-inset-left)'
-          }}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      )}
-
       {/* Sidebar */}
       <aside
         className={`
@@ -236,25 +203,23 @@ export default function AdminSidebar() {
           backdrop-blur-sm border-r border-white/10 shadow-2xl z-40 transition-all duration-300
           ${getSidebarWidth()}
           ${screenSize === 'mobile' ? 
-            (isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full') : 
+            (isOpen ? 'translate-x-0' : '-translate-x-full') : 
             'translate-x-0'
           }
         `}
         style={{
           height: '100vh',
           height: '100dvh',
-          paddingTop: 'env(safe-area-inset-top)',
-          paddingBottom: 'env(safe-area-inset-bottom)'
         }}
       >
         <SidebarContent />
       </aside>
 
       {/* Mobile Overlay */}
-      {screenSize === 'mobile' && isMobileMenuOpen && (
+      {screenSize === 'mobile' && isOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30"
-          onClick={() => setIsMobileMenuOpen(false)}
+          className="fixed inset-0 bg-black/50 z-30"
+          onClick={onClose}
         />
       )}
 

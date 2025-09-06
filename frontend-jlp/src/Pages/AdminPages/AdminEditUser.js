@@ -18,6 +18,8 @@ const AdminEditUserPage = () => {
     miniTaskEligible: false,
     role: "",
   });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -87,16 +89,23 @@ const AdminEditUserPage = () => {
       <ToastContainer position="top-right" autoClose={3000} />
       
       {/* Navbar */}
+      <AdminNavbar 
+        onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+        isSidebarOpen={isSidebarOpen} 
+          />
      
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
        
-          <AdminSidebar />
+          <AdminSidebar 
+            isOpen={isSidebarOpen} 
+            onClose={() => setIsSidebarOpen(false)}
+            />
        
         
         {/* Main Content */}
         <div className="flex-1 p-4 md:p-6 overflow-y-auto">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             {/* Breadcrumb */}
             <div className="flex items-center mb-6 text-sm">
               <span 

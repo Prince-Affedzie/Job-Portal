@@ -34,6 +34,7 @@ const AdminEditJob = () => {
   const [newTag, setNewTag] = useState("");
   const [showSkillInput, setShowSkillInput] = useState(false);
   const [showTagInput, setShowTagInput] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const showToast = (message, type = 'success') => {
     const toast = document.createElement('div');
@@ -160,11 +161,17 @@ const AdminEditJob = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50 overflow:hidden">
-      
-        <div className="flex flex-1">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex">
+        <AdminSidebar 
+          isOpen={isSidebarOpen} 
+          onClose={() => setIsSidebarOpen(false)}
+        />
         
-            <AdminSidebar />
+        <div className="flex-1 flex flex-col min-h-screen">
+          <AdminNavbar 
+            onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+            isSidebarOpen={isSidebarOpen} 
+          />
           
           <main className="flex-1 flex items-center justify-center">
             <div className="text-center">
@@ -182,12 +189,18 @@ const AdminEditJob = () => {
 
   if (!job) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
-       
-        <div className="flex flex-1">
-          
-            <AdminSidebar />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex">
+        <AdminSidebar 
+          isOpen={isSidebarOpen} 
+          onClose={() => setIsSidebarOpen(false)}
+        />
         
+        <div className="flex-1 flex flex-col min-h-screen">
+          <AdminNavbar 
+            onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+            isSidebarOpen={isSidebarOpen} 
+          />
+          
           <main className="flex-1 flex items-center justify-center">
             <div className="text-center max-w-md mx-auto">
               <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
@@ -208,13 +221,25 @@ const AdminEditJob = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 overflow:hidden">
-     
-      <div className="flex flex-1">
-       
-          <AdminSidebar />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 flex">
+      {/* Sidebar */}
+      <AdminSidebar 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)}
+      />
+      
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Navbar - Fixed at the top */}
+        <div className="sticky top-0 z-40">
+          <AdminNavbar 
+            onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+            isSidebarOpen={isSidebarOpen} 
+          />
+        </div>
         
-        <main className="flex-1 p-4 lg:p-8">
+        {/* Page Content */}
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8">
           <div className="max-w-5xl mx-auto">
             {/* Header */}
             <div className="mb-8">
@@ -459,6 +484,8 @@ const AdminEditJob = () => {
                         <option value="Opened">Opened</option>
                         <option value="Closed">Closed</option>
                         <option value="Filled">Filled</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Reviewing">Reviewing</option>
                       </select>
                     </div>
                   </div>

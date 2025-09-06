@@ -225,8 +225,9 @@ const AdminEmployerDetail = () => {
   const [showJobsModal, setShowJobsModal] = useState(false);
   const statusOptions = ["pending", "approved", "rejected"];
   const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
 
-  // Your original fetchEmployer function - unchanged
   const fetchEmployer = async () => {
     try {
       setLoading(true);
@@ -321,9 +322,16 @@ const AdminEmployerDetail = () => {
      
       <div className="flex flex-1">
        
-          <AdminSidebar />
+          <AdminSidebar 
+          isOpen={isSidebarOpen} 
+          onClose={() => setIsSidebarOpen(false)}
+          />
         
-        <main className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6">
+        <main className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 overflow-y-auto">
+           <AdminNavbar 
+            onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+            isSidebarOpen={isSidebarOpen} 
+            />
           <div className="max-w-7xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
               

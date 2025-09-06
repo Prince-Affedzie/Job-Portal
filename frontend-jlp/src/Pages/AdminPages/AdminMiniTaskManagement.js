@@ -33,6 +33,8 @@ const AdminManageMiniTasks = () => {
   const [locationType, setLocationType] = useState("");
   const [category, setCategory] = useState("");
   const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
 
   const fetchTasks = async () => {
     try {
@@ -141,9 +143,16 @@ const AdminManageMiniTasks = () => {
 
   return (
     <div className="admin-layout">
-      <AdminSidebar />
+       <AdminSidebar 
+              isOpen={isSidebarOpen} 
+             onClose={() => setIsSidebarOpen(false)}
+              />
       <NotificationCenter/>
       <div className="main-content">
+         <AdminNavbar 
+                onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+                 isSidebarOpen={isSidebarOpen} 
+                 />
         
         <div className="content-area">
           <h2 className="text-xl font-semibold mb-4">Manage MiniTasks</h2>

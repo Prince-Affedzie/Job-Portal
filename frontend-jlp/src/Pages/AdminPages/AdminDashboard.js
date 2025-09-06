@@ -47,9 +47,10 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 export default function AdminDashboard() {
   const { loading, users, jobs,microJobs,reports, alerts, fetchAllUsers, fetchAllJobs,fetchAllMicroJobs,fetchAllReports,fetchRecentAlerts } = useAdminContext();
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
+
   const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
 
   useEffect(() => {
     if (!users || !jobs ||!microJobs || !reports) {
@@ -93,13 +94,6 @@ export default function AdminDashboard() {
     
   ];
 
-  const recentActivities = [
-    { id: 1, user: "John Doe", action: "created new job", time: "2 mins ago", type: "job" },
-    { id: 2, user: "Acme Inc", action: "posted 3 new jobs", time: "15 mins ago", type: "company" },
-    { id: 3, user: "Jane Smith", action: "applied for job", time: "1 hour ago", type: "application" },
-    { id: 4, user: "System", action: "completed daily backup", time: "2 hours ago", type: "system" },
-  ];
-
   const userActivityData = [
     { name: "Mon", users: 120 },
     { name: "Tue", users: 140 },
@@ -122,10 +116,16 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50">
       {/* Admin Layout Structure */}
       <div className="flex">
-        <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <AdminSidebar 
+        isOpen={isSidebarOpen} 
+       onClose={() => setIsSidebarOpen(false)}
+        />
         
         <main className="flex-1 overflow-y-auto">
-          <AdminNavbar />
+        <AdminNavbar 
+        onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+         isSidebarOpen={isSidebarOpen} 
+         />
           
            <NotificationCenter />
 

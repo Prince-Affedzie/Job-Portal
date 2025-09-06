@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { 
   Eye, 
   Edit, 
@@ -34,6 +34,8 @@ const AdminJobManagementDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   
   const totalJobs = jobs.length;
   const openedJobs = jobs.filter((job) => job.status === "Opened");
@@ -186,18 +188,26 @@ const AdminJobManagementDashboard = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Navbar */}
-      
+     
 
       {/* Sidebar + Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
        
-          <AdminSidebar />
+          <AdminSidebar 
+                 isOpen={isSidebarOpen} 
+                onClose={() => setIsSidebarOpen(false)}
+                 />
+                 
           <NotificationCenter/>
        
 
         {/* Main Content */}
         <div className="flex-1 overflow-auto">
+            <AdminNavbar 
+              onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+               isSidebarOpen={isSidebarOpen} 
+               />
           <div className="p-6 space-y-6">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -318,7 +328,7 @@ const AdminJobManagementDashboard = () => {
                         {paginatedData.map((job, index) => (
                           <tr key={job._id || index} className="hover:bg-gray-50 transition-colors">
                             <td className="px-6 py-4">
-                              <div className="flex items-center">
+                              <Link to={`/admin/${job._id}/job_details`} className="flex items-center">
                                 <div>
                                   <div className="text-sm font-medium text-gray-900">{job.title}</div>
                                   <div className="text-sm text-gray-500 flex items-center mt-1">
@@ -326,7 +336,7 @@ const AdminJobManagementDashboard = () => {
                                     {job.deliveryMode|| 'Remote'}
                                   </div>
                                 </div>
-                              </div>
+                              </Link>
                             </td>
                             <td className="px-6 py-4">
                               <div className="text-sm font-medium text-gray-900">{job.company}</div>

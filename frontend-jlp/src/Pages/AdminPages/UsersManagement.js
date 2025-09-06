@@ -152,7 +152,7 @@ const AdminUserManagement = () => {
   const totalUser = users?.length || 0;
   const totalRecruiters = users?.filter((user) => user.role === 'employer') || [];
   const totalEmployers = users?.filter((user) => user.role === 'job_seeker') || [];
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!users) fetchAllUsers();
@@ -282,14 +282,21 @@ const AdminUserManagement = () => {
       
       {/* Sidebar */}
      
-        <AdminSidebar />
+          <AdminSidebar 
+                isOpen={isSidebarOpen} 
+               onClose={() => setIsSidebarOpen(false)}
+                />
+
         <NotificationCenter/>
      
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
       
-
+         <AdminNavbar 
+                onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+                 isSidebarOpen={isSidebarOpen} 
+                 />
         {/* Page Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="p-6 space-y-6">

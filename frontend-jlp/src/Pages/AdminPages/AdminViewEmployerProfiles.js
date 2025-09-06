@@ -13,8 +13,10 @@ const AdminEmployerList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [notification, setNotification] = useState({ show: false, message: "", type: "" });
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const itemsPerPage = 10;
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
 
   // Show notification function
   const showNotification = (message, type = "info") => {
@@ -245,11 +247,18 @@ const AdminEmployerList = () => {
      
       <div className="flex flex-1">
        
-          <AdminSidebar />
+          <AdminSidebar 
+                        isOpen={isSidebarOpen} 
+                       onClose={() => setIsSidebarOpen(false)}
+               />
           <NotificationCenter/>
        
         
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 overflow-y-auto">
+         <AdminNavbar 
+                onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+                 isSidebarOpen={isSidebarOpen} 
+                 />
           <div className="max-w-full">
             {/* Header */}
             <div className="mb-8">
