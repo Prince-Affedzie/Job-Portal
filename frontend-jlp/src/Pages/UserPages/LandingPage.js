@@ -122,7 +122,7 @@ export default function WorkaflowLanding() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveDemo((prev) => (prev + 1) % 4);
-    }, 4000);
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -177,7 +177,7 @@ export default function WorkaflowLanding() {
   const dynamicStats = [
     { value: '15,847', label: 'Active Projects', change: '+12%', icon: <Activity /> },
     { value: '98.9%', label: 'Success Rate', change: '+0.3%', icon: <Target /> },
-    { value: '₵2.4M+', label: 'Paid Out Today', change: '+18%', icon: <TrendingUp /> },
+    { value: '₵20k+', label: 'Paid Out Today', change: '+18%', icon: <TrendingUp /> },
     { value: '847', label: 'New Matches/Hour', change: '+25%', icon: <Zap /> }
   ];
 
@@ -458,7 +458,7 @@ export default function WorkaflowLanding() {
               <Rocket className="w-4 h-4 mr-2 text-blue-600" />
               <span className="text-sm font-medium text-blue-600">Premium Platform</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
               One Platform, <span className="text-blue-600">Two Solutions</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -553,10 +553,10 @@ export default function WorkaflowLanding() {
       </section>
 
       {/* Two-Way Platform Showcase */}
-      <section className="py-20 bg-white">
+      <section className="py-10 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">
               Built for Every Type of <span className="text-blue-600">Work Need</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -753,10 +753,10 @@ export default function WorkaflowLanding() {
       </section>*/}
 
       {/* Interactive Demo Section */}
-<section id="demo" className="py-20 bg-white"> 
+<section id="demo" className="py-10 bg-white"> 
   <div className="container mx-auto px-6">
     <div className="text-center mb-16">
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">See WorkaFlow in Action</h2>
+      <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">See WorkaFlow in Action</h2>
       <p className="text-xl text-gray-600 max-w-2xl mx-auto">
         Whether you're hiring, looking for a job, or just want to earn on the side — WorkaFlow connects you instantly.
       </p>
@@ -828,10 +828,10 @@ export default function WorkaflowLanding() {
 </section>
 
      {/* Enhanced Features Grid */}
-<section id="how-it-works" className="py-20 bg-gray-50">
+<section id="how-it-works" className="py-10 bg-gray-50">
   <div className="container mx-auto px-6">
     <div className="text-center mb-16">
-      <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+      <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">
         Built for <span className="text-blue-600">Everyday Work</span>
       </h2>
       <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -931,10 +931,10 @@ export default function WorkaflowLanding() {
 </section>
 
       {/* Success Stories */}
-      <section id="success-stories" className="py-20 bg-white">
+      <section id="success-stories" className="py-10 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Success Stories</h2>
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">Success Stories</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Real people, real results, powered by meaningful connections.
             </p>
@@ -1029,7 +1029,7 @@ export default function WorkaflowLanding() {
               <span className="text-sm font-medium">Join 127,000+ professionals</span>
             </div>
             
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            <h2 className="text-3xl md:text-6xl font-bold mb-6 leading-tight">
               Ready to Transform Your 
               <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"> Career</span>?
             </h2>
