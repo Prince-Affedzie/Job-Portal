@@ -671,7 +671,7 @@ export default function WorkaflowLanding() {
                 className="px-8 py-4 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-all duration-300 font-medium flex items-center space-x-2"
               >
                 <Zap className="w-2 h-2 md:w-5 h-5" />
-                <span>Post Task</span>
+                <span>Post  Task</span>
               </button>
               <div className="text-gray-500 font-medium">or</div>
               <button 
@@ -1176,24 +1176,24 @@ export default function WorkaflowLanding() {
             </div>
             
             <div>
-              <h4 className="font-bold mb-6 text-lg">For Talent</h4>
+              <h4 className="font-bold mb-6 text-lg">Quick Tasks</h4>
               <ul className="space-y-3">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Job Matching</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Profile Builder</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Skill Development</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Career Coaching</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Career Analytics</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Post a Task</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Browse Gigs</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Find Freelancers</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Task Categories</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing Guide</a></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-bold mb-6 text-lg">For Business</h4>
+              <h4 className="font-bold mb-6 text-lg">Professional Hiring</h4>
               <ul className="space-y-3">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Talent Sourcing</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Smart Hiring</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Team Analytics</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Enterprise Solutions</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Success Tracking</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Post Jobs</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Find Candidates</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Talent Pool</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Salary Insights</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Hiring Tools</a></li>
               </ul>
             </div>
             
