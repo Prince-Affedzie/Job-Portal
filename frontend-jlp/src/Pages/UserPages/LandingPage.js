@@ -1,13 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Search, Briefcase, Users, MessageSquare, CheckCircle, 
+  Search, Briefcase, Users, MessageSquare, CheckCircle, FolderCheck,
   ArrowRight, Menu, X, Calendar, Clock, Globe, ChevronRight,
   Star, Award, Zap, Shield, Handshake, FileText, Mail, Linkedin, Twitter, Github,
   Play, Eye, UserCheck, TrendingUp, Heart, Building, Rocket, Lightbulb,
   Activity, Target, Layers, Code, Palette, Cpu, Database, Wifi,
   BarChart3, PieChart, LineChart, ArrowUp, Filter, Settings
 } from 'lucide-react';
+import employerImage from '../../Assets/Black_Employers_Hiring.jpg'
+import candidates from '../../Assets/unemployed-people-sit-office-lobby.jpg'
+import clients from '../../Assets/clients.jpg'
+import tasker from '../../Assets/tasker.jpg'
+
 
 export default function WorkaflowLanding() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -446,7 +451,7 @@ export default function WorkaflowLanding() {
       </section>
 
       {/* Platform Features Showcase */}
-      <section id="features" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+      <section id="features" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <div className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full mb-4">
@@ -686,7 +691,7 @@ export default function WorkaflowLanding() {
         </div>
       </section>
 
-      {/* Skills Marketplace */}
+      {/* Skills Marketplace 
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
@@ -745,275 +750,185 @@ export default function WorkaflowLanding() {
             ))}
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {/* Interactive Demo Section */}
-      <section id="demo" className="py-20 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Experience the Platform</h2>
-            <p className="text-xl text-indigo-200 max-w-3xl mx-auto">
-              See how our platform creates meaningful connections between talent and opportunities.
-            </p>
-          </div>
+<section id="demo" className="py-20 bg-white"> 
+  <div className="container mx-auto px-6">
+    <div className="text-center mb-16">
+      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">See WorkaFlow in Action</h2>
+      <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        Whether you're hiring, looking for a job, or just want to earn on the side — WorkaFlow connects you instantly.
+      </p>
+    </div>
 
-          <div className="max-w-6xl mx-auto">
-            {/* Demo Controls */}
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-2 mb-8 flex flex-wrap justify-center gap-2">
-              {[
-                { label: 'Smart Matching', icon: <Heart /> },
-                { label: 'Advanced Search', icon: <Search /> },
-                { label: 'Market Analytics', icon: <BarChart3 /> },
-                { label: 'Success Tracking', icon: <Target /> }
-              ].map((demo, index) => (
-                <button 
-                  key={index}
-                  className={`flex items-center space-x-2 px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-                    activeDemo === index 
-                      ? 'bg-white text-indigo-600 shadow-lg' 
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
-                  }`}
-                  onClick={() => setActiveDemo(index)}
-                >
-                  {demo.icon}
-                  <span>{demo.label}</span>
-                </button>
-              ))}
-            </div>
+    {/* Demo Controls */}
+    <div className="bg-gray-50 rounded-2xl p-2 mb-12 grid grid-cols-2 md:grid-cols-4 max-w-3xl mx-auto gap-2">
+      <button 
+        className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${activeDemo === 0 ? 'bg-white shadow-md text-blue-600' : 'text-gray-500'}`}
+        onClick={() => setActiveDemo(0)}
+      >
+        Employers
+      </button>
+      <button 
+        className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${activeDemo === 1 ? 'bg-white shadow-md text-blue-600' : 'text-gray-500'}`}
+        onClick={() => setActiveDemo(1)}
+      >
+        Clients
+      </button>
+      <button 
+        className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${activeDemo === 2 ? 'bg-white shadow-md text-blue-600' : 'text-gray-500'}`}
+        onClick={() => setActiveDemo(2)}
+      >
+        Candidates
+      </button>
+      <button 
+        className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${activeDemo === 3 ? 'bg-white shadow-md text-blue-600' : 'text-gray-500'}`}
+        onClick={() => setActiveDemo(3)}
+      >
+        Taskers
+      </button>
+    </div>
 
-            {/* Demo Screen */}
-            <div className="relative bg-black/20 backdrop-blur-lg rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-              <div className="aspect-video relative">
-                {/* Browser-like header */}
-                <div className="absolute top-0 left-0 right-0 bg-white/10 p-4 flex items-center space-x-2 border-b border-white/10">
-                  <div className="flex space-x-2">
-                    <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                  </div>
-                  <div className="flex-1 bg-white/10 rounded-lg px-4 py-2 text-sm text-white/70">
-                    workaflow.com/dashboard
-                  </div>
-                </div>
+    {/* Demo Screen */}
+    <div className="relative max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-xl">
+      <div className="aspect-video bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
+        {activeDemo === 0 && (
+          <img 
+           src={employerImage}
+            alt="Employers hiring" 
+            className="w-full h-full object-cover"
+          />
+        )}
+        {activeDemo === 1 && (
+          <img 
+            src={clients} 
+            alt="Client posting micro task" 
+            className="w-full h-full object-cover"
+          />
+        )}
+        {activeDemo === 2 && (
+          <img 
+            src={candidates}
+            alt="Candidate searching jobs" 
+            className="w-full h-full object-cover"
+          />
+        )}
+        {activeDemo === 3 && (
+          <img 
+            src={tasker}
+            alt="Tasker completing job" 
+            className="w-full h-full object-cover"
+          />
+        )}
+      </div>
+     
+    </div>
+  </div>
+</section>
 
-                {/* Demo Content */}
-                <div className="pt-16 p-8 h-full">
-                  {activeDemo === 0 && (
-                    <div className="grid grid-cols-2 gap-8 h-full">
-                      <div className="space-y-4">
-                        <h3 className="text-2xl font-bold">Smart Talent Matching</h3>
-                        <div className="space-y-3">
-                          {['React Developer', 'UI/UX Designer', 'Product Manager'].map((role, idx) => (
-                            <div key={idx} className="flex items-center space-x-3 p-3 bg-white/10 rounded-lg">
-                              <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-                                <Users className="w-6 h-6" />
-                              </div>
-                              <div>
-                                <div className="font-medium">{role}</div>
-                                <div className="text-sm text-white/70">98% match • Available now</div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-center">
-                        <div className="relative">
-                          <div className="w-48 h-48 border-4 border-blue-400 rounded-full flex items-center justify-center">
-                            <Heart className="w-16 h-16 text-blue-400" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+     {/* Enhanced Features Grid */}
+<section id="how-it-works" className="py-20 bg-gray-50">
+  <div className="container mx-auto px-6">
+    <div className="text-center mb-16">
+      <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        Built for <span className="text-blue-600">Everyday Work</span>
+      </h2>
+      <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        Workaflow connects you with trusted taskers to get things done — fast, safe, and reliable.
+      </p>
+    </div>
 
-                  {activeDemo === 1 && (
-                    <div className="h-full flex items-center justify-center">
-                      <div className="text-center space-y-6">
-                        <Search className="w-16 h-16 text-blue-400 mx-auto" />
-                        <h3 className="text-3xl font-bold">Advanced Search</h3>
-                        <div className="bg-white/10 rounded-2xl p-6 max-w-md">
-                          <input 
-                            type="text"
-                            placeholder="Try: Senior React Developer in NYC"
-                            className="w-full bg-transparent text-white placeholder-white/50 text-lg outline-none"
-                          />
-                          <div className="mt-4 text-sm text-white/70">
-                            Found 1,247 matches in 0.3 seconds
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {activeDemo === 2 && (
-                    <div className="grid grid-cols-2 gap-8 h-full">
-                      <div className="space-y-4">
-                        <h3 className="text-2xl font-bold">Market Analytics</h3>
-                        <div className="space-y-4">
-                          <div className="bg-white/10 rounded-lg p-4">
-                            <div className="flex justify-between mb-2">
-                              <span>Project Success Rate</span>
-                              <span className="text-green-400 font-bold">94.7%</span>
-                            </div>
-                            <div className="w-full h-2 bg-white/20 rounded-full">
-                              <div className="w-[94.7%] h-full bg-green-400 rounded-full"></div>
-                            </div>
-                          </div>
-                          <div className="bg-white/10 rounded-lg p-4">
-                            <div className="flex justify-between mb-2">
-                              <span>Timeline Accuracy</span>
-                              <span className="text-blue-400 font-bold">89.2%</span>
-                            </div>
-                            <div className="w-full h-2 bg-white/20 rounded-full">
-                              <div className="w-[89.2%] h-full bg-blue-400 rounded-full"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-center">
-                        <BarChart3 className="w-32 h-32 text-purple-400" />
-                      </div>
-                    </div>
-                  )}
-
-                  {activeDemo === 3 && (
-                    <div className="h-full flex items-center justify-center">
-                      <div className="text-center space-y-6">
-                        <Target className="w-16 h-16 text-green-400 mx-auto" />
-                        <h3 className="text-3xl font-bold">Success Tracking</h3>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-green-400/20 rounded-xl p-4">
-                            <div className="text-2xl font-bold text-green-400">High</div>
-                            <div className="text-sm">Success Probability</div>
-                          </div>
-                          <div className="bg-blue-400/20 rounded-xl p-4">
-                            <div className="text-2xl font-bold text-blue-400">3 weeks</div>
-                            <div className="text-sm">Est. Completion</div>
-                          </div>
-                          <div className="bg-purple-400/20 rounded-xl p-4">
-                            <div className="text-2xl font-bold text-purple-400">₵12k</div>
-                            <div className="text-sm">Projected Value</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Play Button Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <button className="bg-white/20 backdrop-blur-lg hover:bg-white/30 transition-all rounded-full p-6 shadow-2xl pointer-events-auto group">
-                  <Play className="w-8 h-8 text-white group-hover:scale-110 transition-transform" fill="white" />
-                </button>
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {[
+        {
+          icon: <Heart className="w-8 h-8" />,
+          title: "Trusted Taskers",
+          description: "All taskers are verified and rated, so you can hire with confidence every time.",
+          color: "from-blue-500 to-indigo-600",
+          stats: "1000+ verified taskers",
+          image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1770&q=80"
+        },
+        {
+          icon: <Shield className="w-8 h-8" />,
+          title: "Secure Payments",
+          description: "Money is held in escrow until work is completed and approved. No risks, no delays.",
+          color: "from-green-500 to-emerald-600",
+          stats: "Zero payment issues",
+          image: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&w=1770&q=80"
+        },
+        {
+          icon: <Zap className="w-8 h-8" />,
+          title: "Quick Bookings",
+          description: "Post a task and get matched with available taskers in minutes — not days.",
+          color: "from-yellow-500 to-orange-600",
+          stats: "Avg. 10 min response",
+          image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1770&q=80"
+        },
+        {
+          icon: <Target className="w-8 h-8" />,
+          title: "Flexible Categories",
+          description: "From errands to events, digital work to delivery — hire experts for any task.",
+          color: "from-purple-500 to-pink-600",
+          stats: "50+ service types",
+          image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=2015&q=80"
+        },
+        {
+          icon: <Globe className="w-8 h-8" />,
+          title: "Local + Remote",
+          description: "Hire for on-site tasks in your city or remote digital work from anywhere.",
+          color: "from-indigo-500 to-blue-600",
+          stats: "Nationwide coverage",
+          image: "https://images.unsplash.com/photo-1522199710521-72d69614c702?auto=format&fit=crop&w=1784&q=80"
+        },
+        {
+          icon: <Activity className="w-8 h-8" />,
+          title: "Real Reviews",
+          description: "See ratings and feedback from real clients before hiring your next tasker.",
+          color: "from-red-500 to-rose-600",
+          stats: "4.8★ avg rating",
+          image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1770&q=80"
+        }
+      ].map((feature, index) => (
+        <div 
+          key={index} 
+          className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden hover:-translate-y-2"
+        >
+          <div className="relative h-48 overflow-hidden">
+            <img 
+              src={feature.image} 
+              alt={feature.title}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-80`}></div>
+            <div className="absolute top-4 left-4">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-lg rounded-xl flex items-center justify-center text-white">
+                {feature.icon}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Enhanced Features Grid */}
-      <section id="how-it-works" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Built for <span className="text-blue-600">Modern Work</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Every feature is designed to create meaningful connections and successful outcomes.
-            </p>
+            <div className="absolute bottom-4 right-4">
+              <div className="bg-white/20 backdrop-blur-lg rounded-lg px-3 py-1">
+                <span className="text-white text-sm font-medium">{feature.stats}</span>
+              </div>
+            </div>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Heart className="w-8 h-8" />,
-                title: "Smart Matching",
-                description: "Our algorithm analyzes skills, experience, and preferences to create perfect matches.",
-                color: "from-blue-500 to-indigo-600",
-                stats: "98.7% accuracy",
-                image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              },
-              {
-                icon: <Shield className="w-8 h-8" />,
-                title: "Secure Platform",
-                description: "Advanced encryption ensures your data and payments are completely secure.",
-                color: "from-green-500 to-emerald-600",
-                stats: "Zero breaches",
-                image: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              },
-              {
-                icon: <Zap className="w-8 h-8" />,
-                title: "Fast Collaboration",
-                description: "Real-time collaboration tools with project management and progress tracking.",
-                color: "from-yellow-500 to-orange-600",
-                stats: "3x faster delivery",
-                image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              },
-              {
-                icon: <Target className="w-8 h-8" />,
-                title: "Success Tracking",
-                description: "Monitor project success probability and get suggestions for optimizations.",
-                color: "from-purple-500 to-pink-600",
-                stats: "94% accuracy",
-                image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2015&q=80"
-              },
-              {
-                icon: <Globe className="w-8 h-8" />,
-                title: "Global Network",
-                description: "Access talent from around the world with timezone optimization and cultural matching.",
-                color: "from-indigo-500 to-blue-600",
-                stats: "195+ countries",
-                image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1784&q=80"
-              },
-              {
-                icon: <Activity className="w-8 h-8" />,
-                title: "Analytics Dashboard",
-                description: "Real-time insights with recommendations to optimize your work strategy.",
-                color: "from-red-500 to-rose-600",
-                stats: "Real-time insights",
-                image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              }
-            ].map((feature, index) => (
-              <div 
-                key={index} 
-                className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden hover:-translate-y-2"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={feature.image} 
-                    alt={feature.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-80`}></div>
-                  <div className="absolute top-4 left-4">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-lg rounded-xl flex items-center justify-center text-white">
-                      {feature.icon}
-                    </div>
-                  </div>
-                  <div className="absolute bottom-4 right-4">
-                    <div className="bg-white/20 backdrop-blur-lg rounded-lg px-3 py-1">
-                      <span className="text-white text-sm font-medium">{feature.stats}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-8">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed mb-4">{feature.description}</p>
-                  
-                  <button className="flex items-center space-x-2 text-blue-600 font-medium group-hover:translate-x-2 transition-transform">
-                    <span>Learn More</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
+          <div className="p-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+              {feature.title}
+            </h3>
+            <p className="text-gray-600 leading-relaxed mb-4">{feature.description}</p>
+            
+            <button className="flex items-center space-x-2 text-blue-600 font-medium group-hover:translate-x-2 transition-transform">
+              <span>Learn More</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* Success Stories */}
       <section id="success-stories" className="py-20 bg-white">
