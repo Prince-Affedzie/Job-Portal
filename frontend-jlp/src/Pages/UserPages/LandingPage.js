@@ -684,7 +684,7 @@ export default function WorkaflowLanding() {
                 className="px-8 py-4 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-all duration-300 font-medium flex items-center space-x-2"
               >
                 <Building className="w-2 h-2 md:w-5 h-5" />
-                <span>Hire Professionals</span>
+                <span>Hire</span>
               </button>
             </div>
           </div>
