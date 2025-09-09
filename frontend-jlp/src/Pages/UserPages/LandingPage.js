@@ -122,7 +122,7 @@ export default function WorkaflowLanding() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveDemo((prev) => (prev + 1) % 4);
-    }, 10000);
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
 
