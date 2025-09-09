@@ -795,21 +795,21 @@ export default function WorkaflowLanding() {
       <div className="aspect-video bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
         {activeDemo === 0 && (
           <img 
-           src={employerImage}
+           src="https://res.cloudinary.com/duv3qvvjz/image/upload/v1757418302/Black_Employers_Hiring_eco7rm.jpg"
             alt="Employers hiring" 
             className="w-full h-full object-cover"
           />
         )}
         {activeDemo === 1 && (
           <img 
-            src={clients} 
+            src="https://res.cloudinary.com/duv3qvvjz/image/upload/v1757418336/clients_nsedgm.jpg"
             alt="Client posting micro task" 
             className="w-full h-full object-cover"
           />
         )}
         {activeDemo === 2 && (
           <img 
-            src={candidates}
+            src="https://res.cloudinary.com/duv3qvvjz/image/upload/v1757418369/unemployed-people-sit-office-lobby_itvbsm.jpg"
             alt="Candidate searching jobs" 
             className="w-full h-full object-cover"
           />
