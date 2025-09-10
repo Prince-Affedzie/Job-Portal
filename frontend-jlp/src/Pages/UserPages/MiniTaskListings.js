@@ -306,7 +306,7 @@ const MiniTaskPage = () => {
           </div>
 
           {/* Card Footer */}
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+          <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-t border-gray-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1">

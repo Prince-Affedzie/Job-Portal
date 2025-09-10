@@ -141,11 +141,9 @@
   
   /* Task List (One Row per Task) */
   .mini-task-list {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
+   
+     flex: 1;
+   
   }
   
   /* Task Card (Full Width Row) */
