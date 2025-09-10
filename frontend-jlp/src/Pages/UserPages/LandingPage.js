@@ -275,7 +275,7 @@ export default function WorkaflowLanding() {
       </header>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 text-white overflow-hidden">
+      <section ref={heroRef} className="relative min-h-screen flex items-center bg-gradient-to-br from-blue-600 to-blue-800 text-white overflow-hidden">
         {/* Animated Particles */}
         <div className="absolute inset-0">
           {particles.map(particle => (
