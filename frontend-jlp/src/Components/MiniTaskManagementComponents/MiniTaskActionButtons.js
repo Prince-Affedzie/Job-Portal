@@ -25,6 +25,7 @@ const TaskActions = ({
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   // Close dropdown when clicking outside
   useEffect(() => {

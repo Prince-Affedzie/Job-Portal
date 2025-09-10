@@ -1,4 +1,4 @@
-import { FaEdit, FaSave, FaTimes, FaSpinner } from "react-icons/fa";
+import { FaEdit, FaSave, FaTimes, FaSpinner, FaPlus, FaBriefcase, FaTrash } from "react-icons/fa";
 
 const WorkExperienceSection = ({
   editSection,
@@ -10,34 +10,42 @@ const WorkExperienceSection = ({
   saveChanges,
   isProcessing
 }) => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden mt-8">
-    <div className="flex items-center justify-between p-6 border-b border-gray-200">
-      <h3 className="text-xl font-semibold text-gray-800">Work Experience</h3>
+  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-5">
+    <div className="flex items-center justify-between p-6 border-b border-gray-100">
+      <div>
+        <h3 className="text-xl font-semibold text-gray-800">Work Experience</h3>
+        <p className="text-sm text-gray-500 mt-1">Your professional journey and accomplishments</p>
+      </div>
       {editSection !== "experience" ? (
         <button 
           onClick={() => setEditSection("experience")}
-          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="inline-flex items-center px-4 py-2.5 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <FaEdit className="mr-2" />
-          Edit
+          Manage Experience
         </button>
       ) : (
-        <div className="flex space-x-2">
+        <div className="flex space-x-3">
           <button
             onClick={saveChanges}
             disabled={isProcessing}
-            className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-75"
+            className="inline-flex items-center px-3 py-2.0 md:px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-75 disabled:cursor-not-allowed"
           >
             {isProcessing ? (
-              <FaSpinner className="animate-spin mr-2" />
+              <>
+                <FaSpinner className="animate-spin mr-2" />
+                Saving...
+              </>
             ) : (
-              <FaSave className="mr-2" />
+              <>
+                <FaSave className="mr-2" />
+                Save Changes
+              </>
             )}
-            Save
           </button>
           <button
             onClick={() => setEditSection(null)}
-            className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            className="inline-flex items-center px-3 py-2.0 md:px-4 py-2.5 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <FaTimes className="mr-2" />
             Cancel
@@ -48,84 +56,104 @@ const WorkExperienceSection = ({
 
     <div className="p-6">
       {editSection === "experience" ? (
-        <div className="space-y-4">
-          <div className="space-y-3">
+        <div className="space-y-6">
+          <div className="space-y-4">
             {formData.workExperience?.length > 0 ? (
               formData.workExperience.map((work, index) => (
-                <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                <div key={index} className="border border-gray-200 p-5 rounded-lg hover:bg-gray-50 transition-colors">
                   <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-800">{work.jobTitle}</p>
-                      <p className="text-sm text-gray-600">{work.company}</p>
-                      <p className="text-xs text-gray-500 mb-2">
-                        {new Date(work.startDate).toLocaleDateString()} - 
-                        {work.endDate ? new Date(work.endDate).toLocaleDateString() : "Present"}
-                      </p>
-                      {work.description && (
-                        <p className="text-sm text-gray-700 mt-2 whitespace-pre-line">
-                          {work.description}
+                    <div className="flex items-start space-x-4 flex-1">
+                      <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg mt-1">
+                        <FaBriefcase className="text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900">{work.jobTitle}</h4>
+                        <p className="text-gray-700">{work.company}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {new Date(work.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - 
+                          {work.endDate ? new Date(work.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : "Present"}
                         </p>
-                      )}
+                        {work.description && (
+                          <div className="mt-3">
+                            <p className="text-sm text-gray-600 whitespace-pre-line bg-gray-50 p-3 rounded-md">
+                              {work.description}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <button 
                       type="button"
-                      className="text-red-600 hover:text-red-800 ml-4"
+                      className="text-gray-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition-colors ml-4"
                       onClick={() => handleConfirmDelete("workExperience", index)}
+                      aria-label="Delete work experience"
                     >
-                      ✕
+                      <FaTrash className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No work experience added yet.</p>
+              <div className="text-center py-8 border border-dashed border-gray-300 rounded-lg">
+                <FaBriefcase className="mx-auto text-gray-400 text-3xl mb-2" />
+                <p className="text-gray-500">No work experience added yet</p>
+                <p className="text-sm text-gray-400 mt-1">Add your first professional experience</p>
+              </div>
             )}
           </div>
+          
           <button 
             type="button"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            className="w-full inline-flex items-center justify-center px-4 py-3 border border-dashed border-gray-300 rounded-lg text-gray-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-200"
             onClick={() => {
               setModalType("work");
               setModalOpen(true);
             }}
           >
-            + Add Work Experience
+            <FaPlus className="mr-2" />
+            Add Work Experience
           </button>
         </div>
       ) : (
-        <div>
+        <div className="space-y-4">
           {formData.workExperience?.length > 0 ? (
-            <div className="space-y-4">
-              {formData.workExperience.map((work, index) => (
-                <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                  <p className="font-medium text-gray-800">{work.jobTitle}</p>
-                  <p className="text-sm text-gray-600">{work.company}</p>
-                  <p className="text-xs text-gray-500 mb-2">
-                    {new Date(work.startDate).toLocaleDateString()} - 
-                    {work.endDate ? new Date(work.endDate).toLocaleDateString() : "Present"}
-                  </p>
-                 {
-              work.description && (
-         <div className="mt-2">
-            <h4 className="text-sm font-medium text-gray-700">Role Description:</h4>
-       <p className="text-sm text-gray-600 whitespace-pre-line">
-         {work.description.length > 100 ? (
-          <>
-            {work.description.slice(0, 100).trim()}...
-            
-          </>
-        ) : (
-          work.description
-        )}
-      </p>
-    </div>
-  )
-}
+            formData.workExperience.map((work, index) => (
+              <div key={index} className="border border-gray-100 p-5 rounded-lg hover:bg-gray-50 transition-colors">
+                <div className="flex items-start space-x-4">
+                  <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg">
+                    <FaBriefcase className="text-blue-600 text-lg" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900">{work.jobTitle}</h4>
+                    <p className="text-gray-700">{work.company}</p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {new Date(work.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - 
+                      {work.endDate ? new Date(work.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : "Present"}
+                    </p>
+                    {work.description && (
+                      <div className="mt-3">
+                        <p className="text-sm text-gray-600 whitespace-pre-line">
+                          {work.description.length > 150 ? (
+                            <>
+                              {work.description.slice(0, 150).trim()}...
+                              <span className="text-blue-600 ml-1 cursor-pointer hover:underline">Read more</span>
+                            </>
+                          ) : (
+                            work.description
+                          )}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))
           ) : (
-            <p className="text-gray-500">No work experience available.</p>
+            <div className="text-center py-8">
+              <FaBriefcase className="mx-auto text-gray-300 text-4xl mb-3" />
+              <p className="text-gray-500">No work experience available</p>
+              <p className="text-sm text-gray-400 mt-1">Add your professional experience to showcase your career journey</p>
+            </div>
           )}
         </div>
       )}
