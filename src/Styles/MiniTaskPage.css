@@ -1,0 +1,394 @@
+.mini-task-list-page{
+  background-color: #fff;
+}
+.mini-task-list-container {
+    font-family: Arial, sans-serif;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: #fff;
+    
+  }
+  
+  /* Hero Section */
+  .mini-task-banner {
+    text-align: center;
+    padding: 50px 20px;
+    background: linear-gradient(to right, #0056b3, #008cff);
+    color: white;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+  .mini-task-banner h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+  
+  .mini-task-banner p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  
+  .mini-task-browse-btn {
+    background: white;
+    color: #007bff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  /* Header */
+  .mini-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f4f4f4;
+  }
+  
+  .mini-task-search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 5px;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .mini-task-search-icon {
+    margin: 0 10px;
+  }
+  
+  .mini-task-search-bar input {
+    border: none;
+    outline: none;
+    padding: 8px;
+    flex: 1;
+  }
+  
+  .mini-task-filter-toggle {
+    background: #0056b3;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    display: none; /* Hidden on larger screens */
+  }
+  
+  /* Main Content */
+  .mini-task-content {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Sidebar */
+ .mini-task-sidebar {
+  width: 250px;
+  height: 250px;
+  background: #0a2540;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.mini-task-sidebar h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #374151;
+}
+
+.mini-task-sidebar select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  color: #374151;
+}
+
+.mini-task-sidebar select:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-color: #2563eb;
+}
+
+.mini-task-close-btn {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 20px;
+  cursor: pointer;
+  display: none; /* Hidden by default on large screens */
+  transition: color 0.2s ease;
+}
+
+.mini-task-close-btn:hover {
+  color: #374151;
+}
+
+.mini-task-close-btn:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+  
+  /* Task List (One Row per Task) */
+  .mini-task-list {
+   
+     flex: 1;
+   
+  }
+  
+  /* Task Card (Full Width Row) */
+  .mini-task-card {
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /*border-left: 5px solid #007bff;*/
+  }
+
+  .mini-task-card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+  
+  .mini-task-details {
+    flex: 1;
+  }
+  
+  .mini-task-title {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .mini-task-description {
+    color: #555;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .mini-task-meta {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #666;
+  }
+  
+  .mini-task-budget {
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  
+  
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .mini-task-header {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .mini-task-search-bar {
+      max-width: 100%;
+    }
+    
+  
+    .mini-task-filter-toggle {
+      width: 100%;
+      margin-top: 10px;
+      text-align: center;
+      justify-content: center;
+      display:flex
+    }
+  
+    .mini-task-content {
+      flex-direction: column;
+    }
+  
+    .mini-task-sidebar {
+      width: 100%;
+      height: auto;
+      position: fixed;
+      top: 0;
+      left: -100%;
+      transition: left 0.3s ease-in-out;
+      z-index: 1000;
+    }
+  
+    .mini-task-sidebar.show-sidebar {
+      left: 0;
+    }
+  
+    .mini-task-close-btn {
+      display: block;
+      margin-bottom: 10px;
+    }
+  
+    .mini-task-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .mini-task-meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  .mini-task-category-cards {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 16px 12px;
+  background: #f8f9fa;
+  scroll-behavior: smooth;
+  gap: 16px;
+  border-radius: 10px;
+}
+
+/* Individual card styling */
+.mini-task-category-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex: 0 0 auto; /* Prevent shrinking */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.mini-task-category-card:hover {
+  background-color: #e9ecef;
+}
+
+.mini-task-category-card.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .mini-task-category-cards {
+    gap: 12px;
+    padding: 12px 10px;
+  }
+
+  .mini-task-category-card {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+}
+
+/* Optional scrollbar styling */
+.mini-task-category-cards::-webkit-scrollbar {
+  height: 6px;
+}
+
+.mini-task-category-cards::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.mini-task-category-cards::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+  /* Style for the Apply Now button */
+.mini-task-apply-btn {
+  background-color: #28a745; /* Green color for Apply Now */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+  /* Space between buttons */
+}
+
+/* Hover effect for the Apply Now button */
+.mini-task-apply-btn:hover {
+  background-color: #218838; /* Darker shade for hover */
+  transform: translateY(-2px);
+}
+
+/* Active effect for the Apply Now button */
+.mini-task-apply-btn:active {
+  background-color: #1e7e34; /* Darker shade on click */
+  transform: translateY(0);
+}
+
+/* Focus state for accessibility */
+.mini-task-apply-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5); /* Focus ring */
+}
+
+/* Style for the View Details button */
+.mini-task-view-btn {
+  background-color: #007bff; /* Blue color for View Details */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+  margin-right: 10px;
+}
+
+/* Hover effect for the View Details button */
+.mini-task-view-btn:hover {
+  background-color: #0056b3; /* Darker shade for hover */
+  transform: translateY(-2px);
+}
+
+/* Active effect for the View Details button */
+.mini-task-view-btn:active {
+  background-color: #00408d; /* Darker shade on click */
+  transform: translateY(0);
+}
+
+/* Focus state for accessibility */
+.mini-task-view-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Focus ring */
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  .mini-task-apply-btn,
+  .mini-task-view-btn {
+    width: 60%; /* Buttons take full width on smaller screens */
+    padding: 12px 0; /* Increase padding for easier tap targets */
+    font-size: 1.1rem; /* Slightly larger text for readability */
+    margin-right: 0; /* Remove right margin */
+    margin-bottom: 10px; /* Add space below buttons */
+  }
+
+  /* Optional: Stack the buttons vertically */
+  .mini-task-apply-btn + .mini-task-view-btn {
+    margin-top: 10px; /* Add margin between stacked buttons */
+  }
+}

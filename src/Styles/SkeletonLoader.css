@@ -1,0 +1,52 @@
+.skeleton-card {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-left: 5px solid #ccc;
+    animation: pulse 1.5s infinite;
+  }
+  
+  .skeleton-title {
+    width: 60%;
+    height: 15px;
+    background: #ddd;
+    border-radius: 4px;
+  }
+  
+  .skeleton-text {
+    width: 80%;
+    height: 12px;
+    background: #ddd;
+    border-radius: 4px;
+  }
+  
+  .skeleton-meta {
+    width: 50%;
+    height: 10px;
+    background: #ddd;
+    border-radius: 4px;
+  }
+  
+  .skeleton-button {
+    width: 100px;
+    height: 30px;
+    background: #ccc;
+    border-radius: 5px;
+  }
+  
+  @keyframes pulse {
+    0% {
+      background-color: #f4f4f4;
+    }
+    50% {
+      background-color: #e0e0e0;
+    }
+    100% {
+      background-color: #f4f4f4;
+    }
+  }
+  

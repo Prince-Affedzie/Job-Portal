@@ -1,0 +1,118 @@
+.notifications-page {
+  max-width: 900px;
+  margin: 80px auto;
+  padding: 2rem;
+  background: linear-gradient(to bottom right, #f0f4f8, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  min-height: 100vh;
+  transition: all 0.3s ease-in-out;
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #dbeafe;
+}
+
+.notifications-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+.notifications-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.notification-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: #ffffff;
+  border-left: 4px solid #3b82f6;
+  border-radius: 10px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: slideIn 0.3s ease;
+}
+
+.notification-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  background: #f0f9ff;
+}
+
+.notification-page-icon {
+  color: #2563eb;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.notification-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-message {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 0.4rem;
+}
+
+.notification-time {
+  font-size: 0.85rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.no-notifications {
+  text-align: center;
+  margin-top: 4rem;
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+/* Animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .notifications-page {
+    padding: 1rem;
+    margin: 70px 10px;
+  }
+
+  .notifications-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .notification-message {
+    font-size: 1rem;
+  }
+
+  .notification-page-icon {
+    font-size: 1.5rem;
+  }
+}

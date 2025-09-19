@@ -1,0 +1,214 @@
+/* Employer Sidebar */
+.employer-sidebar {
+  width: 250px;
+  height: 100vh;
+  background: #f8f9fa;
+  color: #333;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease, width 0.3s ease;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  z-index: 100;
+}
+
+/* Collapsed Sidebar */
+.employer-sidebar.collapsed {
+  width: 70px;
+  padding-top: 20px;
+}
+
+.employer-sidebar.collapsed .employer-sidebar-links a {
+  justify-content: center;
+  padding: 15px 0;
+}
+
+.employer-icon {
+  font-size: 1.1rem; /* Adjusts icon size */
+  margin-right: 10px; /* Spacing between icon and text */
+  color: #444; /* Softer icon color */
+  transition: color 0.3s ease;
+}
+
+.employer-sidebar-links a:hover .employer-icon {
+  color: #1e40af; /* Highlight on hover */
+}
+.employer-sidebar-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  color: #333;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background-color 0.2s ease;
+}
+
+
+.employer-sidebar.collapsed .employer-sidebar-links a span,
+.employer-sidebar.collapsed .employer-sidebar-links a .text-label {
+  display: none;
+}
+
+/* Sidebar open by default on large screens */
+@media (min-width: 769px) {
+  .employer-sidebar {
+    transform: translateX(0);
+  }
+}
+
+/* Sidebar hidden on small screens */
+@media (max-width: 768px) {
+  .employer-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .employer-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Sidebar Links */
+.employer-sidebar-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  color: #333;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.employer-sidebar-links a:hover {
+  background: #fff;
+}
+
+/* Menu Button (Mobile) */
+.employer-menu-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  color: #1e40af;
+  font-size: 24px;
+  cursor: pointer;
+  display: none;
+  z-index: 110;
+}
+
+/* Show toggle button only on mobile */
+@media (max-width: 768px) {
+  .employer-menu-toggle {
+    display: block;
+  }
+}
+
+/* Close Button */
+.employer-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: none;
+}
+
+/* Show close button only on mobile */
+@media (max-width: 768px) {
+  .employer-close-btn {
+    display: block;
+  }
+}
+
+/* Sidebar Backdrop */
+.employer-sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  display: none;
+}
+
+/* Show backdrop only when sidebar is open on mobile */
+@media (max-width: 768px) {
+  .employer-sidebar.open ~ .employer-sidebar-backdrop {
+    display: block;
+  }
+}
+
+/* Desktop Collapse Toggle Button */
+.employer-sidebar-toggle-desktop {
+  position: absolute;
+  top: 15px;
+  right: -18px;
+  width: 36px;
+  height: 36px;
+  background: #36454F;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 200;
+  border: 1px solid #ccc;
+  font-size: 18px;
+}
+
+/* Show only on desktop */
+@media (max-width: 768px) {
+  .employer-sidebar-toggle-desktop {
+    display: none;
+  }
+}
+
+/* Collapsed Sidebar */
+.employer-sidebar.collapsed {
+  width: 70px;
+}
+
+.employer-sidebar.collapsed .employer-sidebar-links a {
+  justify-content: center;
+  padding: 15px 0;
+}
+
+.employer-sidebar.collapsed .text-label {
+  display: none;
+}
+
+/* Collapse Toggle Button (Desktop only) */
+.employer-sidebar-toggle-desktop {
+  position: absolute;
+  top: 15px;
+  right: -18px;
+  width: 36px;
+  height: 36px;
+  background: #36454F;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 200;
+  border: 1px solid #ccc;
+  font-size: 18px;
+}
+
+/* Hide toggle on small screens */
+@media (max-width: 768px) {
+  .employer-sidebar-toggle-desktop {
+    display: none;
+  }
+}

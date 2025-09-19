@@ -1,0 +1,265 @@
+/* MiniTaskForm.css - Unique classnames */
+.mtask-page-wrapper {
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.mtask-primary-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.mtask-header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.mtask-main-title {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.mtask-subtitle {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+.mtask-form-element {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mtask-input-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mtask-dual-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.mtask-field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mtask-label-main {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.95rem;
+}
+
+.mtask-label-helper {
+  font-size: 0.8rem;
+  color: #95a5a6;
+  font-weight: normal;
+  font-style: italic;
+}
+
+.mtask-text-input, 
+.mtask-select-input, 
+.mtask-textarea-input,
+.mtask-date-input {
+  padding: 0.8rem;
+  border: 1px solid #dfe4ea;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mtask-text-input:focus, 
+.mtask-select-input:focus, 
+.mtask-textarea-input:focus,
+.mtask-date-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.mtask-textarea-input {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.mtask-character-counter {
+  align-self: flex-end;
+  font-size: 0.8rem;
+  color: #7f8c8d;
+}
+
+.mtask-count-warning {
+  color: #e74c3c;
+}
+
+.mtask-toggle-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.mtask-toggle-btn {
+  flex: 1;
+  padding: 0.8rem;
+  background: #f1f2f6;
+  border: 1px solid #dfe4ea;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.mtask-toggle-btn.mtask-toggle-active {
+  background: #3498db;
+  color: white;
+  border-color: #2980b9;
+}
+
+.mtask-address-container {
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+  margin-top: 0.5rem;
+}
+
+.mtask-section-title {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.mtask-skills-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mtask-skills-input-group .mtask-text-input {
+  flex: 1;
+}
+
+.mtask-add-skill-button {
+  padding: 0 1.5rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.mtask-add-skill-button:hover {
+  background: #2980b9;
+}
+
+.mtask-skills-tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  min-height: 36px;
+}
+
+.mtask-no-skills-message {
+  color: #95a5a6;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.mtask-skill-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 0.4rem 0.8rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+}
+
+.mtask-remove-skill-btn {
+  background: none;
+  border: none;
+  color: #1565c0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mtask-submit-button {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+}
+
+.mtask-submit-button:hover {
+  background: #27ae60;
+}
+
+.mtask-submit-button:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mtask-primary-container {
+    width: 92%;
+    padding: 1.5rem;
+  }
+  
+  .mtask-dual-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .mtask-primary-container {
+    width: 95%;
+    padding: 1.2rem;
+    margin: 1rem auto;
+  }
+  
+  .mtask-main-title {
+    font-size: 1.5rem;
+  }
+  
+  .mtask-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .mtask-field-label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+  
+  .mtask-label-helper {
+    font-size: 0.75rem;
+  }
+  
+  .mtask-toggle-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

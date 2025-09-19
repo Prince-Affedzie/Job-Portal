@@ -1,0 +1,643 @@
+/* EditProfile.css - Matching EmployerProfile styling pattern */
+
+.emp-profile__page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.emp-profile__container {
+  flex: 1;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.emp-profile__title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Image Section */
+.emp-profile__image-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.emp-profile__avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f0f0f0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.emp-profile__upload-wrapper {
+  margin-top: 0.5rem;
+}
+
+.emp-profile__file-input {
+  display: none;
+}
+
+.emp-profile__upload-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.emp-profile__upload-btn:hover {
+  background-color: #0069d9;
+}
+
+.emp-profile__upload-btn--secondary {
+  background-color: #6c757d;
+}
+
+.emp-profile__upload-btn--secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Sections Styling */
+/* Updated sections styling for horizontal row layout */
+.emp-profile__sections-wrapper {
+  display: flex;
+  flex-direction: row; /* Changed to row for horizontal layout */
+  gap: 1.5rem;
+  width: 100%;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.emp-profile__section {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+  flex: 1; /* Equal width distribution */
+  min-width: 300px; /* Minimum width before wrapping */
+  margin-bottom: 0;
+}
+
+/* Alternative: Fixed width sections */
+.emp-profile__sections-wrapper--fixed {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.emp-profile__sections-wrapper--fixed .emp-profile__section {
+  width: calc(50% - 0.75rem); /* Two columns */
+  min-width: 300px;
+}
+
+/* Three column layout */
+.emp-profile__sections-wrapper--three-col .emp-profile__section {
+  width: calc(33.333% - 1rem); /* Three columns */
+  min-width: 280px;
+}
+
+/* Two column layout - more explicit */
+.emp-profile__sections-wrapper--two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.emp-profile__sections-wrapper--two-col .emp-profile__section {
+  min-width: 0; /* Allow grid items to shrink */
+}
+
+/* Professional job portal style layout */
+.emp-profile__sections-wrapper--portal {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Left section larger, right section smaller */
+  gap: 2rem;
+}
+
+.emp-profile__sections-wrapper--portal .emp-profile__section--main {
+  /* Main content section (left) */
+}
+
+.emp-profile__sections-wrapper--portal .emp-profile__section--sidebar {
+  /* Sidebar content (right) */
+}
+
+/* Responsive behavior */
+@media (max-width: 1024px) {
+  .emp-profile__sections-wrapper,
+  .emp-profile__sections-wrapper--fixed,
+  .emp-profile__sections-wrapper--three-col {
+    flex-direction: column; /* Stack vertically on tablets */
+  }
+  
+  .emp-profile__sections-wrapper--two-col,
+  .emp-profile__sections-wrapper--portal {
+    grid-template-columns: 1fr; /* Single column on tablets */
+  }
+  
+  .emp-profile__section {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .emp-profile__sections-wrapper {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .emp-profile__section {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.emp-profile__section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.emp-profile__section-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #495057;
+  font-weight: 600;
+}
+
+.emp-profile__edit-icon,
+.emp-profile__save-icon,
+.emp-profile__cancel-icon {
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.emp-profile__edit-icon {
+  color: #6c757d;
+}
+
+.emp-profile__edit-icon:hover {
+  color: #007bff;
+}
+
+.emp-profile__save-icon {
+  color: #28a745;
+  margin-right: 1rem;
+}
+
+.emp-profile__save-icon:hover {
+  color: #218838;
+}
+
+.emp-profile__cancel-icon {
+  color: #dc3545;
+}
+
+.emp-profile__cancel-icon:hover {
+  color: #c82333;
+}
+
+.emp-profile__action-icons {
+  display: flex;
+  align-items: center;
+}
+
+.emp-profile__section-content {
+  padding: 1.5rem;
+}
+
+/* Form Groups */
+.emp-profile__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.emp-profile__input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.emp-profile__label {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.emp-profile__input,
+.emp-profile__textarea {
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.emp-profile__input:focus,
+.emp-profile__textarea:focus {
+  border-color: #80bdff;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.emp-profile__input--disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+.emp-profile__textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Details Display */
+.emp-profile__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.emp-profile__detail-item {
+  margin: 0;
+  padding: 0.5rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.emp-profile__detail-item:last-child {
+  border-bottom: none;
+}
+
+.emp-profile__detail-label {
+  font-weight: 600;
+  color: #495057;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.emp-profile__detail-value {
+  color: #6c757d;
+  flex: 1;
+}
+
+/* Skills Styling */
+.emp-profile__skills-list,
+.emp-profile__education-list,
+.emp-profile__work-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.emp-profile__skill-item,
+.emp-profile__education-item,
+.emp-profile__work-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+.emp-profile__skill-text,
+.emp-profile__education-details,
+.emp-profile__work-details {
+  flex: 1;
+}
+
+.emp-profile__skill-remove,
+.emp-profile__education-remove,
+.emp-profile__work-remove {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.emp-profile__skill-remove:hover,
+.emp-profile__education-remove:hover,
+.emp-profile__work-remove:hover {
+  background-color: #f8d7da;
+}
+
+.emp-profile__skills-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.emp-profile__skill-badge {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+}
+
+.emp-profile__add-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.emp-profile__add-btn:hover {
+  background-color: #218838;
+}
+
+.emp-profile__no-items {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Detail Cards */
+.emp-profile__detail-card {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  border-left: 3px solid #007bff;
+}
+
+.emp-profile__detail-title {
+  font-weight: 600;
+  color: #343a40;
+  margin: 0 0 0.25rem 0;
+}
+
+.emp-profile__detail-subtitle {
+  color: #495057;
+  margin: 0 0 0.25rem 0;
+}
+
+.emp-profile__detail-meta {
+  color: #6c757d;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Modals */
+.emp-profile__modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.emp-profile__modal,
+.emp-profile__delete-modal {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.emp-profile__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.emp-profile__modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.emp-profile__modal-close {
+  cursor: pointer;
+  color: #6c757d;
+  transition: color 0.2s;
+}
+
+.emp-profile__modal-close:hover {
+  color: #dc3545;
+}
+
+.emp-profile__modal-form {
+  padding: 1.5rem;
+}
+
+.emp-profile__modal-form-group {
+  margin-bottom: 1rem;
+}
+
+.emp-profile__modal-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.emp-profile__modal-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.emp-profile__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.emp-profile__modal-cancel,
+.emp-profile__modal-save {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.emp-profile__modal-cancel {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  color: #6c757d;
+}
+
+.emp-profile__modal-cancel:hover {
+  background-color: #e9ecef;
+}
+
+.emp-profile__modal-save {
+  background-color: #007bff;
+  border: none;
+  color: white;
+}
+
+.emp-profile__modal-save:hover {
+  background-color: #0069d9;
+}
+
+/* Delete confirmation modal */
+.emp-profile__delete-modal {
+  padding: 1.5rem;
+  text-align: center;
+  max-width: 400px;
+}
+
+.emp-profile__delete-message {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #343a40;
+}
+
+.emp-profile__delete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.emp-profile__delete-confirm,
+.emp-profile__delete-cancel {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.emp-profile__delete-confirm {
+  background-color: #dc3545;
+  border: none;
+  color: white;
+}
+
+.emp-profile__delete-confirm:hover {
+  background-color: #c82333;
+}
+
+.emp-profile__delete-cancel {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  color: #6c757d;
+}
+
+.emp-profile__delete-cancel:hover {
+  background-color: #e9ecef;
+}
+
+/* Loading state */
+.emp-profile__loading {
+  text-align: center;
+  padding: 2rem;
+}
+
+.emp-profile__loading-spinner {
+  margin-bottom: 1rem;
+}
+
+.emp-profile__spinner-icon {
+  font-size: 2rem;
+  color: #007bff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.emp-profile__loading-text {
+  color: #6c757d;
+}
+
+/* Error display */
+.emp-profile__error {
+  text-align: center;
+  padding: 2rem;
+  color: #dc3545;
+}
+
+.emp-profile__retry-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
+}
+
+.emp-profile__retry-btn:hover {
+  background-color: #0069d9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .emp-profile__container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .emp-profile__title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .emp-profile__detail-label {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+  
+  .emp-profile__detail-value {
+    width: 100%;
+  }
+  
+  .emp-profile__modal,
+  .emp-profile__delete-modal {
+    width: 95%;
+  }
+}

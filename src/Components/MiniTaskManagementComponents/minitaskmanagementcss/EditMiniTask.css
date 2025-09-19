@@ -1,0 +1,138 @@
+/* Sliding panel */
+.edit-minitask-panel {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 420px;
+  max-width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+  padding: 2rem 1.5rem;
+  transition: left 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Show panel */
+.edit-minitask-panel.show {
+  left: 0;
+}
+
+/* Close (X) button */
+.edit-minitask-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #555;
+}
+
+.edit-minitask-close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  padding: 0.2rem;
+}
+
+/* Heading */
+.edit-minitask-panel h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+/* Form */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Label */
+label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Inputs, Textarea, Selects */
+textarea,
+select,
+.input {
+  padding: 0.85rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s, background-color 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+textarea[name="description"] {
+  min-height: 140px;
+  resize: vertical;
+}
+
+/* Focus state */
+textarea:focus,
+select:focus,
+.input:focus {
+  border-color: #007bff;
+  background-color: #ffffff;
+  outline: none;
+}
+
+/* Buttons */
+form button[type="submit"],
+form button.edit-modal-close-btn {
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+form button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+form button.edit-modal-close-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+form button.edit-modal-close-btn:hover {
+  background-color: #c82333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .edit-minitask-panel {
+    width: 100%;
+    left: -100%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .edit-minitask-panel.show {
+    left: 0;
+  }
+
+  form button[type="submit"],
+  form button.edit-modal-close-btn {
+    width: 100%;
+    font-size: 1rem;
+  }
+}

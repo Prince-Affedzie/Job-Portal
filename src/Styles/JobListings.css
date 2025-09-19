@@ -1,0 +1,450 @@
+/* General Container */
+.job-listings-container {
+    font-family: Arial, sans-serif;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 10px;
+  }
+  
+  /* 🔹 Stunning Banner */
+  .banner {
+    background: linear-gradient(to right, #0056b3, #008cff);
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+  }
+  
+  .banner h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+  
+  .banner p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .browse-jobs-btn {
+    background: white;
+    color: #0056b3;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .browse-jobs-btn:hover {
+    background: #f0f0f0;
+  }
+  
+  /* 🔹 Header Section */
+  .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 8px;
+    border-radius: 5px;
+    flex: 1;
+  }
+  
+  .search-bar input {
+    border: none;
+    outline: none;
+    padding: 8px;
+    flex: 1;
+    width: 100%;
+  }
+  
+  .search-icon-jl{
+    margin-right: 8px;
+  }
+  
+  .filter-toggle-btn {
+    background: #0056b3;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .filter-toggle-btn .icon {
+    margin-right: 5px;
+  }
+  
+  /* 🔹 Layout Adjustments */
+  .content-container {
+    display: flex;
+    margin-top: 20px;
+    gap: 20px;
+  }
+  
+  /* 🔹 Sidebar (Filters) */
+  .job-listings-sidebar {
+  width: 250px;
+  height: 300px;
+  background: #0a2540;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.job-listings-sidebar h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #374151;
+}
+
+.job-listings-sidebar select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  color: #374151;
+}
+
+.job-listings-sidebar select:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-color: #2563eb;
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 20px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #374151;
+  background-color: #f3f4f6;
+}
+
+.close-button:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  color: #374151;
+}
+
+.close-button:active {
+  background-color: #e5e7eb;
+  transform: scale(0.95);
+}
+
+/* Icon styling if using an icon font or SVG */
+.close-button .icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+  
+  /*  Job Listings */
+  .job-listings {
+    flex: 1;
+  }
+  
+  .job-card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .job-card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .job-header h3 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: bold;
+  }
+  
+  .job-type {
+    background: #eee;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  .company-name {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .job-listing-description {
+    font-size: 14px;
+    color: #666;
+    background-color: #fff;
+  }
+  
+  .job-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .apply-button {
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* 🔹 Responsive Styles */
+  @media (max-width: 1024px) {
+    .content-container {
+      flex-direction: column;
+    }
+  
+    .job-listings-sidebar {
+      display: none;
+      position: absolute;
+      width: 250px;
+      left: 0;
+      top: 0;
+      height: 300px;
+      background: #0a2540;
+      z-index: 1000;
+      box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+  
+    .job-listings-sidebar.show {
+      display: block;
+    }
+  
+    .filter-toggle-btn {
+      display: flex;
+      align-items: center;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .job-header {
+      flex-direction: column;
+    }
+  
+    .search-bar {
+      width: 100%;
+    }
+  
+    .filter-toggle-btn {
+      width: 100%;
+      margin-top: 10px;
+      text-align: center;
+      justify-content: center;
+      display: flex;
+    }
+  
+    .job-card {
+      padding: 12px;
+    }
+  
+    .job-meta {
+      flex-direction: column;
+      gap: 5px;
+    }
+  
+    .banner h1 {
+      font-size: 24px;
+    }
+  
+    .banner p {
+      font-size: 16px;
+    }
+  }
+
+  /* Job Tags Styling */
+.job-listings-job-tags {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px; /* Space between tags */
+}
+
+.job-meta span{
+
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.tag {
+  background-color: #007bff; /* Blue color */
+  color: #fff; /* White text */
+  font-size: 12px;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 15px; /* Rounded edges */
+  display: inline-block;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.tag:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  cursor: pointer;
+}
+
+/* Skeleton Loader Styles */
+.skeleton {
+  background: #f3f3f3;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 16px;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f7f7f7 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.skeleton-text {
+  width: 80%;
+  height: 14px;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f7f7f7 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.skeleton-text.short {
+  width: 50%;
+}
+
+.skeleton-meta {
+  width: 40%;
+  height: 12px;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f7f7f7 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.skeleton-button {
+  width: 30%;
+  height: 30px;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f7f7f7 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.category-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+}
+
+.category-scroll-wrapper::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.category-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.category-scroll-bar {
+  display: inline-flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+.category-scroll-bar button {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border: none;
+  background-color: #ffff;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.category-scroll-bar button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .category-scroll-bar button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-scroll-bar button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}

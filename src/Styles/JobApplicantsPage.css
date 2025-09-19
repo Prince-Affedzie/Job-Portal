@@ -1,0 +1,638 @@
+
+.job-applicants-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.employer-dashboard-container {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+/* Sidebar styling - visible on desktop screens */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px; /* Adjust this width as needed */
+  height: 100vh;
+  background-color: #fff;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}
+
+/* Update existing content area to account for sidebar */
+.employer-dashboard-content {
+  flex: 1;
+  margin-left: 250px; /* Same as sidebar width */
+  padding: 1.5rem;
+  background-color: var(--neutral-bg);
+  transition: margin-left 0.3s ease;
+}
+
+/* Keep existing header styling and enhance it */
+.applicants-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.applicants-page-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.applicants-page-header button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.applicants-page-header button:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Mobile and tablet responsiveness */
+@media screen and (max-width: 1024px) {
+  /* Hide sidebar on tablets and smaller screens */
+  .sidebar {
+    transform: translateX(-100%);
+    visibility: hidden;
+  }
+  
+  /* Remove left margin when sidebar is hidden */
+  .employer-dashboard-content {
+    margin-left: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* Mobile specific adjustments */
+  .employer-dashboard-content {
+    padding: 1rem;
+  }
+  
+  .applicants-page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  
+  .applicants-page-header h2 {
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 1.25rem;
+  }
+  
+  .applicants-page-header button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* Small mobile screens */
+  .employer-dashboard-content {
+    padding: 0.75rem;
+  }
+  
+  .applicants-page-header h2 {
+    font-size: 1.125rem;
+  }
+}
+
+/* Optional: Add a mobile menu toggle if you want to show/hide sidebar on mobile */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1024px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+}
+
+/* Overlay for mobile sidebar (if you want to implement mobile sidebar) */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* Mobile sidebar animation (if implementing mobile sidebar) */
+@media screen and (max-width: 1024px) {
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+}
+
+/* Loading and Empty States */
+.loading-container, .no-data-container, .no-applicants {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.no-data-icon, .empty-state-icon {
+  font-size: 3rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.back-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+}
+
+/* Job Summary */
+.job-details-summary {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+}
+
+.job-details-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.job-details-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.job-status {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  background: var(--light-gray);
+  color: var(--text-dark);
+}
+
+.job-status.active {
+  background: #10b981;
+  color: white;
+}
+
+.job-status.closed {
+  background: #ef4444;
+  color: white;
+}
+
+.job-status.pending {
+  background: #f59e0b;
+  color: white;
+}
+
+.job-details-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.job-meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.meta-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+/* Controls */
+.applicants-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-box {
+  position: relative;
+  flex-grow: 1;
+  max-width: 400px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+  border: 1px solid #ccc;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+}
+
+.status-filter select,
+.sort-button {
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  background: white;
+  cursor: pointer;
+}
+
+.sort-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sort-button.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* Status Stats */
+.applicant-status-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  justify-content: center; /* center on all screen sizes */
+}
+
+.status-stat {
+  background: #f1f5f9;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  font-size: 0.875rem;
+  white-space: nowrap; /* keep label and count on one line */
+  border: none;
+}
+
+/* Active State */
+.status-stat.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Count Badge */
+.status-count {
+  background: white;
+  color: var(--primary-color);
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+}
+
+/* Mobile-Specific Adjustments */
+@media (max-width: 480px) {
+  .status-stat {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .applicant-status-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+}
+
+
+/* Applicant Card */
+.applicants-list {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.emp-applicant-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease;
+}
+
+.emp-applicant-card:hover {
+  transform: translateY(-4px);
+}
+
+.emp-applicant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.emp-applicant-identity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.emp-applicant-avatar img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--light-gray);
+}
+
+.emp-applicant-primary-info h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.emp-applicant-primary-info p {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.applicant-status-badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  background-color: #e0e7ff;
+  color: #1e3a8a;
+}
+
+/* Contact & Skills */
+.emp-applicant-contact-info,
+.emp-applicant-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.emp-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+}
+
+.emp-skill-tag {
+  background-color: var(--light-gray);
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  white-space: nowrap;
+}
+
+/* Metrics */
+.emp-applicant-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.emp-applicant-metric {
+  background-color: var(--neutral-bg);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.emp-applicant-metric:hover {
+  background-color: #f0f4ff;
+}
+
+.emp-metric-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.emp-metric-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Match Score */
+.match-score-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--primary-color);
+}
+
+/* Actions */
+.emp-applicant-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--light-gray);
+}
+
+.emp-applicant-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.emp-action-btn.emp-view-profile-btn {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.emp-action-btn.emp-view-profile-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.emp-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  cursor: pointer;
+}
+
+.emp-checkbox-label input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--primary-color);
+}
+
+/* Pagination */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.pagination-controls button {
+  background-color: var(--light-gray);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+.pagination-controls button.active {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .applicants-page-header,
+  .job-details-meta,
+  .applicants-controls,
+  .emp-applicant-header,
+  .emp-applicant-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .applicants-page-header button,
+  .search-box,
+  .status-filter,
+  .sort-controls {
+    width: 100%;
+  }
+  
+  .emp-applicant-avatar img {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .emp-applicant-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .status-stat {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}

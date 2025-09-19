@@ -1,0 +1,29 @@
+/* Only keeping minimal custom CSS for specific styling needs */
+/* This file can replace your original Applicants.css */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Responsive adjustments for smallest screens */
+@media (max-width: 640px) {
+  .flex-col-mobile {
+    flex-direction: column;
+  }
+  
+  .full-width-mobile {
+    width: 100%;
+  }
+}
+
+/* These media queries ensure the sidebar doesn't overlap content on mobile */
+@media (max-width: 768px) {
+  .ml-64 {
+    margin-left: 0;
+  }
+}

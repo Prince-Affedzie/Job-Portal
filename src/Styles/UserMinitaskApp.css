@@ -1,0 +1,566 @@
+/* UserMinitaskApp.css */
+/* Main container styles */
+.my-mini-applications-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem 3rem;
+  color: #333;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+/* Page header section */
+.header-with-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 1rem;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+.refresh-btn {
+  background-color: #f8fafc;
+  color: #4f46e5;
+  border: 1px solid #4f46e5;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Filter and sort section */
+.mini-filter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.filter-section, .sort-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.filter-section span, .sort-section span {
+  font-weight: 600;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.filter-icon {
+  color: #6366f1;
+}
+
+.mini-filter-buttons, .sort-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mini-filter-buttons button, .sort-buttons button {
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.mini-filter-buttons button:hover, .sort-buttons button:hover {
+  border-color: #6366f1;
+  color: #4f46e5;
+}
+
+.mini-filter-buttons button.active, .sort-buttons button.active {
+  background-color: #4f46e5;
+  color: white;
+  border-color: #4f46e5;
+}
+
+@media (min-width: 768px) {
+  .mini-filter-container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* Action buttons container */
+.action-buttons-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  border: 1px dashed #d1d5db;
+}
+
+.select-all-btn, .delete-selected-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.select-all-btn {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.select-all-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.delete-selected-btn {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.delete-selected-btn:hover {
+  background-color: #fecaca;
+}
+
+.delete-selected-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delete-icon {
+  color: #ef4444;
+}
+
+/* Loading section */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(99, 102, 241, 0.1);
+  border-left-color: #6366f1;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Mini task list styles */
+.mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mini-list-item {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #f0f0f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.mini-list-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Task header with checkbox */
+.task-header-with-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.task-checkbox {
+  padding-top: 0.25rem;
+}
+
+.task-checkbox input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: #4f46e5;
+}
+
+/* Task header section */
+.mini-list-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.mini-list-top h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+.mini-list-category {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Status indicators */
+.mini-status {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  min-width: 100px;
+}
+
+.status-completed {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+.status-in-progress {
+  background-color: #dbeafe;
+  color: #3b82f6;
+}
+
+.status-applied {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.status-selected {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+
+.status-not-selected {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-closed {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.deadline-indicator {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.deadline-passed {
+  color: #ef4444;
+}
+
+.deadline-soon {
+  color: #f59e0b;
+}
+
+/* Task details section */
+.mini-list-bottom {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.mini-list-bottom div {
+  display: flex;
+  flex-direction: column;
+}
+
+.mini-list-bottom strong {
+  color: #4b5563;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+}
+
+/* Skills tags */
+.mini-skills-container {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.mini-skill-tag {
+ 
+  color: #4f46e5;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Task action buttons */
+.mini-list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.view-details-btn, .submit-proof-btn, .view-submissions-btn, .accept-task-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.view-details-btn {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.view-details-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.submit-proof-btn {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.submit-proof-btn:hover {
+  background-color: #4338ca;
+}
+
+.view-submissions-btn {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+  border: 1px solid #c7d2fe;
+}
+
+.view-submissions-btn:hover {
+  background-color: #c7d2fe;
+}
+
+.accept-task-btn {
+  background-color: #10b981;
+  color: white;
+}
+
+.accept-task-btn:hover {
+  background-color: #059669;
+}
+
+.accept-task-btn.processing {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.acceptance-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #10b981;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.pagination button {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-first, .pagination-last {
+  font-size: 0.85rem;
+}
+
+.page-indicator {
+  padding: 0 0.8rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Confirmation dialog */
+.confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.confirmation-dialog {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.confirmation-dialog h3 {
+  margin-top: 0;
+  color: #1f2937;
+  font-size: 1.25rem;
+}
+
+.confirmation-dialog p {
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancel-btn, .confirm-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.cancel-btn {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.cancel-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.confirm-btn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background-color: #dc2626;
+}
+
+.confirm-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* Work submission modal styling would go here */
+/* Adding responsive styles */
+@media (max-width: 768px) {
+  .mini-list-top {
+    flex-direction: column;
+  }
+  
+  .mini-list-top > div:last-child {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+  }
+  
+  .mini-list-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .mini-list-actions button {
+    width: 100%;
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+  }
+}
+
+/* For dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  /* Define dark mode styles here if needed */
+}

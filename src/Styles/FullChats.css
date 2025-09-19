@@ -1,0 +1,206 @@
+/* Custom Chat Styles - Add this to a new CSS file and import it */
+/* Or add these styles to your global CSS file */
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Overall Chat Container */
+  .str-chat {
+    height: 100%;
+    font-family: 'Inter', 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  
+  /* Fix message input padding */
+  .str-chat__input-flat {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  
+  /* Message list styling */
+  .str-chat__list {
+    padding: 1rem;
+    background-color: #f9fafb;
+  }
+  
+  /* Message styling */
+  .str-chat__message-simple {
+    margin-bottom: 3rem;
+  }
+  
+  .str-chat__message-simple__content {
+    background-color: white;
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .str-chat__message-simple--me .str-chat__message-simple__content {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .str-chat__message-simple--me .str-chat__message-simple__content p {
+    color: white;
+  }
+  
+  .str-chat__message-simple__actions {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Avatar styling */
+  .str-chat__avatar {
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  
+  /* Loading indicator */
+  .str-chat__loading-indicator {
+    padding: 1rem;
+  }
+  
+  /* Message Timestamp */
+  .str-chat__message-simple-timestamp {
+    font-size: 0.7rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+  
+  /* Thread styling */
+  .str-chat__thread {
+    border-left: 1px solid #e5e7eb;
+    background-color: white;
+  }
+  
+  .str-chat__thread-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem;
+  }
+  
+  .str-chat__thread-start {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  /* Channel list styling */
+  .str-chat__channel-list {
+    background-color: white;
+  }
+  
+  /* Channel preview hover effect */
+  .str-chat__channel-preview-messenger:hover {
+    background-color: #f3f4f6;
+  }
+  
+  /* Active channel styling */
+  .str-chat__channel-preview-messenger--active {
+    background-color: #e5e7eb;
+  }
+  
+  /* Emoji picker */
+  .str-chat__emoji-picker {
+    height: 350px;
+  }
+  
+  /* Message reaction */
+  .str-chat__reaction-list {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .str-chat__reaction-item {
+    border: 1px solid #e5e7eb;
+  }
+  
+  .str-chat__reaction-item--selected {
+    background: #dbeafe;
+    border-color: #93c5fd;
+  }
+  
+  /* Input box enhancements */
+  .str-chat__textarea textarea {
+    background-color: #f3f4f6;
+    border-radius: 999px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    transition: all 0.2s ease;
+  }
+  
+  .str-chat__textarea textarea:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 0 2px #3b82f6;
+    outline: none;
+  }
+  
+  /* Thread Reply Button */
+  .str-chat__thread-button {
+    font-size: 0.75rem;
+    color: #4b5563;
+    margin-top: 0.25rem;
+  }
+  
+  .str-chat__thread-button:hover {
+    color: #3b82f6;
+  }
+  
+  /* Custom Loading Animation */
+  @keyframes pulsate {
+    0% { opacity: 0.5; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0.5; transform: scale(0.95); }
+  }
+  
+  .animate-pulse-custom {
+    animation: pulsate 1.5s infinite ease-in-out;
+  }
+  
+  /* Empty State */
+  .empty-state {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+  }
+  
+  .empty-state__icon {
+    width: 64px;
+    height: 64px;
+    background-color: #dbeafe;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: #3b82f6;
+  }
+  
+  /* Responsive design fixes */
+  @media (max-width: 768px) {
+    .str-chat__thread {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      background: white;
+    }
+    
+    .str-chat__thread-header {
+      display: flex;
+      align-items: center;
+    }
+    
+    .str-chat__square-button {
+      margin-right: 0.5rem;
+    }
+  }
