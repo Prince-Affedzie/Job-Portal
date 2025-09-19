@@ -143,6 +143,35 @@ const Navbar = () => {
 
           {/* Right: Notification and dashboard icons */}
           <div className="flex items-center space-x-2 md:space-x-4">
+             {/* Desktop Navigation - Hidden on mobile */}
+         <div style={{
+       display: windowWidth >= 768 ? 'block' : 'none',
+      }} className="md:block">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-start space-x-8">
+            <Link 
+              to="/mini_task/listings" 
+              className={`px-3 py-2 rounded-md text-sm font-medium ${
+                isActive('mini_task') 
+                  ? 'text-blue-600 bg-blue-50' 
+                  : 'text-white hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              Micro Jobs
+            </Link>
+            <Link 
+              to="/messages" 
+              className={`px-3 py-2 rounded-md text-sm font-medium ${
+                isActive('messages') 
+                  ? 'text-blue-600 bg-blue-50' 
+                  : 'text-white hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              Chats
+            </Link>
+          </div>
+        </div>
+      </div>
             {/* Notifications */}
             <div className="relative" ref={notificationsRef}>
               <button 
@@ -359,33 +388,7 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* Desktop Navigation - Hidden on mobile */}
-      <div className="hidden md:block bg-blue-700 border-t border-blue-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-start space-x-8">
-            <Link 
-              to="/mini_task/listings" 
-              className={`px-3 py-2 rounded-md text-sm font-medium ${
-                isActive('mini_task') 
-                  ? 'text-blue-600 bg-blue-50' 
-                  : 'text-white hover:text-gray-900 hover:bg-gray-50'
-              }`}
-            >
-              Micro Jobs
-            </Link>
-            <Link 
-              to="/messages" 
-              className={`px-3 py-2 rounded-md text-sm font-medium ${
-                isActive('messages') 
-                  ? 'text-blue-600 bg-blue-50' 
-                  : 'text-white hover:text-gray-900 hover:bg-gray-50'
-              }`}
-            >
-              Chats
-            </Link>
-          </div>
-        </div>
-      </div>
+     
     </nav>
   );
 };
