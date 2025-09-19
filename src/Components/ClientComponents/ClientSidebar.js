@@ -11,7 +11,8 @@ import {
   FaHome,
   FaPlus,
   FaCog,
-  FaSignOutAlt
+  FaSignOutAlt,
+  
 } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { logoutUser } from '../../APIS/API';
@@ -29,10 +30,10 @@ export const ClientSidebar = ({ isOpen, toggleSidebar }) => {
     { path: '/client/microtask_dashboard', id: 'dashboard', label: 'Dashboard', icon: <FaHome /> },
     { path: '/manage/mini_tasks', id: 'tasks', label: 'My Tasks', icon: <FaBriefcase /> },
     { path: '/messages', id: 'chats', label: 'Chats', icon: <FaComments /> },
-    { path: '/view/all_notifications', id: 'notifications', label: 'Notifications', icon: < FaBell /> },
+    { path: '/client/view/all_notifications', id: 'notifications', label: 'Notifications', icon: < FaBell /> },
     //{ path: '/client/payments', id: 'payments', label: 'Payments', icon: <FaMoneyBillWave /> },
     { path: '/post/mini_task', id: 'post', label: 'Post Task', icon: <FaPlus /> },
-    { path: '/client/profile', id: 'profile', label: 'Profile', icon: <FaCog /> },
+    { path: '/client/profile', id: 'profile', label: 'Profile', icon: <FaUser/> },
   ];
 
   // Set active item based on current path

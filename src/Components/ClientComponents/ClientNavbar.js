@@ -65,7 +65,7 @@ export const ClientNavbar = ({ toggleSidebar }) => {
               className="lg:hidden p-2 rounded-md text-white hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
               aria-label="Toggle sidebar"
             >
-              <FaBars className="h-6 w-6" />
+              <FaBars className="h-6 w-6 mr-4" />
             </button>
             
            <Link to="/client/microtask_dashboard" className="navbar-logo">
@@ -146,7 +146,7 @@ export const ClientNavbar = ({ toggleSidebar }) => {
                     </div>
                     <div className="px-4 py-2 border-t border-gray-200">
                       <Link 
-                        to="/view/all_notifications" 
+                        to="/client/view/all_notifications" 
                         className="text-sm text-blue-600 hover:text-blue-800"
                         onClick={() => setShowNotifications(false)}
                       >

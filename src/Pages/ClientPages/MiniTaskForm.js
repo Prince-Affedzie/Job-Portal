@@ -137,7 +137,7 @@ const PostMiniTask = () => {
           {/* Enhanced Header Section */}
           <div className="text-center mb-8 lg:mb-12">
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 leading-tight">
               Post a New <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Task</span>
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -146,7 +146,7 @@ const PostMiniTask = () => {
           </div>
           
           {/* Enhanced Form Container */}
-          <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl max-w-5xl mx-auto  border border-white/20 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
             <div className="p-6 sm:p-8 lg:p-12">
               <form onSubmit={handleSubmit} className="space-y-8">
                 
@@ -675,7 +675,7 @@ const PostMiniTask = () => {
         </div>
       </main>
 
-      <Footer />
+      {/*<Footer />*/}
       <ProcessingOverlay show={isProcessing} message="Submitting your task..." />
       
       {/* Custom styles for animations */}

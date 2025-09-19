@@ -74,7 +74,9 @@ import EmployerPostEligibilityGate from './Services/auth/EmployerJobPostEligibil
 import AdminViewMiniTaskApplicants from './Pages/AdminPages/MiniTaskApplicants'
 import ActivityPage from './Pages/AdminPages/RecentActivities'
 import FreelancerSubmissions from  './Pages/UserPages/TaskSubmissions'
+
 import ClientViewSubmissions from './Pages/ClientPages/ClientViewTaskSubmissions'
+import ClientNotificationPage from './Pages/ClientPages/ClientNotificationPage'
 import  ChatPage from './Pages/UserPages/ChatPage'
 
 
@@ -109,6 +111,8 @@ function App() {
       <Route path='/user/modify/profile' element={<UserProvider><RouteProtection><NotificationProvider><EditProfile/></NotificationProvider></RouteProtection></UserProvider>}/>
       <Route path="/chat/all_chats" element={<ChatProvider><FullChatPage/></ChatProvider>}/>
       <Route path='/view/all_notifications' element={<UserProvider><NotificationProvider><NotificationsPage/></NotificationProvider></UserProvider>}/>
+      <Route path='/client/view/all_notifications' element={<UserProvider><NotificationProvider><ClientNotificationPage/></NotificationProvider></UserProvider>}/>
+
       <Route path='/mini_task/applications' element={<UserProvider><NotificationProvider><MyMiniTaskApplications/></NotificationProvider></UserProvider>}/>
       <Route
         path="/manage-mini-tasks/:taskId/applicants"

@@ -19,6 +19,7 @@ import { ClientNavbar } from '../../Components/ClientComponents/ClientNavbar';
 import { ClientSidebar } from '../../Components/ClientComponents/ClientSidebar';
 //import { markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, deleteAllNotifications } from '../../APIS/API';
 import {markNotificationAsRead}  from '../../APIS/API';
+import {deleteBulkNotifications,deleteNotification} from '../../APIS/notificationApi'
 import { userContext } from "../../Context/FetchUser";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -46,28 +47,14 @@ const NotificationsPage = () => {
     new Date(b.createdAt) - new Date(a.createdAt)
   );
 
-  // Mark a notification as read
- {/* const handleMarkAsRead = async (id) => {
-    try {
-      const response = await markNotificationAsRead(id);
-      if (response.status === 200) {
-        refreshNotifications();
-        toast.success('Notification marked as read');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to mark notification as read');
-    }
-  };
-
-  // Mark all notifications as read
+ 
  
   // Delete a notification
   const handleDeleteNotification = async (id) => {
     try {
       const response = await deleteNotification(id);
       if (response.status === 200) {
-        refreshNotifications();
+       // refreshNotifications();
         toast.success('Notification deleted');
       }
     } catch (err) {
@@ -85,9 +72,10 @@ const NotificationsPage = () => {
 
     try {
       setIsProcessing(true);
-      const response = await deleteAllNotifications({ ids: selectedNotifications });
+      console.log(selectedNotifications)
+      const response = await deleteBulkNotifications(selectedNotifications);
       if (response.status === 200) {
-        refreshNotifications();
+        //refreshNotifications();
         setSelectedNotifications([]);
         setShowDeleteConfirm(false);
         toast.success(`${selectedNotifications.length} notification(s) deleted`);
@@ -98,7 +86,7 @@ const NotificationsPage = () => {
     } finally {
       setIsProcessing(false);
     }
-  };*/}
+  };
 
 
 
@@ -285,7 +273,7 @@ const NotificationsPage = () => {
               </div>
               
               <div className="flex items-center gap-3">
-                {/*<label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={selectedNotifications.length === sortedNotifications.length && sortedNotifications.length > 0}
@@ -293,7 +281,7 @@ const NotificationsPage = () => {
                     className="rounded text-blue-600 focus:ring-blue-500"
                   />
                   Select all
-                </label>*/}
+                </label>
               </div>
             </div>
           </div>
@@ -310,7 +298,7 @@ const NotificationsPage = () => {
                 }`}
               >
                 {/* Selection checkbox */}
-                {/*<input
+                <input
                   type="checkbox"
                   checked={selectedNotifications.includes(note._id)}
                   onChange={() => toggleSelection(note._id)}
@@ -350,26 +338,16 @@ const NotificationsPage = () => {
                   )}
                 </div>
                 
-                {/* Action buttons 
+                
                 <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                  {!note.read && (
-                    <button
-                    
-                      className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
-                      title="Mark as read"
-                    >
-                      <FaCheck className="w-4 h-4" />
-                    </button>
-                  )}
-                  
                   <button
-                  
+                    onClick = {()=>handleDeleteNotification(note._id)}
                     className="p-1.5 text-gray-400 hover:text-red-600 transition-colors"
                     title="Delete notification"
                   >
                     <FaTrash className="w-4 h-4" />
                   </button>
-                </div>*/}
+                </div>
               </div>
             ))
           ) : (
@@ -417,7 +395,7 @@ const NotificationsPage = () => {
                 Cancel
               </button>
               <button
-                /*onClick={handleDeleteSelected}*/
+                onClick={handleDeleteSelected}
                 disabled={isProcessing}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50"
               >
