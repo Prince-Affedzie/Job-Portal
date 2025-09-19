@@ -11,6 +11,7 @@ export const updateMiniTask = (Id, data) => API.put(`/api/h1/v2/edit/mini_task/$
 export const assignApplicantToTask = (taskId, applicantId) => API.put(`/api/h1/v2/assign/mini_task/${taskId}/${applicantId}`);
 export const getYourAppliedMiniTasks = () => API.get("/api/h1/v2/get_your_applied/mini_tasks");
 export const getMiniTaskInfo = (Id) => API.get(`/api/h1/v2/get_min_task_info/${Id}`);
+export const clientGetTaskInfo =(Id)=>API.get(`/api/h1/v2/get_task/details/${Id}`)
 export const acceptMiniTaskAssignment = (Id) => API.put(`/api/h1/v2/accept_task_assignment/${Id}`);
 export const rejectMiniTaskAssignment = (Id) => API.put(`/api/h1/v2/reject_task_assignment/${Id}`);
 export const removeAppliedMiniTaskFromDashboard = (Ids) => API.put('/api/h1/v2/remove_mini_task_from_dashboard', Ids);

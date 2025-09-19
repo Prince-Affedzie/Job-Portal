@@ -4,14 +4,15 @@ import {
   FaMapMarkerAlt, FaUser, FaUsers, FaCalendarAlt, FaTag,
   FaCheckCircle, FaTimesCircle, FaShare, FaBookmark,
   FaChevronDown, FaChevronUp, FaEnvelope, FaPhone, FaGlobe,
-  FaUserFriends // Added icon for applicants
+  FaUserFriends, FaUserCheck, FaInfoCircle
 } from "react-icons/fa";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ClientNavbar } from '../../Components/ClientComponents/ClientNavbar';
-import { getMiniTaskInfo } from "../../APIS/API";
+import { clientGetTaskInfo } from "../../APIS/microTaskApi";
 import { ClientSidebar } from '../../Components/ClientComponents/ClientSidebar';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MarkDoneSwitch from "../../Components/MiniTaskManagementComponents/MarkDoneButton";
 
 const MicroTaskDetailPageForClient = () => {
   const { Id } = useParams();
@@ -25,7 +26,7 @@ const MicroTaskDetailPageForClient = () => {
   useEffect(() => {
     const getTask = async () => {
       try {
-        const response = await getMiniTaskInfo(Id);
+        const response = await clientGetTaskInfo(Id);
         if (response.status === 200) {
           setTask(response.data);
         }
@@ -51,14 +52,15 @@ const MicroTaskDetailPageForClient = () => {
     });
   };
 
- 
-
   const getStatusColor = (status) => {
     switch(status) {
       case 'Pending': return 'bg-yellow-100 text-yellow-800';
       case 'Approved': return 'bg-green-100 text-green-800';
       case 'Rejected': return 'bg-red-100 text-red-800';
       case 'Hired': return 'bg-blue-100 text-blue-800';
+      case 'Assigned': return 'bg-purple-100 text-purple-800';
+      case 'In-progress': return 'bg-blue-100 text-blue-800';
+      case 'Completed': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -104,6 +106,7 @@ const MicroTaskDetailPageForClient = () => {
   }
 
   const hasApplicants = task.applicants && task.applicants.length > 0;
+  const isAssigned = task.assignedTo && task.status !== 'Open' && task.status !== 'Pending';
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -114,28 +117,35 @@ const MicroTaskDetailPageForClient = () => {
         
         <div className="max-w-6xl mx-auto p-4 md:p-6">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
-            >
-              <FaArrowLeft className="mr-2" />
-              Back to Tasks
-            </button>
-            
-            <div className="flex items-center gap-3">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(task.status)}`}>
-                {task.status}
-              </span>
-              <button
-                onClick={handleEditTask}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <FaEdit className="mr-2" />
-                Edit Task
-              </button>
-            </div>
-          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  {/* Back button */}
+  <button
+    onClick={() => navigate(-1)}
+    className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
+  >
+    <FaArrowLeft className="mr-2" />
+    Back to Tasks
+  </button>
+
+  {/* Status + Edit button */}
+  <div className="flex flex-wrap items-center gap-2">
+    <span
+      className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+        task.status
+      )}`}
+    >
+      {task.status}
+    </span>
+    <button
+      onClick={handleEditTask}
+      className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+    >
+      <FaEdit className="mr-2" />
+      Edit Task
+    </button>
+  </div>
+</div>
+
 
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -199,18 +209,69 @@ const MicroTaskDetailPageForClient = () => {
                       View Applicants ({task.applicants.length})
                     </button>
                   )}
-                  {/* Uncomment if you want to add share/save buttons later
-                  <button className="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                    <FaShare className="mr-2" />
-                    Share
-                  </button>
-                  <button className="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                    <FaBookmark className="mr-2" />
-                    Save
-                  </button>
-                  */}
                 </div>
               </div>
+
+              {/* Assigned Tasker Information */}
+              {isAssigned && task.assignedTo && (
+                <div className="bg-white rounded-2xl shadow-sm p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                      <FaUserCheck className="text-green-600" />
+                      Assigned Tasker
+                    </h2>
+                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                      Active
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                    <img 
+                         src={task.assignedTo.profileImage|| '/default-avatar.png'} 
+                          alt={task.assignedTo.name}
+                          className="w-20 h-20 rounded-full object-cover"
+                        />
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-800">
+                        {task.assignedTo.name || 'Tasker Name'}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {task.assignedTo.email || 'No contact information available'}
+                      </p>
+                      {task.assignedTo.phone && (
+                        <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
+                          <FaPhone className="w-3 h-3" />
+                          {task.assignedTo.phone}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <p className="text-xs text-gray-500">Assigned on</p>
+                      <p className="text-sm font-medium text-gray-700">
+                        {task.assignmentDate ? new Date(task.assignmentDate).toLocaleDateString() : 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Progress Status */}
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FaInfoCircle className="text-blue-600 w-4 h-4" />
+                      <span className="text-sm font-medium text-blue-800">Current Status</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-700">
+                        {task.status === 'Assigned' ? 'Awaiting tasker acceptance' : 
+                         task.status === 'In-progress' ? 'Work in progress' : 
+                         task.status === 'Completed' ? 'Task completed' : 'Task ongoing'}
+                      </span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
+                        {task.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Task Description */}
               <div className="bg-white rounded-2xl shadow-sm p-6">
@@ -236,7 +297,7 @@ const MicroTaskDetailPageForClient = () => {
               </div>
             </div>
 
-            {/* Right Column - Metrics & Applicants */}
+            {/* Right Column - Metrics & Actions */}
             <div className="space-y-6">
               {/* Metrics Card */}
               <div className="bg-white rounded-2xl shadow-sm p-6">
@@ -261,6 +322,33 @@ const MicroTaskDetailPageForClient = () => {
                 </div>
               </div>
 
+              {/* Mark as Done Toggle - Better positioned */}
+              {(task.status === "Assigned" || task.status === "In-progress") && (
+                <div className="bg-white rounded-2xl shadow-sm p-6">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <FaCheckCircle className="text-green-600" />
+                    Completion Status
+                  </h2>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-gray-800">Mark as Complete</p>
+                        <p className="text-sm text-gray-600">Confirm when task is finished</p>
+                      </div>
+                      <MarkDoneSwitch
+                        taskId={task._id}
+                        userRole="client"
+                        initialMarked={task.markedDoneByEmployer}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      This will notify the tasker that you consider the work completed.
+                      Both parties must agree for the task to be fully completed.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Quick Actions Card */}
               <div className="bg-white rounded-2xl shadow-sm p-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
@@ -274,22 +362,14 @@ const MicroTaskDetailPageForClient = () => {
                       Manage Applicants ({task.applicants.length})
                     </button>
                   )}
-                  <button className="w-full flex items-center px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors">
+                  <button onClick={handleEditTask} className="w-full flex items-center px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors">
                     <FaEdit className="mr-3" />
                     Edit Task Details
-                  </button>
-                  <button className="w-full flex items-center px-4 py-3 bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 transition-colors">
-                    <FaCalendarAlt className="mr-3" />
-                    Extend Deadline
-                  </button>
-                  <button className="w-full flex items-center px-4 py-3 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors">
-                    <FaTimesCircle className="mr-3" />
-                    Close Task
                   </button>
                 </div>
               </div>
 
-              {/* Recent Applicants Preview (if any) */}
+              {/* Recent Applicants Preview */}
               {hasApplicants && (
                 <div className="bg-white rounded-2xl shadow-sm p-6">
                   <div className="flex justify-between items-center mb-4">
