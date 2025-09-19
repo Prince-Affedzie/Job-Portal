@@ -145,9 +145,9 @@ const Navbar = () => {
           <div className="flex items-center space-x-2 md:space-x-4">
              {/* Desktop Navigation - Hidden on mobile */}
          <div style={{
-       display: windowWidth >= 768 ? 'block' : 'none',
-      }} className="md:block">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          display: windowWidth >= 768 ? 'block' : 'none',
+           }} className="md:block">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-start space-x-8">
             <Link 
               to="/mini_task/listings" 
@@ -307,7 +307,7 @@ const Navbar = () => {
               <Link 
                 to="/mini_task/listings" 
                 onClick={closeMenu}
-                className={`group flex items-center px-3 py-2 rounded-md text-base font-medium ${
+                className={`group flex items-center px-3 py-4 rounded-md text-base font-medium ${
                   isActive('mini_task') 
                     ? 'text-blue-700 bg-blue-50' 
                     : 'text-gray-700 hover:text-blue-700 hover:bg-blue-50'
@@ -320,7 +320,7 @@ const Navbar = () => {
               <Link 
                 to="/messages" 
                 onClick={closeMenu}
-                className={`group flex items-center px-3 py-2 rounded-md text-base font-medium ${
+                className={`group flex items-center px-3 py-4 rounded-md text-base font-medium ${
                   isActive('messages') 
                     ? 'text-blue-700 bg-blue-50' 
                     : 'text-gray-700 hover:text-blue-700 hover:bg-blue-50'
@@ -333,7 +333,7 @@ const Navbar = () => {
               <Link 
                 to="/mini_task/applications" 
                 onClick={closeMenu}
-                className="group flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                className="group flex items-center px-3 py-4 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
               >
                 <FaListAlt className="mr-3 h-5 w-5" />
                 Applications (Micro)
@@ -342,7 +342,7 @@ const Navbar = () => {
               <Link 
                 to="/view/all_notifications" 
                 onClick={closeMenu}
-                className="group flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                className="group flex items-center px-3 py-4 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
               >
                 <div className="relative mr-3">
                   <FaBell className="h-5 w-5" />
@@ -358,7 +358,7 @@ const Navbar = () => {
               <Link 
                 to="/h1/dashboard" 
                 onClick={closeMenu}
-                className="group flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                className="group flex items-center px-3 py-4 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
               >
                 <FaHome className="mr-3 h-5 w-5" />
                 Dashboard
@@ -367,7 +367,7 @@ const Navbar = () => {
               <Link 
                 to="/user/modify/profile" 
                 onClick={closeMenu}
-                className="group flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                className="group flex items-center px-3 py-4 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
               >
                 <FaUserCircle className="mr-3 h-5 w-5" />
                 My Profile
@@ -378,7 +378,7 @@ const Navbar = () => {
                   closeMenu();
                   handleLogout();
                 }}
-                className="group w-full flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                className="group w-full flex items-center px-3 py-4 rounded-md text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50"
               >
                 <FaSignOutAlt className="mr-3 h-5 w-5" />
                 Sign Out
