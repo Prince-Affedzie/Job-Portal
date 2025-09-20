@@ -64,7 +64,7 @@ const BidTable = ({ bids, sortConfig, onSort, onViewProfile, onAccept, isProcess
                 </div>
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
-                <span className="font-semibold">${bid.amount}</span>
+                <span className="font-semibold">₵{bid.amount}</span>
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
                 {bid.timeline}

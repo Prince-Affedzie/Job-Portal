@@ -25,7 +25,7 @@ const BidCard = ({ bid, onAccept, onViewProfile, onChat, isAccepted, isProcessin
         <p className="text-gray-700 text-sm mb-2">{bid.message}</p>
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm text-gray-600">Bid Amount:</span>
-          <span className="font-semibold">${bid.amount}</span>
+          <span className="font-semibold">₵{bid.amount}</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">Timeline:</span>
@@ -35,12 +35,12 @@ const BidCard = ({ bid, onAccept, onViewProfile, onChat, isAccepted, isProcessin
       
       <div className="mt-auto">
         <div className="flex flex-wrap gap-2 mb-3">
-          <button
-            onClick={() => onViewProfile(bid.bidder)}
-            className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 py-1 px-2 rounded"
-          >
-            View Profile
-          </button>
+         <button
+        onClick={() => onViewProfile(bid.bidder)}
+        className="text-xs bg-white hover:bg-blue-50 text-blue-600 py-1 px-3 rounded border border-blue-500 transition-colors shadow-sm"
+       >
+      View Profile
+     </button>
           
         </div>
         

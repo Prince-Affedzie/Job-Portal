@@ -344,7 +344,7 @@ const MicroTaskDashboard = () => {
                             <div className="text-xs text-gray-500">
                               {formatDate(job.deadline || job.createdAt)}
                             </div>
-                            <div className="flex space-x-2 mt-1 sm:justify-end">
+                            {/*<div className="flex space-x-2 mt-1 sm:justify-end">
                               <Link to={`/client_view/task/${job._id}`} className="p-1 text-gray-400 hover:text-blue-500">
                                 <FaEye size={14} />
                               </Link>
@@ -353,8 +353,8 @@ const MicroTaskDashboard = () => {
                               </button>
                              {/* <button className="p-1 text-gray-400 hover:text-red-500">
                                 <FaTrash size={14} />
-                              </button>*/}
-                            </div>
+                              </button>
+                            </div>*/}
                           </div>
                         </Link>
                       );

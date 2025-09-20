@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   FaArrowLeft, FaEdit, FaEye, FaClock, FaMoneyBillWave, 
-  FaMapMarkerAlt, FaUser, FaUsers, FaCalendarAlt, FaTag,
+  FaMapMarkerAlt, FaUser, FaFileAlt,FaUsers, FaCalendarAlt, FaTag,
   FaCheckCircle, FaTimesCircle, FaShare, FaBookmark,
   FaChevronDown, FaChevronUp, FaEnvelope, FaPhone, FaGlobe,
   FaUserFriends, FaUserCheck, FaInfoCircle
@@ -42,6 +42,10 @@ const MicroTaskDetailPageForClient = () => {
   const handleEditTask = () => {
     navigate(`/edit_task/${Id}`, { state: { task } });
   };
+
+  const handleViewSubmissions =()=>{
+   navigate (`/client/${Id}/view_task_submissions`)
+  }
 
   const handleViewApplicants = () => {
     navigate(`/manage-mini-tasks/${task._id}/applicants`, {
@@ -366,6 +370,15 @@ const MicroTaskDetailPageForClient = () => {
                     <FaEdit className="mr-3" />
                     Edit Task Details
                   </button>
+                  {task.status === "In-progress" && (
+                  <button 
+                   onClick={handleViewSubmissions} 
+                   className="w-full flex items-center justify-center px-4 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors duration-200 shadow-md hover:shadow-lg focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    >
+                   <FaFileAlt className="mr-2" />
+                    View Submissions
+                  </button>
+                    )}
                 </div>
               </div>
 

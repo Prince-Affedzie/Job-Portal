@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaStar, FaRegStar, FaCheckCircle, FaTimesCircle, FaEllipsisV } from 'react-icons/fa';
+import {useNavigate} from 'react-router-dom'
 
 const ApplicantScoreCard = ({ 
   applicant, 
@@ -9,6 +10,7 @@ const ApplicantScoreCard = ({
   isAssigned, 
   isProcessing 
 }) => {
+  const navigate = useNavigate()
   const renderStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -97,7 +99,7 @@ const ApplicantScoreCard = ({
       <div className="px-4 py-3 border-t border-gray-100 flex space-x-2">
         <button
           onClick={() => onViewProfile(applicant)}
-          className="flex-1 py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-medium transition-colors"
+        className="text-xs bg-white hover:bg-blue-50 text-blue-600 py-1 px-3 rounded border border-blue-500 transition-colors shadow-sm"
         >
           View Profile
         </button>
@@ -116,7 +118,7 @@ const ApplicantScoreCard = ({
           </button>
         ) : (
           <button
-            onClick={() => onChat(applicant._id)}
+            onClick={() =>navigate('/messages')}
             className="flex-1 py-2 px-3 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
           >
             Chat
