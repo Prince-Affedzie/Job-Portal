@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { modifyProfile, uploadImage } from "../../APIS/API";
 import { ClientNavbar } from '../../Components/ClientComponents/ClientNavbar';
+import { ClientSidebar } from '../../Components/ClientComponents/ClientSidebar';
 import Footer from "../../Components/Common/Footer";
 import ProcessingOverlay from "../../Components/Common/ProcessingOverLay";
 import { LoadingSkeleton } from "../../Components/Ui/LoadingSkeleton";
@@ -13,7 +14,6 @@ import LocationSection from "../../Components/ProfileEdit/LocationSelection";
 import AddItemModal from "../../Components/ProfileEdit/AddItemModal";
 import DeleteConfirmationModal from "../../Components/ProfileEdit/DeleteConfirmationModal";
 import { NotificationToast } from "../../Components/Common/NotificationToast";
-
 
 const TaskPosterProfile = () => {
   const { user, setUser, fetchUserInfo, loading } = useContext(userContext);
@@ -27,8 +27,6 @@ const TaskPosterProfile = () => {
   const [deleteTarget, setDeleteTarget] = useState({ type: "", index: null });
   const [triggerSave, setTriggerSave] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
-  
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -153,89 +151,108 @@ const TaskPosterProfile = () => {
   };
 
   const switchToJobSeeker = () => {
-    // Logic to switch to job seeker profile view
-    // This could be implemented with routing or context change
     toast.info("Switching to Job Seeker profile");
-    // Example: navigate('/profile/jobseeker');
   };
 
   if (loading) return <LoadingPage />;
   if (!user || Object.keys(user).length === 0) return <ErrorPage fetchUserInfo={fetchUserInfo} />;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       <ToastContainer />
-      <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
-
-      <div className="flex-1 container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800">My Task Poster Profile</h2>
-          <button
-            onClick={switchToJobSeeker}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+      
+      {/* Mobile Sidebar Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsOpen(false)}
+        >
+          <div 
+            className="fixed left-0 top-0 bottom-0 w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out"
+            onClick={(e) => e.stopPropagation()}
           >
-            <i className="fas fa-sync-alt mr-2"></i>
-            Switch to Job Seeker
-          </button>
-        </div>
-
-        
-        <ProfileImageSection 
-          previewImage={previewImage}
-          formData={formData}
-          isProcessing={isProcessing}
-          handleProfileImageChange={handleProfileImageChange}
-          saveImageChanges={saveImageChanges}
-        />
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          <div className="space-y-8">
-            <BasicInfoSection
-              editSection={editSection}
-              formData={formData}
-              setEditSection={setEditSection}
-              handleChange={handleChange}
-              saveChanges={saveChanges}
-            />
-          </div>
-
-          <div className="space-y-8">
-            <LocationSection
-              editSection={editSection}
-              formData={formData}
-              setEditSection={setEditSection}
-              handleLocationChange={handleLocationChange}
-              saveChanges={saveChanges}
-            />
+            <ClientSidebar toggleSidebar={() => setIsOpen(false)} isOpen={isOpen} />
           </div>
         </div>
+      )}
+
+      {/* Desktop Sidebar - Hidden on medium screens */}
+      <div className="hidden fixed left-0 top-0 bottom-0 w-64 bg-white shadow-lg z-30">
+        <ClientSidebar />
       </div>
 
-      <AddItemModal
-        isOpen={isModalOpen}
-        type={modalType}
-        onClose={() => setModalOpen(false)}
-        onSave={handleSaveModalData}
-      />
+      {/* Main Content */}
+      <div className="">
+        <ClientNavbar toggleSidebar={() => setIsOpen(!isOpen)} />
+        
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-800">My Task Poster Profile</h2>
+            <button
+              onClick={switchToJobSeeker}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+            >
+              <i className="fas fa-sync-alt mr-2"></i>
+              Switch to Job Seeker
+            </button>
+          </div>
 
-      <DeleteConfirmationModal
-        isOpen={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        onConfirm={handleDelete}
-      />
-      
-      <ProcessingOverlay show={isProcessing} message="Submitting your Changes..." />
-      <NotificationToast/>
-      <Footer />
+          <ProfileImageSection 
+            previewImage={previewImage}
+            formData={formData}
+            isProcessing={isProcessing}
+            handleProfileImageChange={handleProfileImageChange}
+            saveImageChanges={saveImageChanges}
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+            <div className="space-y-8">
+              <BasicInfoSection
+                editSection={editSection}
+                formData={formData}
+                setEditSection={setEditSection}
+                handleChange={handleChange}
+                saveChanges={saveChanges}
+              />
+            </div>
+
+            <div className="space-y-8">
+              <LocationSection
+                editSection={editSection}
+                formData={formData}
+                setEditSection={setEditSection}
+                handleLocationChange={handleLocationChange}
+                saveChanges={saveChanges}
+              />
+            </div>
+          </div>
+        </div>
+
+        <AddItemModal
+          isOpen={isModalOpen}
+          type={modalType}
+          onClose={() => setModalOpen(false)}
+          onSave={handleSaveModalData}
+        />
+
+        <DeleteConfirmationModal
+          isOpen={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={handleDelete}
+        />
+        
+        <ProcessingOverlay show={isProcessing} message="Submitting your Changes..." />
+        <NotificationToast/>
+        <Footer />
+      </div>
     </div>
   );
 };
 
 // Helper components
 const LoadingPage = () => (
- 
   <div className="min-h-screen flex flex-col">
-    <ClientNavbar  />
+    <ClientNavbar />
     <div className="flex-1 container mx-auto px-4 py-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-8">Task Poster Profile</h2>
       <LoadingSkeleton />
@@ -246,7 +263,7 @@ const LoadingPage = () => (
 
 const ErrorPage = ({ fetchUserInfo }) => (
   <div className="min-h-screen flex flex-col">
-   <ClientNavbar/>
+    <ClientNavbar/>
     <div className="flex-1 container mx-auto px-4 py-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-8">Task Poster Profile</h2>
       <div className="flex flex-col items-center justify-center p-8 bg-red-50 rounded-lg border border-red-200">
