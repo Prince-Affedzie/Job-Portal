@@ -70,6 +70,7 @@ import AdminMiniTaskDetailPage from './Pages/AdminPages/MiniTaskInfo';
 import AdminEditMiniTaskPage from './Pages/AdminPages/AdminEditMiniTaskPage'
 import AdminLogin from './Pages/AdminPages/AdminLogin';
 import AdminAddUserForm from './Pages/AdminPages/AdminAddNewUser'
+import AdminTaskersManagementPage from './Pages/AdminPages/AdminTaskersPage'
 import DisputeAdminDashboard from  './Pages/AdminPages/AdminViewReports'
 import {EmployerProfileProvider} from './Context/EmployerProfileContext'
 import PostEligibilityGate from './Services/auth/MiniJobPostEligiblityGate'
@@ -234,7 +235,10 @@ function App() {
       <Route path='/admin/minitask/:taskId/applicants' element={<AdminRoutes><AdminProvider><AdminViewMiniTaskApplicants/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/view_all_reports' element={<AdminRoutes><AdminProvider><DisputeAdminDashboard/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/view_all_recent_activities' element={<AdminRoutes><AdminProvider><ActivityPage/></AdminProvider></AdminRoutes>}/>
-    
+      <Route path='/admin/view_all_taskers' element={<AdminRoutes><AdminProvider><AdminTaskersManagementPage/></AdminProvider></AdminRoutes>}/>
+
+
+
     <Route path='/task_poster/onboarding' element ={<TaskPosterOnboarding/>}/>
     <Route path='/client/microtask_dashboard'element={  <UserProvider><NotificationProvider>< ClientMicroJobsProvider><MicroTaskDashboard/></ClientMicroJobsProvider></NotificationProvider></UserProvider>}/>
     <Route path='/client_view/task/:Id' element={<UserProvider><NotificationProvider><MicroTaskDetailPageForClient/></NotificationProvider></UserProvider>} />

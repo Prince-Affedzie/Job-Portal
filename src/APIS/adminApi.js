@@ -44,3 +44,5 @@ export const recentMicroJobs = ()=>API.get('/api/dashboard/recent-microjobs')
 export const getUserGrowthStats = () =>API.get('/api/admin/users/stats')
 export const getUserGrowthTrend = () =>API.get('/api/admin/users/trend')
 export const getUserDemographics = () =>API.get('/api/admin/users/demographics')
+
+export const getAllTaskers = ()=>API.get('/api/admin/get_all_taskers')
