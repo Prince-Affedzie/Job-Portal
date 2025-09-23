@@ -30,6 +30,7 @@ import EmployerProfile from './Pages/EmployerPages/EmployerProfile';
 import FullChatPage from './Pages/UserPages/FullChatPage';
 import { ChatProvider } from './Context/ChatContext';
 import {NotificationProvider} from './Context/NotificationContext'
+import {AdminMicroTaskProvider} from './Context/AdminMicroJobsContext'
 import PrivateRoutes from './Services/auth/PrivateRoute';
 import NotificationsPage from './Pages/UserPages/NotificationPage';
 import EmployerNotificationsPage from './Pages/EmployerPages/EmployerNotificationPage';
@@ -49,11 +50,13 @@ import TaskPosterOnboarding from './Pages/ClientPages/TaskPosterOnboarding'
 import TaskPosterProfile from './Pages/ClientPages/ClientProfilePage'
 
 import { AdminProvider } from './Context/AdminContext';
+import {UserGrowthProvider} from "./Context/AdminUsersContext"
 import { ClientMicroJobsProvider} from './Context/ClientMicroJobsContext'
 
 
 import AdminDashboard from './Pages/AdminPages/AdminDashboard';
 import AdminUserManagement  from './Pages/AdminPages/UsersManagement';
+import AdminTaskBidsPage from './Pages/AdminPages/AdminTaskBidPage'
 import AdminUserDetails from './Pages/AdminPages/UserInfo';
 import AdminEditUserPage from './Pages/AdminPages/AdminEditUser';
 import AdminJobManagementDashboard from './Pages/AdminPages/AdminJobManagement';
@@ -212,8 +215,8 @@ function App() {
       />
 
       <Route path='/admin/login'element={<AdminLogin/>}/>
-      <Route path='/admin/dashboard' element={<AdminRoutes><AdminProvider><AdminDashboard/></AdminProvider></AdminRoutes>}/>
-      <Route path='/admin/usermanagement' element={<AdminRoutes><AdminProvider><AdminUserManagement/></AdminProvider></AdminRoutes>}/>
+      <Route path='/admin/dashboard' element={<AdminRoutes><AdminProvider><AdminMicroTaskProvider><AdminDashboard/></AdminMicroTaskProvider></AdminProvider></AdminRoutes>}/>
+      <Route path='/admin/usermanagement' element={<AdminRoutes><AdminProvider><UserGrowthProvider><AdminUserManagement/></UserGrowthProvider></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/get/user_info/:Id' element={<AdminRoutes><AdminProvider><AdminUserDetails/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/edit/user/:Id'element={<AdminRoutes><AdminProvider><AdminEditUserPage/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/jobmanagement' element={<AdminRoutes><AdminProvider><AdminJobManagementDashboard/></AdminProvider></AdminRoutes>}/>
@@ -224,6 +227,8 @@ function App() {
       <Route path='/admin/:employerId/employer_profile/details' element={<AdminRoutes><AdminProvider>< AdminEmployerDetail/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/manage_minitasks'element={<AdminRoutes><AdminProvider><AdminManageMiniTasks/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/:Id/mini_task_info' element={<AdminRoutes><AdminProvider><AdminMiniTaskDetailPage/></AdminProvider></AdminRoutes>}/>
+      <Route path='/admin/:taskId/mini_task_info/bids' element={<AdminRoutes><AdminProvider><AdminTaskBidsPage/></AdminProvider></AdminRoutes>}/>
+
       <Route path='/admin/:Id/modify_min_task' element={<AdminRoutes><AdminProvider><AdminEditMiniTaskPage/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/add_new_user' element={<AdminRoutes><AdminProvider><AdminAddUserForm/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/minitask/:taskId/applicants' element={<AdminRoutes><AdminProvider><AdminViewMiniTaskApplicants/></AdminProvider></AdminRoutes>}/>

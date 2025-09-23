@@ -6,6 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAdminContext } from "../../Context/AdminContext";
 import AdminSidebar from "../../Components/AdminComponents/Adminsidebar";
 import AdminNavbar from "../../Components/AdminComponents/AdminNavbar";
+import UserGrowthDashboard from '../../Components/AdminComponents/UserGrowthDashboard';
+import UserGrowthStats from '../../Components/AdminComponents/UserGrowthStats';
 import NotificationCenter from "../../Services/alerts/NotificationCenter";
 import { useNavigate } from "react-router-dom";
 import { removeUser } from '../../APIS/API'
@@ -363,6 +365,10 @@ const AdminUserManagement = () => {
                 color="purple"
               />
             </div>
+
+            {/* User Growth Analytics */}
+            <UserGrowthDashboard />
+
 
             {/* Filters & Search */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 w-full">

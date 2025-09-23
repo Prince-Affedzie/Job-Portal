@@ -104,7 +104,7 @@ const PostMiniTask = () => {
 
       if (response.status === 200) {
         toast.success("Task posted successfully!");
-        setTimeout(() => navigate("/mini_task/listings"), 1500);
+        setTimeout(() => navigate("/client/microtask_dashboard"), 1500);
       } else {
         toast.error(response.error || "Couldn't post task");
       }

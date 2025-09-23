@@ -1,4 +1,4 @@
-import { API } from './apiConfig';
+import { API } from '../apiConfig';
 
 // Admin management
 export const getAllUsers = () => API.get('/api/get/all_users');
@@ -32,3 +32,15 @@ export const resolveDispute = (disputeId, updatePayload) => API.put(`/api/admin/
 export const fetchAllAlerts = () => API.get('/api/admin/all_alerts');
 export const markAllAlertAsRead = (alerts) => API.put('/api/admin/alerts/mark-all-read', { ids: alerts });
 export const markAlertAsRead = (Id) => API.put(`/api/admin/alerts/${Id}/read`);
+
+
+
+export const dashboardStatistics = () =>API.get('/api/dashboard/stats')
+export const dashboardActivity = () =>API.get('/api/dashboard/activity')
+export const dashboardCategory = () =>API.get('/api/dashboard/categories')
+export const recentMicroJobs = ()=>API.get('/api/dashboard/recent-microjobs')
+
+
+export const getUserGrowthStats = () =>API.get('/api/admin/users/stats')
+export const getUserGrowthTrend = () =>API.get('/api/admin/users/trend')
+export const getUserDemographics = () =>API.get('/api/admin/users/demographics')

@@ -244,6 +244,11 @@ export const ClientNavbar = ({ toggleSidebar }) => {
                 aria-expanded={dashboardDropdownOpen}
               >
                 <TbLayoutDashboard className="h-5 w-5" />
+                  {dashboardDropdownOpen ? (
+                  <FaChevronUp className="ml-1 h-3 w-3" />
+                    ) : (
+                    <FaChevronDown className="ml-1 h-3 w-3" />
+                    )}
               </button>
               
               {dashboardDropdownOpen && (

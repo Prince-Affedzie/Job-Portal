@@ -155,20 +155,27 @@ export default function WorkaFlowLanding() {
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 bg-white shadow-lg">
-            <div className="px-4 py-2 space-y-2">
-              <a href="#services" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">Services</a>
-              <a href="#how-it-works" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">How It Works</a>
-              <a href="#taskers" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">Become a Tasker</a>
-              <a href="/login" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">Sign In</a>
-              <Link to='/signup' className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium mt-2">
-                Join Now
-              </Link>
-            </div>
-          </div>
-        )}
-      </header>
+       
+  {isMenuOpen && (
+  <div className="md:hidden border-t border-gray-200 bg-white shadow-lg">
+    <div className="px-4 py-2 space-y-3">
+      <a href="#services" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">Services</a>
+      <a href="#how-it-works" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">How It Works</a>
+      <a href="#taskers" className="block py-2 text-gray-700 hover:text-blue-600 font-medium">Become a Tasker</a>
+      
+      {/* Added divider and better spacing for auth buttons */}
+      <div className="border-t border-gray-100 pt-3 mt-2">
+        <a href="/login" className="block py-3 text-center text-blue-600 font-medium hover:bg-blue-50 rounded-lg mb-2">
+          Sign In
+        </a>
+        <Link to='/signup' className="block w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 font-medium text-center">
+          Join Now
+        </Link>
+      </div>
+    </div>
+  </div>
+)}
+  </header>
 
     {/* Modern Hero Section */}
 <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
