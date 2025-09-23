@@ -322,7 +322,7 @@ const ManageMiniTasks = () => {
           <div className={`manage-tasks-container max-w-6xl mx-auto ${panelVisible ? "shifted" : ""}`}>
            <div className={`manage-tasks-container max-w-6xl mx-auto px-4 sm:px-6 ${panelVisible ? "shifted" : ""}`}>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-             <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">My Micro Tasks</h2>
+             <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">My micro tasks</h2>
                <a
                   href="/post/mini_task"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center text-sm sm:text-base w-full sm:w-auto justify-center"
