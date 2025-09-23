@@ -575,7 +575,7 @@ const MiniTaskInfo = () => {
                   </div>
                   <div className="flex items-center gap-2 text-gray-600 text-sm">
                     <FaPhone className="text-gray-400" />
-                    <span>{task.employer.phone}</span>
+                    {/*<span>{task.employer.phone}</span>*/}
                   </div>
                 </div>
               </div>
