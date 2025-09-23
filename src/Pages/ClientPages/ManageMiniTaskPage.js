@@ -320,14 +320,16 @@ const ManageMiniTasks = () => {
           <ToastContainer position="top-right" autoClose={3000} />
           
           <div className={`manage-tasks-container max-w-6xl mx-auto ${panelVisible ? "shifted" : ""}`}>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl md:text-2xl font-bold text-gray-800">My Micro Tasks</h2>
-              <a
-                href="/post/mini_task"
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 flex items-center"
-              >
+           <div className={`manage-tasks-container max-w-6xl mx-auto px-4 sm:px-6 ${panelVisible ? "shifted" : ""}`}>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+             <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">My Micro Tasks</h2>
+               <a
+                  href="/post/mini_task"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center text-sm sm:text-base w-full sm:w-auto justify-center"
+               >
                 <span className="mr-2">+</span> Add New Task
-              </a>
+                  </a>
+               </div>
             </div>
 
             {/* Task Summary Cards */}

@@ -11,30 +11,7 @@ import UserGrowthStats from '../../Components/AdminComponents/UserGrowthStats';
 import NotificationCenter from "../../Services/alerts/NotificationCenter";
 import { useNavigate } from "react-router-dom";
 import { removeUser } from '../../APIS/API'
-
-const UserAvatar = ({ letter = "U", status = "Active", name }) => {
-  const statusColor =
-    status === "Active"
-      ? "bg-emerald-400 shadow-emerald-200"
-      : status === "Suspended"
-      ? "bg-red-400 shadow-red-200"
-      : "bg-slate-300 shadow-slate-200";
-
-  const gradientBg = name 
-    ? `bg-gradient-to-br from-${name.charCodeAt(0) % 2 === 0 ? 'blue' : 'purple'}-500 to-${name.charCodeAt(0) % 2 === 0 ? 'indigo' : 'pink'}-500`
-    : "bg-gradient-to-br from-blue-500 to-indigo-500";
-
-  return (
-    <div className="relative group">
-      <div className={`w-12 h-12 rounded-xl ${gradientBg} flex items-center justify-center text-white font-bold text-sm shadow-lg transform transition-all duration-200 group-hover:scale-105 group-hover:shadow-xl`}>
-        {letter}
-      </div>
-      <span
-        className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full ring-3 ring-white ${statusColor} shadow-lg transform transition-all duration-200`}
-      />
-    </div>
-  );
-};
+import UserFilterComponent from "../../Components/AdminComponents/UsersFiltering"
 
 const StatusBadge = ({ status, isVerified }) => {
   const baseClasses = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 hover:scale-105";
@@ -152,7 +129,7 @@ const AdminUserManagement = () => {
   const navigate = useNavigate();
   
   const totalUser = users?.length || 0;
-  const totalRecruiters = users?.filter((user) => user.role === 'employer') || [];
+  const totalRecruiters = users?.filter((user) => user.role === 'client') || [];
   const totalEmployers = users?.filter((user) => user.role === 'job_seeker') || [];
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -341,7 +318,7 @@ const AdminUserManagement = () => {
                 color="blue"
               />
               <StatCard
-                title="Recruiters"
+                title="Clients"
                 value={totalRecruiters.length}
                 icon={Briefcase}
                 trend="up"
@@ -371,32 +348,11 @@ const AdminUserManagement = () => {
 
 
             {/* Filters & Search */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 w-full">
-            <div className="flex flex-col lg:flex-row gap-4 w-full">
-            <div className="flex-1 relative min-w-0">
-           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none z-10" />
-          <input
-          type="text"
-          placeholder="Search users by name or email..."
-          className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 min-w-0"
-          value={searchTerm || ''}
-         onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-      <div className="lg:flex-shrink-0">
-       <select
-        className="w-full lg:w-auto px-4 py-3 border border-slate-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-        value={roleFilter || 'All'}
-        onChange={(e) => setRoleFilter(e.target.value)}
-       >
-        <option value="All">All Roles</option>
-        <option value="admin">Admin</option>
-        <option value="employer">Recruiter</option>
-        <option value="job_seeker">Job Seeker</option>
-      </select>
-      </div>
-      </div>
-    </div>
+           <UserFilterComponent 
+             users={users || []}
+             onFilteredUsers={setFilteredUsers}
+             onFiltersChange={(filters) => console.log('Current filters:', filters)}
+            />
 
             {/* Users Table */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">

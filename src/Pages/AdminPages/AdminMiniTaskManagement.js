@@ -21,7 +21,7 @@ import {
   EllipsisHorizontalIcon
 } from "@heroicons/react/24/outline";
 
-const statusOptions = ["Open", "In-progress", "Assigned", "Completed", "Closed"];
+const statusOptions = ["Open", "In-progress", "Assigned", "Completed", "Closed","Pending"];
 const locationOptions = ["remote", "on-site"];
 const categoryOptions = [
   "Home Services", "Delivery & Errands", "Digital Services", "Writing & Assistance",

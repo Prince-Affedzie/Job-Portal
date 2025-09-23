@@ -6,7 +6,7 @@ export const AppliedJobs = ({ user }) => {
   const [showAll, setShowAll] = useState(false);
   const initialDisplayCount = 3; // Number of jobs to show initially
 
-  if (!user.appliedJobs?.length) {
+  if (!user.appliedMiniTasks?.length) {
     return (
       <EmptyState 
         icon={<Building size={24} />}
@@ -17,14 +17,14 @@ export const AppliedJobs = ({ user }) => {
   }
 
   const displayedJobs = showAll 
-    ? user.appliedJobs 
-    : user.appliedJobs.slice(0, initialDisplayCount);
+    ? user.appliedMiniTasks 
+    : user.appliedMiniTasks.slice(0, initialDisplayCount);
 
   return (
     <div className="card">
       <div className="card-header">
         <Building size={18} />
-        <h3>Applied Jobs ({user.appliedJobs.length})</h3>
+        <h3>Applied Tasks ({user.appliedMiniTasks?.length})</h3>
       </div>
       
       <div className="jobs-list">
@@ -32,12 +32,12 @@ export const AppliedJobs = ({ user }) => {
           <div key={index} className="job-item">
             <Building className="job-icon" />
             <span className="job-title">{job.title || `Job #${index + 1}`}</span>
-            {job.company && <span className="job-company">{job.company}</span>}
+            {job.budget && <span className="job-company">₵{job.budget}</span>}
           </div>
         ))}
       </div>
 
-      {user.appliedJobs.length > initialDisplayCount && (
+      {user.appliedMiniTasks?.length > initialDisplayCount && (
         <button 
           className="view-more-button"
           onClick={() => setShowAll(!showAll)}
@@ -50,7 +50,7 @@ export const AppliedJobs = ({ user }) => {
           ) : (
             <>
               <ChevronDown size={16} />
-              View All {user.appliedJobs.length} Jobs
+              View All {user.appliedMiniTasks?.length} Jobs
             </>
           )}
         </button>
