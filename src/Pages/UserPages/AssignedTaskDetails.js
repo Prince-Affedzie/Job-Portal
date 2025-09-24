@@ -105,6 +105,15 @@ const AfterApplicationTaskDetailsPage = () => {
 
   // Check if task is assigned to current user
   const isAssignedToUser =  !!task?.assignedTo && String(task?.assignedTo) === String(user?._id);
+  
+  // FIXED: Check if task is completed
+  const isTaskCompleted = task?.status?.toLowerCase() === 'completed';
+  
+  // FIXED: Check if user can submit work (only when assigned and NOT completed)
+  const canSubmitWork = isAssignedToUser && !isTaskCompleted;
+  
+  // FIXED: Check if user can mark as done (only when assigned and NOT completed)
+  const canMarkAsDone = isAssignedToUser && !isTaskCompleted;
 
   if (loading || !task) {
     return (
@@ -182,51 +191,51 @@ const AfterApplicationTaskDetailsPage = () => {
           </div>
         </div>
 
-        {/* Tab Navigation - Hide employer tab if not assigned */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 mb-6">
-          <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+        {/* IMPROVED Tab Navigation */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-1 sm:p-2 mb-6">
+          <div className="flex flex-col sm:flex-row gap-1 sm:gap-1">
             <button
               onClick={() => setActiveTab("task")}
-              className={`flex items-center justify-center gap-2 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
+              className={`flex items-center justify-center gap-2 py-3 sm:py-3 px-4 sm:px-6 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base min-h-[48px] ${
                 activeTab === "task" 
-                  ? "bg-blue-50 text-blue-700 border border-blue-200 shadow-sm" 
-                  : "text-gray-600 hover:text-gray-700 hover:bg-gray-50 border border-transparent"
+                  ? "bg-blue-600 text-white shadow-lg transform scale-105" 
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100 border-2 border-transparent hover:border-gray-200"
               }`}
             >
-              <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              <span className="truncate">Task Details</span>
+              <span className="font-semibold">Task Details</span>
             </button>
             
             {isAssignedToUser && (
               <button
                 onClick={() => setActiveTab("employer")}
-                className={`flex items-center justify-center gap-2 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
+                className={`flex items-center justify-center gap-2 py-3 sm:py-3 px-4 sm:px-6 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base min-h-[48px] ${
                   activeTab === "employer" 
-                    ? "bg-blue-50 text-blue-700 border border-blue-200 shadow-sm" 
-                    : "text-gray-600 hover:text-gray-700 hover:bg-gray-50 border border-transparent"
+                    ? "bg-blue-600 text-white shadow-lg transform scale-105" 
+                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-100 border-2 border-transparent hover:border-gray-200"
                 }`}
               >
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                <span className="truncate">Employer</span>
+                <span className="font-semibold">Employer</span>
               </button>
             )}
             
             <button
               onClick={() => setActiveTab("requirements")}
-              className={`flex items-center justify-center gap-2 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
+              className={`flex items-center justify-center gap-2 py-3 sm:py-3 px-4 sm:px-6 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base min-h-[48px] ${
                 activeTab === "requirements" 
-                  ? "bg-blue-50 text-blue-700 border border-blue-200 shadow-sm" 
-                  : "text-gray-600 hover:text-gray-700 hover:bg-gray-50 border border-transparent"
+                  ? "bg-blue-600 text-white shadow-lg transform scale-105" 
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-100 border-2 border-transparent hover:border-gray-200"
               }`}
             >
-              <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <span className="truncate">Requirements</span>
+              <span className="font-semibold">Requirements</span>
             </button>
           </div>
         </div>
@@ -501,22 +510,39 @@ const AfterApplicationTaskDetailsPage = () => {
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
                 <div className="space-y-3">
-                   <button onClick={() => openSubmitModal()} className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 font-medium">
-                    <Upload/>
-                    Submit Work
-                  </button>
+                  {/* FIXED: Only show Submit Work button when task is NOT completed */}
+                  {canSubmitWork && (
+                    <button onClick={() => openSubmitModal()} className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 font-medium">
+                      <Upload/>
+                      Submit Work
+                    </button>
+                  )}
+                  
                   <button onClick={() => navigate(`/freelancer/${task._id}/view_task_submissions`)} className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
                     <FaFileAlt />
                     View your Submissions
                   </button>
-                   <button onClick={() => handleReportIssue() } className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
-                     <FaFlag className="w-3 h-3 flex-shrink-0" />
-                      <span className="sr-only sm:not-sr-only sm:inline">Report</span>
+                  
+                  <button onClick={() => handleReportIssue()} className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium">
+                    <FaFlag className="w-4 h-4 flex-shrink-0" />
+                    Report Issue
                   </button>
-                  <div className="w-full">
-                    <MarkDoneSwitch taskId={task._id} userRole={user.role} initialMarked={task.markedDoneByTasker} />
-                  </div>
-                 
+                  
+                  {/* FIXED: Only show Mark as Done when task is NOT completed */}
+                  {canMarkAsDone && (
+                    <div className="w-full pt-2">
+                      <MarkDoneSwitch taskId={task._id} userRole={user.role} initialMarked={task.markedDoneByTasker} />
+                    </div>
+                  )}
+                  
+                  {/* Show completion message when task is completed */}
+                  {isTaskCompleted && (
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                      <FaCheckCircle className="text-green-600 text-xl mx-auto mb-2" />
+                      <p className="text-green-700 font-medium">Task Completed</p>
+                      <p className="text-green-600 text-sm mt-1">Great job! This task has been completed.</p>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
@@ -574,8 +600,8 @@ const AfterApplicationTaskDetailsPage = () => {
               </div>
             </div>
 
-            {/* Task Progress - Only show if assigned */}
-            {isAssignedToUser && (
+            {/* Task Progress - Only show if assigned and NOT completed */}
+            {isAssignedToUser && !isTaskCompleted && (
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Task Progress</h3>
                 <div className="space-y-4">
@@ -618,15 +644,15 @@ const AfterApplicationTaskDetailsPage = () => {
         )}
 
         {/* Report Form Modal */}
-              {showReportModal && (
-                <ReportForm
-                  isOpen={showReportModal}
-                  onClose={() => setShowReportModal(false)}
-                  task={task}
-                  currentUser={user}
-                  onReportSubmitted={() => {}}
-                />
-              )}
+        {showReportModal && (
+          <ReportForm
+            isOpen={showReportModal}
+            onClose={() => setShowReportModal(false)}
+            task={task}
+            currentUser={user}
+            onReportSubmitted={() => {}}
+          />
+        )}
       </div>
     </div>
   );

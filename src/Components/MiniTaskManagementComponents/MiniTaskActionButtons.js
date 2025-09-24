@@ -8,7 +8,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-import MarkDoneSwitch from './MarkDoneButton'; // ensure path is correct
+import MarkDoneSwitch from './MarkDoneButton';
 
 const TaskActions = ({
   task,
@@ -60,25 +60,21 @@ const TaskActions = ({
       let left = dropdownRect.left + window.scrollX;
       let transformOrigin = 'top left';
 
-      // If dropdown goes beyond right edge -> push left
       if (left + menuRect.width > viewportWidth) {
-        left = Math.max(10, viewportWidth - menuRect.width - 10); // 10px padding
+        left = Math.max(10, viewportWidth - menuRect.width - 10);
         transformOrigin = 'top right';
       }
 
-      // If dropdown goes beyond left edge -> push right
       if (left < 0) {
         left = 10;
         transformOrigin = 'top left';
       }
 
-      // If dropdown goes beyond bottom -> open upwards
       if (top + menuRect.height > viewportHeight + window.scrollY) {
         top = dropdownRect.top + window.scrollY - menuRect.height;
         transformOrigin = transformOrigin.replace('top', 'bottom');
       }
 
-      // return style object usable in JSX
       return {
         position: 'absolute',
         top: `${top}px`,
@@ -87,27 +83,30 @@ const TaskActions = ({
         zIndex: 1000
       };
     } catch (err) {
-      // if measuring fails, fallback to default
       return {};
     }
   };
 
-  // Status checks (be defensive with types)
-  const isAssigned =
-    !!task.assignedTo && String(task.assignedTo) === String(user?._id);
-  const canSubmitWork =
-    isAssigned && (task.status === 'In-progress' || task.status === 'Completed');
-  const needsAcceptance =
-    !!task.assignedTo && String(task.assignedTo) === String(user?._id) && !task.assignmentAccepted;
+  // ===== FIXED LOGIC =====
+  
+  // Status checks
+  const isAssigned = !!task.assignedTo && String(task.assignedTo) === String(user?._id);
+  const needsAcceptance = isAssigned && !task.assignmentAccepted;
 
-  // Determine who can mark done and initial marked state
+  // FIXED: Only show submit work for In-progress status, NOT Completed
+  const canSubmitWork = isAssigned && task.status === 'In-progress';
+  
+  // FIXED: Show view submissions for both In-progress and Completed statuses
+  const canViewSubmissions = isAssigned && (task.status === 'In-progress' || task.status === 'Completed');
+
+  // Determine who can mark done
   const isEmployer = String(task.employer?._id || task.employer) === String(user?._id);
   const isTasker = !!task.assignedTo && String(task.assignedTo) === String(user?._id);
   
   const alreadyMarked = task.markDone;
-  const canMark =  (task.status === 'Assigned' || task.status === 'In-progress');
+  const canMark = (task.status === 'Assigned' || task.status === 'In-progress');
 
-  // Primary action (keeps original logic)
+  // Primary action - FIXED: Remove Completed status from submit condition
   const primaryAction = needsAcceptance
     ? {
         type: 'acceptance',
@@ -128,7 +127,7 @@ const TaskActions = ({
           }
         ]
       }
-    : isAssigned && (task.status === 'In-progress' || task.status === 'Completed')
+    : isAssigned && task.status === 'In-progress' // FIXED: Removed 'Completed'
     ? {
         type: 'submit',
         actions: [
@@ -152,8 +151,10 @@ const TaskActions = ({
         ]
       };
 
-  // Secondary actions (preserve original behavior)
+  // Secondary actions - FIXED logic
   const secondaryActions = [];
+  
+  // Always include View Details if not primary action
   if (primaryAction.type !== 'view') {
     secondaryActions.push({
       label: 'View Details',
@@ -162,8 +163,10 @@ const TaskActions = ({
     });
   }
 
-  if (canSubmitWork) {
-    if (primaryAction.type !== 'submit') {
+  // Tasker-specific secondary actions
+  if (isAssigned) {
+    // Submit work (only for In-progress, not primary action)
+    if (canSubmitWork && primaryAction.type !== 'submit') {
       secondaryActions.push({
         label: task.locationType === 'on-site' ? 'Submit Proof' : 'Submit Work',
         icon: Upload,
@@ -171,12 +174,16 @@ const TaskActions = ({
       });
     }
 
-    secondaryActions.push({
-      label: 'View Submissions',
-      icon: FileText,
-      onClick: () => onViewSubmissions?.(task._id)
-    });
+    // View submissions (for both In-progress and Completed)
+    if (canViewSubmissions) {
+      secondaryActions.push({
+        label: 'View Submissions',
+        icon: FileText,
+        onClick: () => onViewSubmissions?.(task._id)
+      });
+    }
 
+    // Message employer (if no StartChatButton provided)
     if (!StartChatButton) {
       secondaryActions.push({
         label: 'Message Employer',
@@ -186,8 +193,7 @@ const TaskActions = ({
     }
   }
 
-  const hasSecondaryActions =
-    secondaryActions.length > 0 || (canSubmitWork && StartChatButton);
+  const hasSecondaryActions = secondaryActions.length > 0 || (isAssigned && StartChatButton);
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -210,94 +216,95 @@ const TaskActions = ({
         </button>
       ))}
 
-      {/* Chat Button (desktop only if provided) */}
-      {canSubmitWork && StartChatButton && (
+      {/* Chat Button (desktop only if provided) 
+      {isAssigned && StartChatButton && (
         <div className="hidden sm:block">
-          {/*<StartChatButton
+          <StartChatButton
             userId2={task.employer._id}
             jobId={task._id}
             className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors duration-200"
           >
             <MessageCircle className="w-4 h-4" />
-          </StartChatButton>*/}
+          </StartChatButton>
         </div>
-      )}
+      )}*/}
 
       {/* More actions dropdown */}
       {hasSecondaryActions && (
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setDropdownOpen((s) => !s)}
-            className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500"
-            aria-label="More actions"
-          >
-            {dropdownOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
+  <div className="relative" ref={dropdownRef}>
+    <button
+      onClick={() => setDropdownOpen((s) => !s)}
+      className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500 text-sm font-medium"
+      aria-label="More actions"
+    >
+      {/* Show different content for mobile vs desktop */}
+      <span className="sm:hidden">•••</span> {/* Three dots for mobile */}
+      <span className="hidden sm:inline">More</span> {/* "More" text for desktop */}
+      {dropdownOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+    </button>
 
-          {dropdownOpen && (
-            <>
-              {/* Mobile backdrop */}
-              {isMobile && <div className="fixed inset-0 bg-black bg-opacity-30 z-40" onClick={() => setDropdownOpen(false)} />}
+    {dropdownOpen && (
+      <>
+        {/* Mobile backdrop */}
+        {isMobile && <div className="fixed inset-0 bg-black bg-opacity-30 z-40" onClick={() => setDropdownOpen(false)} />}
 
-              <div
-                ref={dropdownMenuRef}
-                className={`${isMobile ? 'fixed bottom-0 left-0 right-0 rounded-t-2xl max-h-[70vh] overflow-y-auto bg-white z-50' : 'absolute w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50'}`}
-                style={!isMobile ? calculateDropdownPosition() : {}}
-              >
-                {/* Mobile header */}
-                {isMobile && (
-                  <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center rounded-t-2xl">
-                    <h3 className="font-semibold text-gray-900">Actions</h3>
-                    <button onClick={() => setDropdownOpen(false)} className="p-1 rounded-full hover:bg-gray-100 text-gray-500" aria-label="Close menu">
-                      <FaTimes className="w-5 h-5" />
-                    </button>
-                  </div>
-                )}
-
-                <div className={isMobile ? 'p-4 space-y-3' : 'p-2 space-y-1'}>
-                  {secondaryActions.map((action, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        action.onClick();
-                        setDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-sm text-gray-700 transition-colors break-words whitespace-normal ${isMobile ? 'rounded-lg' : 'rounded-md'}`}
-                    >
-                      <action.icon className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                      <span className="flex-1">{action.label}</span>
-                    </button>
-                  ))}
-
-                  {/* Mark as Done switch (only rendered for authorized users and correct statuses) */}
-                  {canMark && (
-                    <div className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 rounded-md">
-                  
-                      <MarkDoneSwitch taskId={task._id} userRole='tasker' initialMarked={alreadyMarked} />
-                    </div>
-                  )}
-
-                  {/* Chat option (mobile only) */}
-                  {canSubmitWork && StartChatButton && (
-                    <div className={`${isMobile ? 'px-4 py-3 hover:bg-gray-50 rounded-lg' : 'sm:hidden px-4 py-3 hover:bg-gray-50 rounded-md'}`}>
-                      <StartChatButton
-                        userId2={task.employer._id}
-                        jobId={task._id}
-                        className="flex items-center gap-3 text-sm text-gray-700 w-full text-left"
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        <MessageCircle className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                        <span className="flex-1">Message Employer</span>
-                      </StartChatButton>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
+        <div
+          ref={dropdownMenuRef}
+          className={`${isMobile ? 'fixed bottom-0 left-0 right-0 rounded-t-2xl max-h-[70vh] overflow-y-auto bg-white z-50' : 'absolute w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50'}`}
+          style={!isMobile ? calculateDropdownPosition() : {}}
+        >
+          {/* Mobile header */}
+          {isMobile && (
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center rounded-t-2xl">
+              <h3 className="font-semibold text-gray-900">Actions</h3>
+              <button onClick={() => setDropdownOpen(false)} className="p-1 rounded-full hover:bg-gray-100 text-gray-500" aria-label="Close menu">
+                <FaTimes className="w-5 h-5" />
+              </button>
+            </div>
           )}
-        </div>
-      )}
 
+          <div className={isMobile ? 'p-4 space-y-3' : 'p-2 space-y-1'}>
+            {secondaryActions.map((action, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  action.onClick();
+                  setDropdownOpen(false);
+                }}
+                className={`w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-sm text-gray-700 transition-colors break-words whitespace-normal ${isMobile ? 'rounded-lg' : 'rounded-md'}`}
+              >
+                <action.icon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="flex-1">{action.label}</span>
+              </button>
+            ))}
+
+            {/* Mark as Done switch */}
+            {canMark && isTasker && (
+              <div className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 rounded-md">
+                <MarkDoneSwitch taskId={task._id} userRole='tasker' initialMarked={alreadyMarked} />
+              </div>
+            )}
+
+            {/* Chat option (mobile only) 
+            {isAssigned && StartChatButton && (
+              <div className={`${isMobile ? 'px-4 py-3 hover:bg-gray-50 rounded-lg' : 'sm:hidden px-4 py-3 hover:bg-gray-50 rounded-md'}`}>
+                <StartChatButton
+                  userId2={task.employer._id}
+                  jobId={task._id}
+                  className="flex items-center gap-3 text-sm text-gray-700 w-full text-left"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <MessageCircle className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  <span className="flex-1">Message Employer</span>
+                </StartChatButton>
+              </div>
+            )}*/}
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+)}
       {/* Processing indicator */}
       {isProcessing && (
         <div className="flex items-center gap-2 ml-2">
