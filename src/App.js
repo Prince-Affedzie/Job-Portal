@@ -41,6 +41,7 @@ import ApplicantsPage from './Components/MiniTaskManagementComponents/Applicants
 import MiniTaskApplicantProfilePage from './Components/MiniTaskManagementComponents/ApplicantProfilePage'
 import EditTaskForm from './Components/MiniTaskManagementComponents/EditMiniTaskForm'
 import MiniTaskInfo from './Pages/UserPages/MiniTaskInfo';
+import AfterApplicationTaskDetailsPage from './Pages/UserPages/AssignedTaskDetails'
 
 
 
@@ -123,6 +124,8 @@ function App() {
         element={<ApplicantsPage />}
       />
       <Route path='/view/mini_task/info/:Id' element={<UserProvider><NotificationProvider><MiniTaskInfo/></NotificationProvider></UserProvider>}/>
+      <Route path='/view/applied/mini_task/info/:Id' element={<UserProvider><NotificationProvider><AfterApplicationTaskDetailsPage/></NotificationProvider></UserProvider>}/>
+
       <Route path='/freelancer/:taskId/view_task_submissions' element={<UserProvider><NotificationProvider><FreelancerSubmissions/></NotificationProvider></UserProvider>}/>
       <Route  path='/client/:taskId/view_task_submissions' element={<UserProvider><NotificationProvider><ClientViewSubmissions/></NotificationProvider></UserProvider>}/>
       <Route path='/messages/:roomId' element={<UserProvider><NotificationProvider>< ChatPage/></NotificationProvider></UserProvider>}/>

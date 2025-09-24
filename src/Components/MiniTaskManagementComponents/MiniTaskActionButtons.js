@@ -103,9 +103,9 @@ const TaskActions = ({
   // Determine who can mark done and initial marked state
   const isEmployer = String(task.employer?._id || task.employer) === String(user?._id);
   const isTasker = !!task.assignedTo && String(task.assignedTo) === String(user?._id);
-  const userRole = isEmployer ? 'client' : isTasker ? 'tasker' : null;
+  
   const alreadyMarked = task.markDone;
-  const canMark = (userRole === 'client' || userRole === 'tasker') && (task.status === 'Assigned' || task.status === 'In-progress');
+  const canMark =  (task.status === 'Assigned' || task.status === 'In-progress');
 
   // Primary action (keeps original logic)
   const primaryAction = needsAcceptance
@@ -273,7 +273,7 @@ const TaskActions = ({
                   {canMark && (
                     <div className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 rounded-md">
                   
-                      <MarkDoneSwitch taskId={task._id} userRole={userRole} initialMarked={alreadyMarked} />
+                      <MarkDoneSwitch taskId={task._id} userRole='tasker' initialMarked={alreadyMarked} />
                     </div>
                   )}
 

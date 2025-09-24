@@ -6,11 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import { acceptMiniTaskAssignment, removeAppliedMiniTaskFromDashboard, raiseDispute, rejectMiniTaskAssignment, addReportingEvidence, sendFileToS3 } from '../../APIS/API';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaTrash, FaFilter,FaMoneyCheck, FaCheck, FaArrowUp, FaArrowDown, FaClock, FaMapMarkerAlt, FaDollarSign, FaFlag, FaBuilding, FaUser, FaPhone, FaEye, FaUpload, FaComments, FaTimes, FaCheckCircle, FaExclamationTriangle, FaGavel, FaFileAlt, FaSearch, FaPlus, FaEllipsisV, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { FaTrash, FaFilter,FaMoneyCheck,FaMoneyBillWave, FaCheck, FaArrowUp, FaArrowDown, FaClock, FaMapMarkerAlt, FaDollarSign, FaFlag, FaBuilding, FaUser, FaPhone, FaEye, FaUpload, FaComments, FaTimes, FaCheckCircle, FaExclamationTriangle, FaGavel, FaFileAlt, FaSearch, FaPlus, FaEllipsisV, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 import WorkSubmissionModal from '../../Components/Common/WorkSubmissionModal';
 import StartChatButton from '../../Components/MessagingComponents/StartChatButton';
 import TaskActions from '../../Components/MiniTaskManagementComponents/MiniTaskActionButtons';
-import MarkDoneButton from '../../Components/MiniTaskManagementComponents/MarkDoneButton'
 import Pagination from "../../Components/Common/Pagination";
 import ReportForm from "../../Components/Common/ReportForm";
 import { useFreelancerGuide } from '../../Components/MiniTaskManagementComponents/UseFreelancerAcceptanceGuide'
@@ -283,19 +282,6 @@ const MyMiniTaskApplications = () => {
     setModalOpen(true);
   };
 
-  const getDeadlineStatus = (deadline) => {
-    if (!deadline) return null;
-    const now = new Date();
-    const deadlineDate = new Date(deadline);
-    const timeDiff = deadlineDate - now;
-    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-    if (daysDiff < 0) return { text: 'Overdue', className: 'bg-red-100 text-red-700 border-red-200' };
-    if (daysDiff === 0) return { text: 'Due Today', className: 'bg-orange-100 text-orange-700 border-orange-200' };
-    if (daysDiff <= 3) return { text: `${daysDiff} days left`, className: 'bg-yellow-100 text-yellow-700 border-yellow-200' };
-    return null;
-  };
-
   const getBidStatus = (bid) => {
     switch (bid.status) {
       case 'accepted':
@@ -314,17 +300,16 @@ const CardView = ({ item, isApplication }) => {
   const bid = isApplication ? null : item.bid;
   const statusInfo = getApplicationStatus(item);
   const isAssigned = task.assignedTo && task.assignedTo === user?._id;
-  const deadlineStatus = getDeadlineStatus(task.deadline);
   const bidStatus = !isApplication ? getBidStatus(bid) : null;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 group hover:border-gray-200">
+    <div   className="bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 group hover:border-gray-200">
       {/* Card Header - Clean and Minimal */}
       <div className="p-4 border-b border-gray-100">
         <div className="flex justify-between items-start gap-3">
           <h3 
             className="text-base font-semibold text-gray-900 line-clamp-2 hover:text-blue-600 cursor-pointer transition-colors flex-1 leading-tight"
-            onClick={() => navigate(`/view/mini_task/info/${task._id}`)}
+            onClick={() => navigate(`/view/applied/mini_task/info/${task._id}`)}
           >
             {task.title}
           </h3>
@@ -350,7 +335,7 @@ const CardView = ({ item, isApplication }) => {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
-              <FaDollarSign className="text-blue-600 w-4 h-4" />
+              <FaMoneyBillWave className="text-blue-600 w-4 h-4" />
             </div>
             <div>
               <p className="text-xs text-gray-500 font-medium">Budget</p>
@@ -443,7 +428,7 @@ const CardView = ({ item, isApplication }) => {
               user={user}
               isProcessing={isProcessing}
               layout="stacked"
-              onViewDetails={(taskId) => navigate(`/view/mini_task/info/${taskId}`)}
+              onViewDetails={(taskId) =>  navigate(`/view/applied/mini_task/info/${taskId}`)}
               onSubmitWork={(taskId) => openSubmitModal(taskId)}
               onViewSubmissions={(taskId) => navigate(`/freelancer/${taskId}/view_task_submissions`)}
               onAcceptTask={handleTaskAcceptance}
@@ -463,7 +448,7 @@ const CardView = ({ item, isApplication }) => {
               <FaFlag className="w-3 h-3 flex-shrink-0" />
               <span className="sr-only sm:not-sr-only sm:inline">Report</span>
             </button>
-          )}
+          )} 
         </div>
       </div>
     </div>
@@ -712,7 +697,7 @@ const CardView = ({ item, isApplication }) => {
             </div>
 
             {/* Item Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
               {currentItems.map((item) => (
                 <CardView 
                   key={viewType === 'applications' ? item._id : item.task._id} 

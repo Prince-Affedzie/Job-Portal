@@ -39,9 +39,12 @@ const MarkDoneSwitch = ({ taskId, userRole, initialMarked }) => {
           toast.success("Task marked as done!");
         }
       }
-    } catch (err) {
-      console.error("Error toggling done state:", err);
-      toast.error("Failed to update status. Try again.");
+    } catch (error) {
+       const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error || "Failed to update status. Try again."
+        console.error("Error toggling done state:", errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
