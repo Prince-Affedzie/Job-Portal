@@ -97,51 +97,51 @@ const RoleDistributionChart = ({ height = 300 }) => {
       <h3 className="text-lg font-semibold text-slate-900 mb-6">User Role Distribution</h3>
       
       <ResponsiveContainer width="100%" height={height}>
-        <PieChart>
-          <Pie
-            data={roleDistribution}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
-            outerRadius={100}
-            fill="#8884d8"
-            dataKey="count"
-          >
-            {roleDistribution.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-            ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-          <Legend 
-            formatter={(value) => (
-              <span className="capitalize text-xs">
-                {value.replace('_', ' ')}
-              </span>
-            )}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+  <PieChart>
+    <Pie
+      data={roleDistribution}
+      cx="50%"
+      cy="50%"
+      labelLine={false}
+      label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
+      outerRadius={100}
+      fill="#8884d8"
+      dataKey="count"
+    >
+      {roleDistribution.map((entry, index) => (
+        <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+      ))}
+    </Pie>
+    <Tooltip content={<CustomTooltip />} />
+    <Legend 
+      formatter={(value) => (
+        <span className="capitalize text-xs">
+          {String(value || '').replace('_', ' ')}
+        </span>
+      )}
+    />
+  </PieChart>
+</ResponsiveContainer>
 
-      {/* Role summary below the chart */}
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        {roleDistribution.map((role, index) => (
-          <div key={role.role} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-            <div className="flex items-center gap-2">
-              <div 
-                className="w-3 h-3 rounded-full" 
-                style={{ backgroundColor: colors[index % colors.length] }}
-              />
-              <span className="text-sm font-medium capitalize text-slate-700">
-                {role.role.replace('_', ' ')}
-              </span>
-            </div>
-            <span className="text-sm font-semibold text-slate-900">
-              {role.count.toLocaleString()}
-            </span>
-          </div>
-        ))}
+{/* Role summary below the chart */}
+<div className="mt-4 grid grid-cols-2 gap-2">
+  {roleDistribution.map((role, index) => (
+    <div key={role.role} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+      <div className="flex items-center gap-2">
+        <div 
+          className="w-3 h-3 rounded-full" 
+          style={{ backgroundColor: colors[index % colors.length] }}
+        />
+        <span className="text-sm font-medium capitalize text-slate-700">
+          {String(role.role || '').replace('_', ' ')}
+        </span>
       </div>
+      <span className="text-sm font-semibold text-slate-900">
+        {role.count.toLocaleString()}
+      </span>
+    </div>
+  ))}
+</div>
     </div>
   );
 };
