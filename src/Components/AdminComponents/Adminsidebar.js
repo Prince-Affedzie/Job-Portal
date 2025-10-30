@@ -17,12 +17,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 const sidebarItems = [
   { path: "/admin/dashboard", icon: PieChart, label: "Overview", color: "from-blue-500 to-cyan-500" },
   { path: "/admin/usermanagement", icon: Users, label: "Users", color: "from-green-500 to-emerald-500" },
-  { path: "/admin/jobmanagement", icon: Briefcase, label: "Jobs", color: "from-purple-500 to-violet-500" },
+  //{ path: "/admin/jobmanagement", icon: Briefcase, label: "Jobs", color: "from-purple-500 to-violet-500" },
   { path: "/admin/manage_minitasks", icon: ShoppingOutlined, label: "Micro Jobs", color: "from-orange-500 to-amber-500" },
-  { path: "/admin/get_employers/list", icon: ShoppingOutlined, label: "Recruiters", color: "from-pink-500 to-rose-500" },
+ // { path: "/admin/get_employers/list", icon: ShoppingOutlined, label: "Recruiters", color: "from-pink-500 to-rose-500" },
   { path: "/admin/view_all_taskers", icon: FileText, label: "Taskers", color: "from-indigo-500 to-blue-500" },
   { path: "/admin/view_all_reports", icon: BarChart2, label: "Reports", color: "from-teal-500 to-cyan-500" },
-  { path: "/admin/settings", icon: Settings, label: "Settings", color: "from-gray-500 to-slate-500" },
+  //{ path: "/admin/settings", icon: Settings, label: "Settings", color: "from-gray-500 to-slate-500" },
 ];
 
 export default function AdminSidebar({ isOpen = false, onClose = () => {} }) {

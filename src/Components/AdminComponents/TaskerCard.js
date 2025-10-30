@@ -125,14 +125,14 @@ export const TaskerCard = ({ tasker }) => {
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate(`/admin/get/user_info/${tasker._id}`)}
+              onClick={() => navigate(`/admin/tasker_info/${tasker._id}`)}
               className="px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-blue-200"
             >
               {showDetails ? 'Hide Details' : 'View Details'}
             </button>
-            <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            {/*<button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Manage
-            </button>
+            </button>*/}
           </div>
         </div>
 

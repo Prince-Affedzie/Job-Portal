@@ -46,3 +46,10 @@ export const getUserGrowthTrend = () =>API.get('/api/admin/users/trend')
 export const getUserDemographics = () =>API.get('/api/admin/users/demographics')
 
 export const getAllTaskers = ()=>API.get('/api/admin/get_all_taskers')
+export const getTaskerDetails=(taskerId)=>API.get(`/api/admin/get_tasker_info/${taskerId}`)
+export const updateTaskerStatus = (taskerId,updates)=>API.put(`/api/admin/update_tasker_status/${taskerId}`,updates)
+
+//Minitask Curation
+export const curateTaskPool = (taskId,taskerIds)=>API.post(`/api/admin/task/${taskId}/curate`,taskerIds)
+export const  removeFromTaskpool =(taskId,taskerId)=>API.delete(`/api/admin/task/${taskId}/curate/${taskerId}`)
+export const getCuratedTaskPool =(taskId)=>API.get(`/api/admin/task/${taskId}/curate`)

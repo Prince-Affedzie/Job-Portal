@@ -121,8 +121,8 @@ const AdminUserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState("name");
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortField, setSortField] = useState("createdAt");
+  const [sortDirection, setSortDirection] = useState("desc");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const usersPerPage = 10;
@@ -138,21 +138,23 @@ const AdminUserManagement = () => {
   }, []);
 
   useEffect(() => {
-    let filtered = users || [];
+  let filtered = users || [];
 
-    if (roleFilter !== "All") {
-      filtered = filtered.filter((user) => user.role === roleFilter);
-    }
+  if (roleFilter !== "All") {
+    filtered = filtered.filter((user) => user.role === roleFilter);
+  }
 
-    if (searchTerm.trim()) {
-      filtered = filtered.filter(
-        (user) =>
-          user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+  if (searchTerm.trim()) {
+    filtered = filtered.filter(
+      (user) =>
+        user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
 
-    // Sort functionality
+  // Only apply sorting if user has explicitly sorted by a column
+  // Otherwise, preserve the backend order (sorted by createdAt)
+  if (sortField !== "createdAt") {
     filtered.sort((a, b) => {
       let aValue = a[sortField] || '';
       let bValue = b[sortField] || '';
@@ -168,10 +170,11 @@ const AdminUserManagement = () => {
         return aValue < bValue ? 1 : -1;
       }
     });
+  }
 
-    setFilteredUsers(filtered);
-    setCurrentPage(1);
-  }, [searchTerm, roleFilter, users, sortField, sortDirection]);
+  setFilteredUsers(filtered);
+  setCurrentPage(1);
+}, [searchTerm, roleFilter, users, sortField, sortDirection]);
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;

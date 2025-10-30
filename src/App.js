@@ -72,12 +72,18 @@ import AdminEditMiniTaskPage from './Pages/AdminPages/AdminEditMiniTaskPage'
 import AdminLogin from './Pages/AdminPages/AdminLogin';
 import AdminAddUserForm from './Pages/AdminPages/AdminAddNewUser'
 import AdminTaskersManagementPage from './Pages/AdminPages/AdminTaskersPage'
+import AdminTaskerDetailPage from './Pages/AdminPages/AdminTaskerDetailPage'
 import DisputeAdminDashboard from  './Pages/AdminPages/AdminViewReports'
 import {EmployerProfileProvider} from './Context/EmployerProfileContext'
 import PostEligibilityGate from './Services/auth/MiniJobPostEligiblityGate'
 import EmployerPostEligibilityGate from './Services/auth/EmployerJobPostEligibilityGate'
 import AdminViewMiniTaskApplicants from './Pages/AdminPages/MiniTaskApplicants'
 import ActivityPage from './Pages/AdminPages/RecentActivities'
+import AdminCurateTaskpoolPage from './Pages/AdminPages/AdminCurateTaskPoolPage'
+import AdminViewTaskpoolPage from './Pages/AdminPages/AdminVIewTaskPoolPage'
+
+
+
 import FreelancerSubmissions from  './Pages/UserPages/TaskSubmissions'
 
 import ClientViewSubmissions from './Pages/ClientPages/ClientViewTaskSubmissions'
@@ -239,6 +245,10 @@ function App() {
       <Route path='/admin/view_all_reports' element={<AdminRoutes><AdminProvider><DisputeAdminDashboard/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/view_all_recent_activities' element={<AdminRoutes><AdminProvider><ActivityPage/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/view_all_taskers' element={<AdminRoutes><AdminProvider><AdminTaskersManagementPage/></AdminProvider></AdminRoutes>}/>
+       <Route path='/admin/tasker_info/:taskerId' element={<AdminRoutes><AdminProvider><AdminTaskerDetailPage/></AdminProvider></AdminRoutes>}/>
+
+      <Route path='/admin/curate_task_pool/:taskId' element={<AdminRoutes><AdminProvider><AdminCurateTaskpoolPage/></AdminProvider></AdminRoutes>}/>
+       <Route path='/admin/view_task_pool/:taskId' element={<AdminRoutes><AdminProvider><AdminViewTaskpoolPage/></AdminProvider></AdminRoutes>}/>
 
 
 
