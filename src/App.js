@@ -81,6 +81,11 @@ import AdminViewMiniTaskApplicants from './Pages/AdminPages/MiniTaskApplicants'
 import ActivityPage from './Pages/AdminPages/RecentActivities'
 import AdminCurateTaskpoolPage from './Pages/AdminPages/AdminCurateTaskPoolPage'
 import AdminViewTaskpoolPage from './Pages/AdminPages/AdminVIewTaskPoolPage'
+import AdminServiceRequests from './Pages/AdminPages/AdminServiceRequests'
+import AdminServiceRequestDetail from './Pages/AdminPages/AdminServiceRequestDetail'
+import AdminServiceRequestOffers from './Pages/AdminPages/ServiceRequestOffers'
+
+import AdminPaymentManagement from './Pages/AdminPages/AdminPaymentsManagements'
 
 
 
@@ -236,7 +241,10 @@ function App() {
       <Route path='/admin/get_employers/list' element={<AdminRoutes><AdminProvider><AdminEmployerList/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/:employerId/employer_profile/details' element={<AdminRoutes><AdminProvider>< AdminEmployerDetail/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/manage_minitasks'element={<AdminRoutes><AdminProvider><AdminManageMiniTasks/></AdminProvider></AdminRoutes>}/>
+      <Route path='/admin/manage_service_requests'element={<AdminRoutes><AdminProvider><AdminServiceRequests/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/:Id/mini_task_info' element={<AdminRoutes><AdminProvider><AdminMiniTaskDetailPage/></AdminProvider></AdminRoutes>}/>
+      <Route path='/admin/:id/service_request_info' element={<AdminRoutes><AdminProvider><AdminServiceRequestDetail/></AdminProvider></AdminRoutes>}/>
+      <Route path='/admin/:id/service_request_offers' element={<AdminRoutes><AdminProvider><AdminServiceRequestOffers/></AdminProvider></AdminRoutes>}/>
       <Route path='/admin/:taskId/mini_task_info/bids' element={<AdminRoutes><AdminProvider><AdminTaskBidsPage/></AdminProvider></AdminRoutes>}/>
 
       <Route path='/admin/:Id/modify_min_task' element={<AdminRoutes><AdminProvider><AdminEditMiniTaskPage/></AdminProvider></AdminRoutes>}/>
@@ -249,6 +257,9 @@ function App() {
 
       <Route path='/admin/curate_task_pool/:taskId' element={<AdminRoutes><AdminProvider><AdminCurateTaskpoolPage/></AdminProvider></AdminRoutes>}/>
        <Route path='/admin/view_task_pool/:taskId' element={<AdminRoutes><AdminProvider><AdminViewTaskpoolPage/></AdminProvider></AdminRoutes>}/>
+
+
+       <Route path='/admin/payments/all' element={<AdminRoutes><AdminProvider><AdminPaymentManagement/></AdminProvider></AdminRoutes>}/>
 
 
 

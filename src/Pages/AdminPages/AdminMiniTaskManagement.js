@@ -18,27 +18,36 @@ import {
   ChevronUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  EllipsisHorizontalIcon
+  EllipsisHorizontalIcon,
+  CalendarIcon,
+  CurrencyDollarIcon,
+  MapPinIcon,
+  TagIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  UserGroupIcon,
+  ArrowTrendingUpIcon
 } from "@heroicons/react/24/outline";
 
-const statusOptions = ["Open", "In-progress", "Assigned", "Completed", "Closed","Pending"];
+const statusOptions = ["Open", "In-progress", "Assigned", "Completed", "Closed", "Pending"];
 const locationOptions = ["remote", "on-site"];
 const categoryOptions = [
   "Home Services", "Delivery & Errands", "Digital Services", "Writing & Assistance",
   "Learning & Tutoring", "Creative Tasks", "Event Support", "Others"
 ];
 
-const statusColorMap = {
-  Open: "bg-green-100 text-green-800",
-  "In-progress": "bg-blue-100 text-blue-800",
-  Assigned: "bg-orange-100 text-orange-800",
-  Completed: "bg-yellow-100 text-yellow-800",
-  Closed: "bg-red-100 text-red-800",
+const statusConfig = {
+  Open: { color: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: "○" },
+  "In-progress": { color: "bg-blue-50 text-blue-700 border-blue-200", icon: "↻" },
+  Assigned: { color: "bg-amber-50 text-amber-700 border-amber-200", icon: "👤" },
+  Completed: { color: "bg-green-50 text-green-700 border-green-200", icon: "✓" },
+  Closed: { color: "bg-gray-100 text-gray-700 border-gray-200", icon: "✕" },
+  Pending: { color: "bg-purple-50 text-purple-700 border-purple-200", icon: "⏱" },
 };
 
-const locationColorMap = {
-  remote: "bg-purple-100 text-purple-800",
-  "on-site": "bg-indigo-100 text-indigo-800",
+const locationConfig = {
+  remote: { color: "bg-indigo-50 text-indigo-700 border-indigo-200", icon: "🌐" },
+  "on-site": { color: "bg-orange-50 text-orange-700 border-orange-200", icon: "📍" },
 };
 
 const AdminManageMiniTasks = () => {
@@ -48,16 +57,24 @@ const AdminManageMiniTasks = () => {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [expandedTask, setExpandedTask] = useState(null);
+  const [stats, setStats] = useState({
+    total: 0,
+    open: 0,
+    inProgress: 0,
+    completed: 0,
+    totalBudget: 0
+  });
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [tasksPerPage, setTasksPerPage] = useState(8);
+  const [tasksPerPage, setTasksPerPage] = useState(10);
   const [pageInput, setPageInput] = useState("");
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [locationType, setLocationType] = useState("");
   const [category, setCategory] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -66,9 +83,20 @@ const AdminManageMiniTasks = () => {
       setLoading(true);
       const res = await getAllMiniTasks();
       if (res.status === 200) {
-        setTasks(res.data);
-        setFiltered(res.data);
-        setCurrentPage(1); // Reset to first page when data changes
+        const tasksData = res.data;
+        setTasks(tasksData);
+        setFiltered(tasksData);
+        
+        // Calculate stats
+        const statsData = {
+          total: tasksData.length,
+          open: tasksData.filter(t => t.status === "Open").length,
+          inProgress: tasksData.filter(t => t.status === "In-progress").length,
+          completed: tasksData.filter(t => t.status === "Completed").length,
+          totalBudget: tasksData.reduce((sum, task) => sum + (parseFloat(task.budget) || 0), 0)
+        };
+        setStats(statsData);
+        setCurrentPage(1);
       }
     } catch (error) {
       console.error("Failed to load tasks:", error);
@@ -95,13 +123,36 @@ const AdminManageMiniTasks = () => {
 
   const applyFilters = () => {
     let result = [...tasks];
-    if (search) result = result.filter((t) => t.title.toLowerCase().includes(search.toLowerCase()));
+    
+    // Apply filters
+    if (search) result = result.filter((t) => 
+      t.title.toLowerCase().includes(search.toLowerCase()) ||
+      (t.description && t.description.toLowerCase().includes(search.toLowerCase()))
+    );
     if (status) result = result.filter((t) => t.status === status);
     if (locationType) result = result.filter((t) => t.locationType === locationType);
     if (category) result = result.filter((t) => t.category === category);
+    
+    // Apply sorting
+    result.sort((a, b) => {
+      switch(sortBy) {
+        case "newest":
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        case "oldest":
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        case "budget_high":
+          return (parseFloat(b.budget) || 0) - (parseFloat(a.budget) || 0);
+        case "budget_low":
+          return (parseFloat(a.budget) || 0) - (parseFloat(b.budget) || 0);
+        case "deadline":
+          return new Date(a.deadline) - new Date(b.deadline);
+        default:
+          return 0;
+      }
+    });
+    
     setFiltered(result);
-    setCurrentPage(1); // Reset to first page when filters change
-    setMobileFiltersOpen(false);
+    setCurrentPage(1);
   };
 
   const clearFilters = () => {
@@ -109,15 +160,15 @@ const AdminManageMiniTasks = () => {
     setStatus("");
     setLocationType("");
     setCategory("");
+    setSortBy("newest");
     setFiltered(tasks);
-    setCurrentPage(1); // Reset to first page when clearing filters
+    setCurrentPage(1);
     setMobileFiltersOpen(false);
   };
 
-  // Auto-apply filters when any filter value changes
   useEffect(() => {
     applyFilters();
-  }, [search, status, locationType, category, tasks]);
+  }, [search, status, locationType, category, sortBy, tasks]);
 
   // Pagination logic
   const indexOfLastTask = currentPage * tasksPerPage;
@@ -125,7 +176,6 @@ const AdminManageMiniTasks = () => {
   const currentTasks = filtered.slice(indexOfFirstTask, indexOfLastTask);
   const totalPages = Math.ceil(filtered.length / tasksPerPage);
 
-  // Change page
   const paginate = (pageNumber) => {
     if (pageNumber < 1) pageNumber = 1;
     if (pageNumber > totalPages) pageNumber = totalPages;
@@ -133,62 +183,23 @@ const AdminManageMiniTasks = () => {
     window.scrollTo(0, 0);
   };
 
-  // Handle page input change
-  const handlePageInput = (e) => {
-    const value = e.target.value;
-    if (value === "" || (Number(value) > 0 && Number(value) <= totalPages)) {
-      setPageInput(value);
-    }
-  };
-
-  // Handle page input submit
-  const handlePageSubmit = (e) => {
-    e.preventDefault();
-    if (pageInput) {
-      paginate(Number(pageInput));
-      setPageInput("");
-    }
-  };
-
-  // Generate page numbers for display
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
     
     if (totalPages <= maxVisiblePages) {
-      // If total pages is less than max visible pages, show all
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(i);
-      }
+      for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
     } else {
-      // Always show first page
       pageNumbers.push(1);
-      
       let startPage = Math.max(2, currentPage - 1);
       let endPage = Math.min(totalPages - 1, currentPage + 1);
       
-      if (currentPage <= 3) {
-        endPage = 4;
-      } else if (currentPage >= totalPages - 2) {
-        startPage = totalPages - 3;
-      }
+      if (currentPage <= 3) endPage = 4;
+      else if (currentPage >= totalPages - 2) startPage = totalPages - 3;
       
-      // Add ellipsis after first page if needed
-      if (startPage > 2) {
-        pageNumbers.push("ellipsis1");
-      }
-      
-      // Add middle pages
-      for (let i = startPage; i <= endPage; i++) {
-        pageNumbers.push(i);
-      }
-      
-      // Add ellipsis before last page if needed
-      if (endPage < totalPages - 1) {
-        pageNumbers.push("ellipsis2");
-      }
-      
-      // Always show last page
+      if (startPage > 2) pageNumbers.push("ellipsis1");
+      for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
+      if (endPage < totalPages - 1) pageNumbers.push("ellipsis2");
       pageNumbers.push(totalPages);
     }
     
@@ -196,434 +207,485 @@ const AdminManageMiniTasks = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-hidden">
-      <AdminSidebar 
-        isOpen={isSidebarOpen} 
-        onClose={() => setIsSidebarOpen(false)}
-      />
-      <NotificationCenter/>
+    <div className="min-h-screen bg-gray-50">
+      <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <NotificationCenter />
       
       <div className="lg:pl-64 flex flex-col flex-1">
-        <AdminNavbar 
-          onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
-          isSidebarOpen={isSidebarOpen} 
-        />
+        <AdminNavbar onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} isSidebarOpen={isSidebarOpen} />
         
-        <main className="flex-1 p-4 md:p-6 overflow-hidden">
-          <div className="mb-4 md:mb-6">
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900">Manage Mini Tasks</h1>
-            <p className="text-gray-600 mt-1 text-sm md:text-base">View and manage all mini tasks in the system</p>
-          </div>
-
-          {/* Mobile filter button */}
-          <div className="md:hidden mb-4">
-            <button
-              onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-              className="flex items-center justify-center w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              <FunnelIcon className="h-5 w-5 mr-2" />
-              Filters
-              {(status || locationType || category || search) && (
-                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                  Active
-                </span>
-              )}
-            </button>
-          </div>
-
-          {/* Filters Section */}
-          <div className={`${mobileFiltersOpen ? 'block' : 'hidden'} md:block bg-white rounded-lg shadow mb-4 md:mb-6 p-4 md:p-6`}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-medium text-gray-900">Filters</h2>
+        <main className="flex-1 p-4 md:p-6">
+          {/* Header Section */}
+          <div className="mb-6 md:mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Task Management</h1>
+                <p className="text-gray-600 mt-1">Monitor and manage all tasks in the platform</p>
+              </div>
               <button
-                onClick={clearFilters}
-                className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                onClick={fetchTasks}
+                className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
               >
-                Clear all
+                <ArrowTrendingUpIcon className="h-4 w-4 mr-2" />
+                Refresh Data
               </button>
             </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+              <div className="flex items-center">
+                <div className="p-3 rounded-lg bg-blue-50 text-blue-600 mr-4">
+                  <TagIcon className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Total Tasks</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                </div>
+              </div>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-              <div>
-                <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">
-                  Search by title
-                </label>
-                <div className="relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+            <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+              <div className="flex items-center">
+                <div className="p-3 rounded-lg bg-emerald-50 text-emerald-600 mr-4">
+                  <ClockIcon className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Open Tasks</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.open}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+              <div className="flex items-center">
+                <div className="p-3 rounded-lg bg-green-50 text-green-600 mr-4">
+                  <CheckCircleIcon className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Completed</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+              <div className="flex items-center">
+                <div className="p-3 rounded-lg bg-amber-50 text-amber-600 mr-4">
+                  <CurrencyDollarIcon className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Total Budget</p>
+                  <p className="text-2xl font-bold text-gray-900">GHS {stats.totalBudget.toLocaleString()}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Card */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            {/* Filters Header */}
+            <div className="p-5 border-b border-gray-200">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex-1">
+                  <div className="relative max-w-lg">
+                    <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search tasks by title or description..."
+                      className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                    {search && (
+                      <button
+                        onClick={() => setSearch("")}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                      >
+                        <XMarkIcon className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                      </button>
+                    )}
                   </div>
-                  <input
-                    type="text"
-                    id="search"
-                    className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2"
-                    placeholder="Search tasks..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  {search && (
-                    <button
-                      onClick={() => setSearch("")}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <div className="hidden md:block">
+                    <select
+                      className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
                     >
-                      <XMarkIcon className="h-4 w-4 text-gray-400" />
-                    </button>
-                  )}
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                      <option value="budget_high">Budget (High to Low)</option>
+                      <option value="budget_low">Budget (Low to High)</option>
+                      <option value="deadline">Deadline (Soonest)</option>
+                    </select>
+                  </div>
+                  
+                  <button
+                    onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+                    className="md:hidden flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    <FunnelIcon className="h-5 w-5 mr-2" />
+                    Filters
+                  </button>
+                  
+                  <button
+                    onClick={clearFilters}
+                    className="px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                  >
+                    Clear All
+                  </button>
                 </div>
               </div>
               
-              <div>
-                <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
-                  Status
-                </label>
+              {/* Mobile Filters */}
+              <div className={`mt-4 ${mobileFiltersOpen ? 'block' : 'hidden'} md:hidden`}>
+                <div className="grid grid-cols-2 gap-3">
+                  <select
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                  >
+                    <option value="">All Status</option>
+                    {statusOptions.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  
+                  <select
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    value={locationType}
+                    onChange={(e) => setLocationType(e.target.value)}
+                  >
+                    <option value="">All Locations</option>
+                    {locationOptions.map((l) => (
+                      <option key={l} value={l}>{l}</option>
+                    ))}
+                  </select>
+                  
+                  <select
+                    className="col-span-2 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    <option value="">All Categories</option>
+                    {categoryOptions.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Filters Bar */}
+            <div className="hidden md:flex items-center justify-between px-5 py-3 bg-gray-50 border-b border-gray-200">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <FunnelIcon className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600">Filters:</span>
+                </div>
+                
                 <select
-                  id="status"
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500"
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
                 >
-                  <option value="">All statuses</option>
+                  <option value="">All Status</option>
                   {statusOptions.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
-              </div>
-              
-              <div>
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-                  Location Type
-                </label>
+                
                 <select
-                  id="location"
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500"
                   value={locationType}
                   onChange={(e) => setLocationType(e.target.value)}
                 >
-                  <option value="">All locations</option>
+                  <option value="">All Locations</option>
                   {locationOptions.map((l) => (
                     <option key={l} value={l}>{l}</option>
                   ))}
                 </select>
-              </div>
-              
-              <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-                  Category
-                </label>
+                
                 <select
-                  id="category"
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >
-                  <option value="">All categories</option>
-                  {categoryOptions.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
+                  <option value="">All Categories</option>
+                    {categoryOptions.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
                 </select>
               </div>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center text-sm text-gray-500">
-                <FunnelIcon className="h-4 w-4 mr-1" />
-                Showing {filtered.length} of {tasks.length} tasks
-              </div>
               
-              {/* Items per page selector */}
-              <div className="flex items-center">
-                <label htmlFor="tasksPerPage" className="text-sm text-gray-500 mr-2">
-                  Show:
-                </label>
+              <div className="flex items-center gap-3 text-sm text-gray-600">
+                <span>{filtered.length} tasks found</span>
                 <select
-                  id="tasksPerPage"
-                  className="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  className="border border-gray-300 rounded-lg px-2 py-1 text-sm"
                   value={tasksPerPage}
                   onChange={(e) => {
                     setTasksPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
                 >
-                  <option value="5">5</option>
-                  <option value="8">8</option>
-                  <option value="15">15</option>
-                  <option value="20">20</option>
+                  <option value="5">5 per page</option>
+                  <option value="10">10 per page</option>
+                  <option value="20">20 per page</option>
+                  <option value="50">50 per page</option>
                 </select>
               </div>
             </div>
-          </div>
 
-          {/* Tasks Grid/List */}
-          {loading ? (
-            <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg shadow">
-              <svg
-                className="mx-auto h-12 w-12 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  vectorEffect="non-scaling-stroke"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No tasks found</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Try adjusting your search or filter to find what you're looking for.
-              </p>
-              <div className="mt-6">
-                <button
-                  onClick={clearFilters}
-                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Clear all filters
-                </button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 gap-4 mb-6">
-                {currentTasks.map((task) => (
-                  <div key={task._id} className="bg-white rounded-lg shadow overflow-hidden">
-                    <div className="p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="text-lg font-medium text-gray-900">{task.title}</h3>
-                          <p className="text-sm text-gray-500 mt-1">{task.category}</p>
-                        </div>
-                        <div className="ml-4 flex-shrink-0">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColorMap[task.status] || "bg-gray-100 text-gray-800"}`}>
-                            {task.status}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-4 grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm text-gray-500">Budget</p>
-                          <p className="text-sm font-medium text-gray-900">GHS {task.budget}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Deadline</p>
-                          <p className="text-sm font-medium text-gray-900">{dayjs(task.deadline).format("MMM DD, YYYY")}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Location</p>
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${locationColorMap[task.locationType] || "bg-gray-100 text-gray-800"}`}>
-                            {task.locationType}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-4 flex justify-between items-center">
-                        <button
-                          onClick={() => setExpandedTask(expandedTask === task._id ? null : task._id)}
-                          className="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center"
-                        >
-                          {expandedTask === task._id ? (
-                            <>
-                              Less details <ChevronUpIcon className="h-4 w-4 ml-1" />
-                            </>
-                          ) : (
-                            <>
-                              More details <ChevronDownIcon className="h-4 w-4 ml-1" />
-                            </>
-                          )}
-                        </button>
-                        
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => navigate(`/admin/${task._id}/mini_task_info`)}
-                            className="text-indigo-600 hover:text-indigo-900 p-1 rounded-full hover:bg-indigo-50"
-                            title="View details"
-                          >
-                            <EyeIcon className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => navigate(`/admin/${task._id}/modify_min_task`)}
-                            className="text-yellow-600 hover:text-yellow-900 p-1 rounded-full hover:bg-yellow-50"
-                            title="Edit task"
-                          >
-                            <PencilIcon className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => setDeleteConfirm(task._id)}
-                            className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50"
-                            title="Delete task"
-                          >
-                            <TrashIcon className="h-5 w-5" />
-                          </button>
-                        </div>
-                      </div>
-                      
-                      {expandedTask === task._id && (
-                        <div className="mt-4 pt-4 border-t border-gray-200">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <h4 className="text-sm font-medium text-gray-900">Task Description</h4>
-                              <p className="text-sm text-gray-500 mt-1">{task.description || "No description provided"}</p>
+            {/* Tasks List */}
+            <div className="p-5">
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-16">
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+                  <p className="mt-4 text-gray-600">Loading tasks...</p>
+                </div>
+              ) : filtered.length === 0 ? (
+                <div className="text-center py-16">
+                  <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <TagIcon className="h-12 w-12 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No tasks found</h3>
+                  <p className="text-gray-600 mb-6">Try adjusting your search or filters</p>
+                  <button
+                    onClick={clearFilters}
+                    className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Clear all filters
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {currentTasks.map((task) => (
+                    <div key={task._id} className="border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all duration-200">
+                      <div className="p-5">
+                        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+                          {/* Task Info */}
+                          <div className="flex-1">
+                            <div className="flex items-start gap-3">
+                              <div className={`p-2.5 rounded-lg ${statusConfig[task.status]?.color || "bg-gray-100"}`}>
+                                <span className="text-sm font-medium">{statusConfig[task.status]?.icon || "○"}</span>
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-1.5">{task.title}</h3>
+                                <div className="flex flex-wrap gap-2 mb-3">
+                                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    <TagIcon className="h-3 w-3 mr-1.5" />
+                                    {task.category}
+                                  </span>
+                                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${locationConfig[task.locationType]?.color || "bg-gray-100"}`}>
+                                    <MapPinIcon className="h-3 w-3 mr-1.5" />
+                                    {task.locationType}
+                                  </span>
+                                </div>
+                                <p className="text-gray-600 text-sm line-clamp-2">{task.description || "No description provided"}</p>
+                              </div>
                             </div>
-                            <div>
-                              <h4 className="text-sm font-medium text-gray-900">Additional Information</h4>
-                              <p className="text-sm text-gray-500 mt-1">Created: {dayjs(task.createdAt).format("MMM DD, YYYY")}</p>
-                              <p className="text-sm text-gray-500">Last updated: {dayjs(task.updatedAt).format("MMM DD, YYYY")}</p>
+                          </div>
+                          
+                          {/* Task Stats & Actions */}
+                          <div className="lg:w-64">
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                              <div className="bg-gray-50 rounded-lg p-3">
+                                <div className="flex items-center text-gray-500 mb-1">
+                                  <CurrencyDollarIcon className="h-4 w-4 mr-1.5" />
+                                  <span className="text-xs">Budget</span>
+                                </div>
+                                <p className="text-lg font-bold text-gray-900">GHS {task.budget}</p>
+                              </div>
+                              
+                              <div className="bg-gray-50 rounded-lg p-3">
+                                <div className="flex items-center text-gray-500 mb-1">
+                                  <CalendarIcon className="h-4 w-4 mr-1.5" />
+                                  <span className="text-xs">Deadline</span>
+                                </div>
+                                <p className="text-sm font-medium text-gray-900">
+                                  {dayjs(task.deadline).format("MMM DD")}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${statusConfig[task.status]?.color || "bg-gray-100"}`}>
+                                  {task.status}
+                                </span>
+                              </div>
+                              
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => navigate(`/admin/${task._id}/mini_task_info`)}
+                                  className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                  title="View details"
+                                >
+                                  <EyeIcon className="h-5 w-5" />
+                                </button>
+                                <button
+                                  onClick={() => navigate(`/admin/${task._id}/modify_min_task`)}
+                                  className="p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                                  title="Edit task"
+                                >
+                                  <PencilIcon className="h-5 w-5" />
+                                </button>
+                                <button
+                                  onClick={() => setDeleteConfirm(task._id)}
+                                  className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                  title="Delete task"
+                                >
+                                  <TrashIcon className="h-5 w-5" />
+                                </button>
+                                
+                                <button
+                                  onClick={() => setExpandedTask(expandedTask === task._id ? null : task._id)}
+                                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                                >
+                                  {expandedTask === task._id ? (
+                                    <ChevronUpIcon className="h-5 w-5" />
+                                  ) : (
+                                    <ChevronDownIcon className="h-5 w-5" />
+                                  )}
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              {/* Pagination Controls */}
-              {totalPages > 1 && (
-                <div className="bg-white rounded-lg shadow px-4 py-3 flex items-center justify-between border-t border-gray-200">
-                  <div className="flex-1 flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-700">
-                        Showing <span className="font-medium">{indexOfFirstTask + 1}</span> to{" "}
-                        <span className="font-medium">
-                          {indexOfLastTask > filtered.length ? filtered.length : indexOfLastTask}
-                        </span> of{" "}
-                        <span className="font-medium">{filtered.length}</span> results
-                      </p>
-                    </div>
-                    <div>
-                      <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                        <button
-                          onClick={() => paginate(currentPage - 1)}
-                          disabled={currentPage === 1}
-                          className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 text-sm font-medium ${
-                            currentPage === 1 
-                              ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
-                              : "bg-white text-gray-500 hover:bg-gray-50"
-                          }`}
-                        >
-                          <span className="sr-only">Previous</span>
-                          <ChevronLeftIcon className="h-5 w-5" />
-                        </button>
                         
-                        {/* Page numbers */}
-                        {getPageNumbers().map((pageNumber, index) => 
-                          pageNumber === "ellipsis1" || pageNumber === "ellipsis2" ? (
-                            <span
-                              key={index}
-                              className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
-                            >
-                              <EllipsisHorizontalIcon className="h-5 w-5" />
-                            </span>
-                          ) : (
-                            <button
-                              key={index}
-                              onClick={() => paginate(pageNumber)}
-                              className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                                currentPage === pageNumber
-                                  ? "z-10 bg-indigo-50 border-indigo-500 text-indigo-600"
-                                  : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
-                              }`}
-                            >
-                              {pageNumber}
-                            </button>
-                          )
+                        {/* Expanded Details */}
+                        {expandedTask === task._id && (
+                          <div className="mt-6 pt-6 border-t border-gray-200">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div>
+                                <h4 className="text-sm font-semibold text-gray-900 mb-3">Task Details</h4>
+                                <p className="text-gray-600 text-sm leading-relaxed">{task.description || "No description provided"}</p>
+                              </div>
+                              <div>
+                                <h4 className="text-sm font-semibold text-gray-900 mb-3">Timeline</h4>
+                                <div className="space-y-2">
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-gray-500">Created</span>
+                                    <span className="font-medium">{dayjs(task.createdAt).format("MMM DD, YYYY")}</span>
+                                  </div>
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-gray-500">Last Updated</span>
+                                    <span className="font-medium">{dayjs(task.updatedAt).format("MMM DD, YYYY")}</span>
+                                  </div>
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-gray-500">Deadline</span>
+                                    <span className="font-medium text-amber-600">{dayjs(task.deadline).format("MMM DD, YYYY")}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         )}
-                        
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="px-5 py-4 border-t border-gray-200 bg-gray-50">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <p className="text-sm text-gray-600">
+                    Showing <span className="font-medium">{indexOfFirstTask + 1}-{Math.min(indexOfLastTask, filtered.length)}</span> of{" "}
+                    <span className="font-medium">{filtered.length}</span> tasks
+                  </p>
+                  
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => paginate(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className={`p-2 rounded-lg border ${
+                        currentPage === 1
+                          ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                          : "border-gray-300 text-gray-700 hover:bg-white hover:border-gray-400"
+                      }`}
+                    >
+                      <ChevronLeftIcon className="h-5 w-5" />
+                    </button>
+                    
+                    {getPageNumbers().map((pageNumber, index) => (
+                      pageNumber === "ellipsis1" || pageNumber === "ellipsis2" ? (
+                        <span key={index} className="px-3 py-2 text-gray-400">
+                          <EllipsisHorizontalIcon className="h-5 w-5" />
+                        </span>
+                      ) : (
                         <button
-                          onClick={() => paginate(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                          className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 text-sm font-medium ${
-                            currentPage === totalPages
-                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                              : "bg-white text-gray-500 hover:bg-gray-50"
+                          key={index}
+                          onClick={() => paginate(pageNumber)}
+                          className={`px-3 py-2 rounded-lg text-sm font-medium min-w-[2.5rem] ${
+                            currentPage === pageNumber
+                              ? "bg-blue-600 text-white border border-blue-600"
+                              : "border border-gray-300 text-gray-700 hover:bg-white hover:border-gray-400"
                           }`}
                         >
-                          <span className="sr-only">Next</span>
-                          <ChevronRightIcon className="h-5 w-5" />
+                          {pageNumber}
                         </button>
-                      </nav>
-                    </div>
+                      )
+                    ))}
+                    
+                    <button
+                      onClick={() => paginate(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className={`p-2 rounded-lg border ${
+                        currentPage === totalPages
+                          ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                          : "border-gray-300 text-gray-700 hover:bg-white hover:border-gray-400"
+                      }`}
+                    >
+                      <ChevronRightIcon className="h-5 w-5" />
+                    </button>
                   </div>
                 </div>
-              )}
-              
-              {/* Quick page jump */}
-              {totalPages > 5 && (
-                <div className="mt-4 flex justify-center">
-                  <form onSubmit={handlePageSubmit} className="flex items-center">
-                    <label htmlFor="pageJump" className="text-sm text-gray-700 mr-2">
-                      Go to page:
-                    </label>
-                    <input
-                      type="number"
-                      id="pageJump"
-                      min="1"
-                      max={totalPages}
-                      value={pageInput}
-                      onChange={handlePageInput}
-                      className="w-16 px-2 py-1 border border-gray-300 rounded-md text-sm"
-                      placeholder="#"
-                    />
-                    <button
-                      type="submit"
-                      className="ml-2 px-3 py-1 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      Go
-                    </button>
-                  </form>
-                </div>
-              )}
-            </>
-          )}
+              </div>
+            )}
+          </div>
         </main>
       </div>
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed z-50 inset-0 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <TrashIcon className="h-6 w-6 text-red-600" />
-                  </div>
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      Delete Task
-                    </h3>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        Are you sure you want to delete this task? This action cannot be undone.
-                      </p>
-                    </div>
-                  </div>
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center">
+            <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onClick={() => setDeleteConfirm(null)} />
+            
+            <div className="relative inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-white rounded-2xl shadow-xl transform transition-all">
+              <div className="flex items-center mb-5">
+                <div className="p-3 rounded-full bg-red-100 text-red-600 mr-4">
+                  <TrashIcon className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Delete Task</h3>
+                  <p className="text-sm text-gray-600">This action cannot be undone</p>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  onClick={() => handleDelete(deleteConfirm)}
-                  type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Delete
-                </button>
+              
+              <div className="mb-6">
+                <p className="text-gray-700">Are you sure you want to delete this task? All associated data will be permanently removed.</p>
+              </div>
+              
+              <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                  className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(deleteConfirm)}
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                >
+                  Delete Task
                 </button>
               </div>
             </div>

@@ -53,3 +53,21 @@ export const updateTaskerStatus = (taskerId,updates)=>API.put(`/api/admin/update
 export const curateTaskPool = (taskId,taskerIds)=>API.post(`/api/admin/task/${taskId}/curate`,taskerIds)
 export const  removeFromTaskpool =(taskId,taskerId)=>API.delete(`/api/admin/task/${taskId}/curate/${taskerId}`)
 export const getCuratedTaskPool =(taskId)=>API.get(`/api/admin/task/${taskId}/curate`)
+
+
+// Payments APIs
+export const getAllPayments = ()=>API.get('/api/admin/get_all_payments')
+export const getASinglePayment = (paymentId)=>API.get(`/api/admin/get_a_single_payment/${paymentId}`)
+export const updatePaymentStatus = (paymentId,status) => API.put(`/api/admin/update_payment_record/${paymentId}`,status)
+export const releaseFunds = (reference)=>API.put(`/api/release_payment/${reference}`)
+export const refundPayment = (reference)=>API.put(`/api/refund_payment/${reference}`)
+
+
+// Service Request APIs
+export const getAllServiceRequests = ()=>API.get(`/api/admin/service/requests`)
+export const serviceRequestDetail = (id)=>API.get(`/api/admin/service/request/${id}`)
+export const updateServiceRequestStatus=(id,status)=>API.patch(`/api/admin/service/update/${id}/status`,status)
+export const assignServiceRequest = (id,taskerId)=>API.patch(`/api/admin/service/request/${id}/assign`,taskerId)
+export const cancelServiceRequest = (id)=>API.patch(`/api/admin/service/request/${id}/cancel`)
+export const deleteServiceRequest =(id)=>API.delete(`/api/admin/service/request/${id}/delete`)
+
