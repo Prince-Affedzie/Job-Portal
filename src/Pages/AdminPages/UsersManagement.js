@@ -1,4 +1,4 @@
-import { Eye, Edit, Trash2, Search, User, Briefcase, Users, Plus, Filter, Download, MoreVertical, ArrowUpDown, Calendar, Mail, Phone, MapPin, Shield, Check, X, AlertCircle, TrendingUp, Activity, } from "lucide-react";
+import { Eye, Edit, Trash2, Search, User, Briefcase, Users, Plus, Filter, Download, MoreVertical, ArrowUpDown, Calendar, Mail, Phone, MapPin, Shield, Check, X, AlertCircle, TrendingUp, Activity, Bell } from "lucide-react";
 import {FaUserCircle} from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,7 +11,13 @@ import UserGrowthStats from '../../Components/AdminComponents/UserGrowthStats';
 import NotificationCenter from "../../Services/alerts/NotificationCenter";
 import { useNavigate } from "react-router-dom";
 import { removeUser } from '../../APIS/API'
-import UserFilterComponent from "../../Components/AdminComponents/UsersFiltering"
+import {
+  sendPersonalizedNotification,
+  sendroleBaseNotification,
+  sendBroadCastNotification
+} from '../../APIS/adminApi';
+import UserFilterComponent from "../../Components/AdminComponents/UsersFiltering";
+import NotificationModal from '../../Components/AdminComponents/NotificationTriggeringModal';
 
 const StatusBadge = ({ status, isVerified }) => {
   const baseClasses = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 hover:scale-105";
@@ -100,7 +106,8 @@ const ActionButton = ({ onClick, icon: Icon, label, variant = "default", disable
     default: "text-slate-400 hover:text-slate-600 hover:bg-slate-50",
     view: "text-blue-500 hover:text-blue-700 hover:bg-blue-50",
     edit: "text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50",
-    delete: "text-red-500 hover:text-red-700 hover:bg-red-50"
+    delete: "text-red-500 hover:text-red-700 hover:bg-red-50",
+    notification: "text-purple-500 hover:text-purple-700 hover:bg-purple-50"
   };
 
   return (
@@ -125,13 +132,25 @@ const AdminUserManagement = () => {
   const [sortDirection, setSortDirection] = useState("desc");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
+
+  const [notificationModalOpen, setNotificationModalOpen] = useState(false);
+  const [selectedUserForNotification, setSelectedUserForNotification] = useState(null);
+  
   const usersPerPage = 10;
   const navigate = useNavigate();
+
   
   const totalUser = users?.length || 0;
   const totalRecruiters = users?.filter((user) => user.role === 'client') || [];
   const totalEmployers = users?.filter((user) => user.role === 'job_seeker') || [];
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+
+   const notificationAPIs = {
+    sendPersonalizedNotification,
+    sendroleBaseNotification,
+    sendBroadCastNotification
+  };
 
   useEffect(() => {
     if (!users) fetchAllUsers();
@@ -221,6 +240,18 @@ const AdminUserManagement = () => {
     }
   };
 
+
+  const handleSendNotification = (user = null) => {
+    setSelectedUserForNotification(user);
+    setNotificationModalOpen(true);
+  };
+
+
+  const handleBroadcastNotification = () => {
+    setSelectedUserForNotification(null);
+    setNotificationModalOpen(true);
+  };
+
   const getRoleIcon = (role) => {
     switch (role) {
       case 'admin':
@@ -262,23 +293,32 @@ const AdminUserManagement = () => {
         theme="light"
       />
       
+      {/* Notification Modal */}
+      <NotificationModal
+        isOpen={notificationModalOpen}
+        onClose={() => {
+          setNotificationModalOpen(false);
+          setSelectedUserForNotification(null);
+        }}
+        selectedUser={selectedUserForNotification}
+        notificationAPIs={notificationAPIs}
+      />
+      
       {/* Sidebar */}
-     
-          <AdminSidebar 
-                isOpen={isSidebarOpen} 
-               onClose={() => setIsSidebarOpen(false)}
-                />
+      <AdminSidebar 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
-        <NotificationCenter/>
+      <NotificationCenter/>
      
-
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-      
-         <AdminNavbar 
-                onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
-                 isSidebarOpen={isSidebarOpen} 
-                 />
+        <AdminNavbar 
+          onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+          isSidebarOpen={isSidebarOpen} 
+        />
+        
         {/* Page Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="p-6 space-y-6">
@@ -296,6 +336,16 @@ const AdminUserManagement = () => {
                   <Filter className="w-4 h-4" />
                   Filters
                 </button>
+                
+                {/* Add Notification Button */}
+                <button
+                  onClick={handleBroadcastNotification}
+                  className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  <Bell className="w-4 h-4" />
+                  Send Notification
+                </button>
+                
                 <button className="flex items-center gap-2 px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors duration-200">
                   <Download className="w-4 h-4" />
                   Export
@@ -349,12 +399,11 @@ const AdminUserManagement = () => {
             {/* User Growth Analytics */}
             <UserGrowthDashboard />
 
-
             {/* Filters & Search */}
-           <UserFilterComponent 
-             users={users || []}
-             onFilteredUsers={setFilteredUsers}
-             onFiltersChange={(filters) => console.log('Current filters:', filters)}
+            <UserFilterComponent 
+              users={users || []}
+              onFilteredUsers={setFilteredUsers}
+              onFiltersChange={(filters) => console.log('Current filters:', filters)}
             />
 
             {/* Users Table */}
@@ -407,17 +456,17 @@ const AdminUserManagement = () => {
                         <tr key={user._id} className="hover:bg-slate-50 transition-colors duration-150">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-4">
-                             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-lg border-4 border-white bg-gray-100">
-                                    {user?.profileImage ? (
-                                      <img
-                                      src={user.profileImage}
-                                      alt="Profile"
-                                      className="w-full h-full object-cover"
-                                        />
-                                      ) : (
-                                      <FaUserCircle className="w-full h-full text-gray-400" />
-                                        )}
-                               </div>
+                              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-lg border-4 border-white bg-gray-100">
+                                {user?.profileImage ? (
+                                  <img
+                                    src={user.profileImage}
+                                    alt="Profile"
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <FaUserCircle className="w-full h-full text-gray-400" />
+                                )}
+                              </div>
                               <div>
                                 <div className="font-semibold text-slate-900">{user.name}</div>
                                 <div className="text-sm text-slate-500 flex items-center gap-1">
@@ -454,6 +503,13 @@ const AdminUserManagement = () => {
                                 icon={Edit}
                                 label="Edit User"
                                 variant="edit"
+                              />
+                              {/* Add Notification Action Button */}
+                              <ActionButton
+                                onClick={() => handleSendNotification(user)}
+                                icon={Bell}
+                                label="Send Notification"
+                                variant="notification"
                               />
                               <ActionButton
                                 onClick={() => handleUserDelete(user._id)}

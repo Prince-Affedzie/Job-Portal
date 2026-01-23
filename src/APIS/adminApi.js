@@ -71,3 +71,13 @@ export const assignServiceRequest = (id,taskerId)=>API.patch(`/api/admin/service
 export const cancelServiceRequest = (id)=>API.patch(`/api/admin/service/request/${id}/cancel`)
 export const deleteServiceRequest =(id)=>API.delete(`/api/admin/service/request/${id}/delete`)
 
+// Notification  APIS
+
+export const sendPersonalizedNotification = (userId,data)=>API.post(`/api/admin/send-single-user/notification/${userId}`,data)
+export const sendroleBaseNotification =(data)=>API.post('/api/admin/send-role-based/notification',data)
+export const sendBroadCastNotification  = (data)=>API.post('/api/admin/send-broadcast/notification',data)
+
+//admin/send-single-user/notification/:userId
+//admin/send-broadcast/notification
+//admin/send-role-based/notification
+
