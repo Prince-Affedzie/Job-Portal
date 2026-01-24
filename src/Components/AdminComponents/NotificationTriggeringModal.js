@@ -40,8 +40,8 @@ const NotificationModal = ({
   ];
 
   const roles = [
-    { value: "admin", label: "Admin" },
-    { value: "employer", label: "Employer" },
+   // { value: "admin", label: "Admin" },
+    { value: "client", label: "Client" },
     { value: "job_seeker", label: "Job Seeker" }
   ];
 
